@@ -10,7 +10,7 @@ RPI_HOME	=	$(TMP_OUTPUT)/home/pi
 RPI_NETWORK_TYPE 	?= eth0
 RPI_ORIG_HOSTNAME	?= raspberrypi
 RPI_HOSTNAME     	?= k8s-master-01
-RPI_IP           	?= 192.168.1.100
+RPI_IP           	?= 192.168.1.101
 RPI_DNS          	?= 192.168.1.1
 RPI_TIMEZONE     	?= Australia/Melbourne
 
