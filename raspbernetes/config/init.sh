@@ -24,11 +24,11 @@ init_cni() {
     kubectl apply -f "https://cloud.weave.works/k8s/net?k8s-version=$(kubectl version | base64 | tr -d '\n')"
 }
 
-# determine the node type and run specific function
+# Initialize node based on type
 if [ "${KUBE_NODE_TYPE}" == "master" ]; then
     echo "Detected as master node type, need to either join existing cluster or initialise new one"
     init_master
 elif [ "${KUBE_NODE_TYPE}" == "worker" ]; then
     echo "Detected as worker node type, need to join existing cluster!"
-    ./connect.sh
+    "$RPI_HOME/connect.sh"
 fi

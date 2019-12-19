@@ -1,6 +1,5 @@
 SHELL := /bin/bash -o pipefail
 .SILENT:
-.DEFAULT_GOAL := help
 
 # Local Configuration
 TMP_OUTPUT	=	output
@@ -9,8 +8,8 @@ RPI_HOME	=	$(TMP_OUTPUT)/home/pi
 # Raspberry PI host and IP configuration
 RPI_NETWORK_TYPE 	?= eth0
 RPI_ORIG_HOSTNAME	?= raspberrypi
-RPI_HOSTNAME     	?= k8s-master-01
-RPI_IP           	?= 192.168.1.101
+RPI_HOSTNAME     	?=
+RPI_IP           	?=
 RPI_DNS          	?= 192.168.1.1
 RPI_TIMEZONE     	?= Australia/Melbourne
 
@@ -18,7 +17,7 @@ RPI_TIMEZONE     	?= Australia/Melbourne
 RPI_SSH_SECRET	?= raspberry
 
 # Kubernetes configuration
-KUBE_NODE_TYPE    ?= master
+KUBE_NODE_TYPE	?=
 
 SCP 	=	scp -o "StrictHostKeyChecking no" -o "UserKnownHostsFile /dev/null" -o "LogLevel=ERROR"
 SSH 	=	ssh -o "StrictHostKeyChecking no" -o "UserKnownHostsFile /dev/null" -o "LogLevel=ERROR"
@@ -38,10 +37,11 @@ deploy: clean prepare ssh configure env scp install
 .PHONY: post-install
 post-install:
 ifeq ($(KUBE_NODE_TYPE),master)
-	sshpass -p $(RPI_SSH_SECRET) $(SCP) -p -r pi@$(RPI_HOSTNAME).local:/home/pi/.kube/config $(RPI_HOME)/.kube/config
-	sshpass -p $(RPI_SSH_SECRET) $(SCP) -p -r pi@$(RPI_HOSTNAME).local:/home/pi/connect.sh $(RPI_HOME)
-	echo "Test Connection:"
-	echo "kubectl get nodes --kubeconfig $(RPI_HOME)/.kube/config"
+	mkdir -p $(TMP_OUTPUT)/$(KUBE_NODE_TYPE)/.kube
+	sshpass -p $(RPI_SSH_SECRET) $(SCP) -p -r pi@$(RPI_HOSTNAME).local:/home/pi/.kube/config $(TMP_OUTPUT)/$(KUBE_NODE_TYPE)/.kube/config
+	sshpass -p $(RPI_SSH_SECRET) $(SCP) -p -r pi@$(RPI_HOSTNAME).local:/home/pi/connect.sh $(TMP_OUTPUT)/$(KUBE_NODE_TYPE)
+	echo "Examples:"
+	echo "  kubectl get nodes --kubeconfig $(TMP_OUTPUT)/$(KUBE_NODE_TYPE)/.kube/config"
 endif
 
 .PHONY: install
@@ -51,6 +51,10 @@ install:
 .PHONY: scp
 scp:
 	sshpass -p $(RPI_SSH_SECRET) $(SCP) -p -r $(RPI_HOME) pi@$(RPI_ORIG_HOSTNAME).local:/home/
+ifeq ($(KUBE_NODE_TYPE),worker)
+	sshpass -p $(RPI_SSH_SECRET) $(SCP) -p -r $(TMP_OUTPUT)/master/.kube pi@$(RPI_ORIG_HOSTNAME).local:/home/pi
+	sshpass -p $(RPI_SSH_SECRET) $(SCP) -p -r $(TMP_OUTPUT)/master/connect.sh pi@$(RPI_ORIG_HOSTNAME).local:/home/pi
+endif
 
 .PHONY: env
 env:
@@ -60,7 +64,6 @@ env:
 	echo "export RPI_NETWORK_TYPE=$(RPI_NETWORK_TYPE)" >> $(RPI_HOME)/config/env
 	echo "export RPI_TIMEZONE=$(RPI_TIMEZONE)" >> $(RPI_HOME)/config/env
 	echo "export KUBE_NODE_TYPE=$(KUBE_NODE_TYPE)" >> $(RPI_HOME)/config/env
-	echo "export KUBE_MASTER_IP_01=$(KUBE_MASTER_IP_01)" >> $(RPI_HOME)/config/env
 	echo "export RPI_HOME=/home/pi" >> $(RPI_HOME)/config/env
 
 .PHONY: configure
@@ -78,5 +81,5 @@ prepare:
 
 .PHONY: clean
 clean:
-	sudo rm -rf ./$(TMP_OUTPUT)/
+	sudo rm -rf ./$(RPI_HOME)/
 

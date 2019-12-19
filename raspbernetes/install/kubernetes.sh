@@ -6,12 +6,13 @@ curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key add -
 cat <<EOF | tee /etc/apt/sources.list.d/kubernetes.list
 deb https://apt.kubernetes.io/ kubernetes-xenial main
 EOF
+
 # https://askubuntu.com/questions/1100800/kubernetes-installation-failing-ubuntu-16-04
 # cat <<EOF | tee /etc/apt/sources.list.d/kubernetes.list
 # deb http://packages.cloud.google.com/apt/ kubernetes-xenial main
 # EOF
 
-apt-get update
+until apt-get update; do echo "Retrying due to unstable mirror"; done
 apt-get install -y kubelet kubeadm kubectl kubectx
 apt-mark hold kubelet kubeadm kubectl
 

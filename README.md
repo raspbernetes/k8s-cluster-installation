@@ -1,6 +1,6 @@
 # Raspbernetes
 
-A guide to setup Kubernetes running on Raspberry Pi cluster
+A guide to setup Kubernetes running on a Raspberry Pi cluster
 
 ## Contents
 
@@ -15,18 +15,18 @@ A guide to setup Kubernetes running on Raspberry Pi cluster
 
 ## Prerequisites
 
-Prior to getting started you must have completed the following setup and instructions:
+Prior to getting started you must have completed the following setup instructions:
 
-Firstly, it's assumed the SD card flashed with Raspbian Lite and configured with SSH. If this has not been completed the official guide can be found [HERE](https://www.raspberrypi.org/documentation/installation/installing-images/README.md).
+The SD card must be flashed with Raspbian Lite. If this has not been completed the official guide can be found [HERE](https://www.raspberrypi.org/documentation/installation/installing-images/README.md).
 
 Note: To setup SSH to your Raspberry Pi, you simply need a empty `ssh` file in the boot directory.
 
-You must also have the following dependencies installed on your system:
+You must also have the following dependencies installed on your machine:
 
 * make
 * sshpass
 
-An internet connection is also required as we'll be configuring the Raspberry Pi's.
+An internet connection is also required for configuring the Raspberry Pi's.
 
 ## Getting Started
 
@@ -36,10 +36,10 @@ At this point the Raspberry Pi should be running and on the same network as your
 
 ### Master Node(s)
 
-The master node is configuration is copied across ssh to the Raspberry Pi with the following command:
+The master node configuration is copied from your machine to the Raspberry Pi with the following command:
 
 ```bash
-make deploy
+RPI_HOSTNAME=k8s-master-01 KUBE_NODE_TYPE=master RPI_IP=192.168.1.101 make deploy
 ```
 
 Once the deployment has completed you should be now able to manually `ssh` to the newly configured master node using the folling command:
@@ -73,6 +73,10 @@ Note: Running the above commands will use a set of default variables, these are 
 ### Worker Node(s)
 
 Work In Progress...
+
+```bash
+RPI_HOSTNAME=k8s-worker-01 KUBE_NODE_TYPE=worker RPI_IP=192.168.1.111 make deploy
+```
 
 ## Contributing
 
