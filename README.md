@@ -63,7 +63,7 @@ kubectl get nodes
 Now that the master node is running successfully you can either add more master nodes to the cluster or create worker nodes within the cluster. To be able to connect additional nodes into the cluster we will need to extract the kube config and the join token output by the master node. This can be done with the following command:
 
 ```bash
-make post-install
+RPI_HOSTNAME=k8s-master-01 KUBE_NODE_TYPE=master RPI_IP=192.168.1.101  make post-install
 ```
 
 The kube config and join token should now be in the ./output directory and will be used in configuring additional nodes.
