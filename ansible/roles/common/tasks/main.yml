@@ -1,0 +1,59 @@
+---
+- name: Upgrade system
+  apt:
+    upgrade: dist
+    force_apt_get: true
+  register: apt_upgrade
+  retries: 5
+  until: apt_upgrade is success
+
+- name: Upgrade all packages to the latest version
+  apt:
+    name: '*'
+    state: latest
+    force_apt_get: true
+  register: apt_update
+  retries: 5
+  until: apt_update is success
+
+- name: Install Common Packages
+  apt:
+    name:
+      - apt-transport-https
+      - ca-certificates
+      - software-properties-common
+      - zip
+      - jq
+      - git
+      - vim
+      - curl
+    install_recommends: false
+    update_cache: true
+    force_apt_get: true
+  register: apt_install_common
+  retries: 5
+  until: apt_install_common is success
+
+- name: Adding Kubernetes Repository
+  apt_repository:
+    repo: deb https://apt.kubernetes.io/ kubernetes-xenial main
+    state: present
+
+- name: Install Kubernetes Packages
+  apt:
+    name:
+      - kubelet
+      - kubeadm
+      - kubectl
+      - kubectx
+    install_recommends: false
+    update_cache: true
+    force_apt_get: true
+  register: apt_install_common
+  retries: 5
+  until: apt_install_common is success
+
+- name: Clean up apt
+  apt:
+    autoremove: true
+    force_apt_get: true

@@ -1,0 +1,7 @@
+[masters]
+192.168.1.101 hostname=k8s-master-01
+192.168.1.102 hostname=k8s-master-02
+192.168.1.103 hostname=k8s-master-03
+
+[workers]
+192.168.1.111 hostname=k8s-worker-01

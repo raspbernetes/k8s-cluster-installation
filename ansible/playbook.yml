@@ -1,0 +1,28 @@
+---
+- hosts: all
+  become: true
+  gather_facts: true
+
+  vars_files:
+    - ./vars.yml
+
+  tasks:
+    - include_role:
+        name: common
+      tags: ['common']
+    - include_role:
+        name: worker
+      hosts: workers
+      when: deploy_target == 'workers'
+      tags: ['worker']
+    - include_role:
+        name: master
+      hosts: masters
+      when: deploy_target == 'masters'
+      tags: ['master']
+
+    - name: 'rebooting hosts'
+      reboot:
+        msg: 'Pis are being rebooted'
+        reboot_timeout: 60
+      ignore_errors: true
