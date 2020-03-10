@@ -1,0 +1,3 @@
+---
+- name: kubeadm join
+  command: "kubeadm join '{{ IP }}' --token '{{ TOKEN }}' --discovery-token-ca-cert-hash '{{ SHA }}' "

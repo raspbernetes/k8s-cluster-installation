@@ -57,3 +57,32 @@
   apt:
     autoremove: true
     force_apt_get: true
+
+# Disable swap memory
+- name: disable swap-space
+  shell: dphys-swapfile swapoff && dphys-swapfile uninstall && update-rc.d dphys-swapfile remove && systemctl disable dphys-swapfile.service
+
+#
+- name: use arptables-legacy
+  alternatives:
+    name: arptables
+    path: /usr/sbin/arptables-legacy
+  failed_when: false
+
+- name: use ebtables-legacy
+  alternatives:
+    name: ebtables
+    path: /usr/sbin/ebtables-legacy
+  failed_when: false
+
+- name: use iptables-legacy
+  alternatives:
+    name: iptables
+    path: /usr/sbin/iptables-legacy
+  failed_when: false
+
+- name: use ip6tables-legacy
+  alternatives:
+    name: ip6tables
+    path: /usr/sbin/ip6tables-legacy
+  failed_when: false
