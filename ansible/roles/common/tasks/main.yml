@@ -57,6 +57,23 @@
   retries: 5
   until: apt_install_common is success
 
+- name: Download docker install script
+  get_url:
+    url: https://get.docker.com
+    dest: /tmp/docker-install.sh
+    mode: 0755
+
+- name: Run install script
+  shell: /bin/sh /tmp/docker-install.sh
+
+- name: Remove temporary file
+  file:
+    path: /tmp/docker-install.sh
+    state: absent
+
+- name: Set Docker to auto-start
+  service: name=docker enabled=true state=started
+
 - name: Disable swap
   shell: dphys-swapfile swapoff && dphys-swapfile uninstall && update-rc.d dphys-swapfile remove && systemctl disable dphys-swapfile.service
 
@@ -134,20 +151,20 @@
 # Set /proc/sys/net/bridge/bridge-nf-call-iptables to 1 by running
 # sysctl net.bridge.bridge-nf-call-iptables=1 to pass bridged IPv4 traffic to iptables’ chains.
 # This is a requirement for some CNI plugins to work.
-# - name: Update bridged IPv4 traffic to iptables' chains
-#   sysctl:
-#     name: net.bridge.bridge-nf-call-iptables
-#     value: 1
-#     state: present
+- name: Update bridged IPv4 traffic to iptables' chains
+  sysctl:
+    name: net.bridge.bridge-nf-call-iptables
+    value: 1
+    state: present
 
-# - name: Update bridged IPv4 traffic to ip6tables' chains
-#   sysctl:
-#     name: net.bridge.bridge-nf-call-ip6tables
-#     value: 1
-#     state: present
+- name: Update bridged IPv4 traffic to ip6tables' chains
+  sysctl:
+    name: net.bridge.bridge-nf-call-ip6tables
+    value: 1
+    state: present
 
-# - name: Update bridged IPv4 traffic to arptables' chains
-#   sysctl:
-#     name: net.bridge.bridge-nf-call-arptables
-#     value: 1
-#     state: present
+- name: Update bridged IPv4 traffic to arptables' chains
+  sysctl:
+    name: net.bridge.bridge-nf-call-arptables
+    value: 1
+    state: present
