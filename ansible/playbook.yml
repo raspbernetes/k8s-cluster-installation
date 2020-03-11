@@ -23,14 +23,3 @@
 - hosts: master
   roles:
     - master
-# - include_role:
-#     name: worker
-#   hosts: workers
-#   when: deploy_target == 'workers'
-#   tags: ['worker']
-# - include_role:
-#     name: master
-#   hosts: masters
-#   when: deploy_target == 'masters'
-#   tags: ['master']
-

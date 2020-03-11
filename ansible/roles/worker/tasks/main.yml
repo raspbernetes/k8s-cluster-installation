@@ -1,11 +1,13 @@
 ---
-# - name: register join command
-#   changed_when: false
-#   local_action: command cat build/k8s-token
-#   register: k8s_token
-#   run_once: yes
+- name: register k8s token
+  changed_when: false
+  local_action: command cat output/k8s-token
+  register: k8s_join_token
+  run_once: yes
+  vars:
+    ansible_become: no
 
-# - name: kubeadm join
-#   command: { { k8s_address.stdout } }
-#   args:
-#     creates: /etc/kubernetes/kubelet.conf
+- name: kubeadm join
+  command: '{{ k8s_join_token.stdout }}'
+  args:
+    creates: /etc/kubernetes/kubelet.conf

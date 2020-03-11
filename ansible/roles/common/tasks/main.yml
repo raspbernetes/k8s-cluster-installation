@@ -154,17 +154,17 @@
 - name: Update bridged IPv4 traffic to iptables' chains
   sysctl:
     name: net.bridge.bridge-nf-call-iptables
-    value: 1
+    value: '1'
     state: present
 
 - name: Update bridged IPv4 traffic to ip6tables' chains
   sysctl:
     name: net.bridge.bridge-nf-call-ip6tables
-    value: 1
+    value: '1'
     state: present
 
 - name: Update bridged IPv4 traffic to arptables' chains
   sysctl:
     name: net.bridge.bridge-nf-call-arptables
-    value: 1
+    value: '1'
     state: present

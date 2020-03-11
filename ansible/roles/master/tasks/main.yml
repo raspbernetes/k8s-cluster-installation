@@ -16,7 +16,7 @@
     state: directory
     owner: root
     group: root
-    mode: 0755
+    mode: '0755'
 
 - name: Copy admin.conf to config directory
   become: true
@@ -25,7 +25,7 @@
     dest: /root/.kube/config
     owner: root
     group: root
-    mode: 0755
+    mode: '0755'
     remote_src: yes
     backup: yes
   when: kubeadm_init
@@ -37,16 +37,29 @@
     flat: yes
     src: /etc/kubernetes/admin.conf
 
-- name: apply weave CNI
+- name: Apply Weave CNI
   become: true
-  command: kubectl apply -f "https://cloud.weave.works/k8s/net?k8s-version=$(kubectl version | base64 | tr -d '\n')"
-# - name: register k8s token
-#   changed_when: false
-#   shell: kubeadm token create --print-join-command
-#   register: k8s_token
+  shell: kubectl apply -f "https://cloud.weave.works/k8s/net?k8s-version=$(kubectl version | base64 | tr -d '\n')"
+  register: weave
 
-# - name: save k8s token
-#   local_action:
-#     module: copy
-#     content: '{{ k8s_token.stdout }}'
-#     dest: build/k8s-token
+- name: Generate k8s join token
+  become: true
+  changed_when: false
+  shell: kubeadm token create --print-join-command
+  register: k8s_token
+
+- name: Dump k8s join token into a file
+  copy:
+    content: '{{ k8s_token.stdout }}'
+    owner: root
+    group: root
+    mode: '0755'
+    dest: k8s-join-token
+    backup: yes
+
+- name: Copy Kubernetes join token locally
+  become: true
+  fetch:
+    dest: output/k8s-join-token
+    flat: yes
+    src: k8s-token
