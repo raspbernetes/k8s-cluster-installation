@@ -1,7 +1,7 @@
-[masters]
-192.168.1.101 hostname=k8s-master-01
-192.168.1.102 hostname=k8s-master-02
-192.168.1.103 hostname=k8s-master-03
+[master]
+k8s-master-01 ansible_host=192.168.1.101
 
-[workers]
-192.168.1.111 hostname=k8s-worker-01
+[worker]
+k8s-worker-01 ansible_host=192.168.1.111
+k8s-worker-02 ansible_host=192.168.1.112
+k8s-worker-03 ansible_host=192.168.1.113

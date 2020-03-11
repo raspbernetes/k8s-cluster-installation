@@ -1,6 +1,45 @@
 ---
-- name: kubeadm init
-  command: kubeadm init --token-ttl=0
+- name: Reset Kubernetes Master
+  shell: kubeadm reset -f
+  register: kubeadm_reset
+
+- name: Initialize Master
+  command: kubeadm init
+
+- name: Create Kubernetes config directory
+  file:
+    path: /root/.kube/
+    state: directory
+    owner: root
+    group: root
+    mode: 0755
+
+- name: Copy admin.conf to config directory
+  copy:
+    src: /etc/kubernetes/admin.conf
+    dest: /root/.kube/config
+    owner: root
+    group: root
+    mode: 0755
+    remote_src: yes
+    backup: yes
+  when: kubeadm_init
+
+- name: Copy Kubernetes config locally
+  fetch:
+    dest: output/k8s-config.yaml
+    flat: yes
+    src: /etc/kubernetes/admin.conf
 
 - name: apply weave CNI
   command: kubectl apply -f "https://cloud.weave.works/k8s/net?k8s-version=$(kubectl version | base64 | tr -d '\n')"
+# - name: register k8s token
+#   changed_when: false
+#   shell: kubeadm token create --print-join-command
+#   register: k8s_token
+
+# - name: save k8s token
+#   local_action:
+#     module: copy
+#     content: '{{ k8s_token.stdout }}'
+#     dest: build/k8s-token

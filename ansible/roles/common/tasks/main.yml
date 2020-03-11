@@ -1,17 +1,40 @@
 ---
-- name: Upgrade system
+- name: Update RPI firmware
+  command: rpi-update
+  environment:
+    SKIP_WARNING: 1
+  register: rpi_update
+  become: true
+
+- name: 'Update hostnames'
+  hostname:
+    name: '{{ inventory_hostname }}'
+
+- name: Ensure hostname is in /etc/hosts
+  lineinfile:
+    dest: /etc/hosts
+    regexp: "^{{ ansible_default_ipv4.address }}.+$"
+    line: "{{ ansible_default_ipv4.address }} {{ ansible_hostname }}"
+    state: present
+
+- name: set timezone to UTC
+  timezone:
+    name: UTC
+  register: timezone
+
+- name: apt-get upgrade
   apt:
-    upgrade: dist
+    upgrade: full
     force_apt_get: true
   register: apt_upgrade
   retries: 5
   until: apt_upgrade is success
 
-- name: Upgrade all packages to the latest version
+- name: apt-get update
   apt:
-    name: '*'
-    state: latest
-    force_apt_get: true
+    update_cache: yes
+    autoclean: yes
+    autoremove: yes
   register: apt_update
   retries: 5
   until: apt_update is success
@@ -34,10 +57,21 @@
   retries: 5
   until: apt_install_common is success
 
+- name: Disable swap
+  shell: dphys-swapfile swapoff && dphys-swapfile uninstall && update-rc.d dphys-swapfile remove && systemctl disable dphys-swapfile.service
+
+- name: Add Google Cloud Repo Key
+  shell: curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key add -
+  args:
+    warn: no
+
 - name: Adding Kubernetes Repository
   apt_repository:
     repo: deb https://apt.kubernetes.io/ kubernetes-xenial main
     state: present
+  register: kubernetes_repository
+  retries: 5
+  until: kubernetes_repository is success
 
 - name: Install Kubernetes Packages
   apt:
@@ -49,40 +83,71 @@
     install_recommends: false
     update_cache: true
     force_apt_get: true
-  register: apt_install_common
+  register: apt_install_kube
   retries: 5
-  until: apt_install_common is success
+  until: apt_install_kube is success
 
-- name: Clean up apt
+- name: Enable required cgroup features
+  lineinfile:
+    path: /boot/cmdline.txt
+    backrefs: true
+    regexp: '^(.*rootwait)$'
+    line: '\1 cgroup_enable=cpuset cgroup_memory=1 cgroup_enable=memory'
+    state: present
+
+- name: Install IPTable Packages
   apt:
-    autoremove: true
+    name:
+      - ebtables
+      - arptables
+    install_recommends: false
+    update_cache: true
     force_apt_get: true
+  register: apt_install_iptabls
+  retries: 5
+  until: apt_install_iptabls is success
 
-# Disable swap memory
-- name: disable swap-space
-  shell: dphys-swapfile swapoff && dphys-swapfile uninstall && update-rc.d dphys-swapfile remove && systemctl disable dphys-swapfile.service
-
-#
-- name: use arptables-legacy
+- name: Use arptables-legacy
   alternatives:
     name: arptables
     path: /usr/sbin/arptables-legacy
   failed_when: false
 
-- name: use ebtables-legacy
+- name: Use ebtables-legacy
   alternatives:
     name: ebtables
     path: /usr/sbin/ebtables-legacy
   failed_when: false
 
-- name: use iptables-legacy
+- name: Use iptables-legacy
   alternatives:
     name: iptables
     path: /usr/sbin/iptables-legacy
   failed_when: false
 
-- name: use ip6tables-legacy
+- name: Use ip6tables-legacy
   alternatives:
     name: ip6tables
     path: /usr/sbin/ip6tables-legacy
   failed_when: false
+
+# Set /proc/sys/net/bridge/bridge-nf-call-iptables to 1 by running
+# sysctl net.bridge.bridge-nf-call-iptables=1 to pass bridged IPv4 traffic to iptables’ chains.
+# This is a requirement for some CNI plugins to work.
+# - name: Update bridged IPv4 traffic to iptables' chains
+#   sysctl:
+#     name: net.bridge.bridge-nf-call-iptables
+#     value: 1
+#     state: present
+
+# - name: Update bridged IPv4 traffic to ip6tables' chains
+#   sysctl:
+#     name: net.bridge.bridge-nf-call-ip6tables
+#     value: 1
+#     state: present
+
+# - name: Update bridged IPv4 traffic to arptables' chains
+#   sysctl:
+#     name: net.bridge.bridge-nf-call-arptables
+#     value: 1
+#     state: present
