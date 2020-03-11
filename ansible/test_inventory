@@ -1,3 +1,3 @@
-[test]
+[master]
 k8s-test-01 hostname=k8s-test-01 ansible_host=192.168.1.108 ansible_user=pi ansible_ssh_pass=raspberry
 

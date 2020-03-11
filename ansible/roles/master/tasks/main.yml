@@ -1,12 +1,16 @@
 ---
 - name: Reset Kubernetes Master
+  become: true
   shell: kubeadm reset -f
   register: kubeadm_reset
 
 - name: Initialize Master
+  become: true
   command: kubeadm init
+  register: kubeadm_init
 
 - name: Create Kubernetes config directory
+  become: true
   file:
     path: /root/.kube/
     state: directory
@@ -15,6 +19,7 @@
     mode: 0755
 
 - name: Copy admin.conf to config directory
+  become: true
   copy:
     src: /etc/kubernetes/admin.conf
     dest: /root/.kube/config
@@ -26,12 +31,14 @@
   when: kubeadm_init
 
 - name: Copy Kubernetes config locally
+  become: true
   fetch:
     dest: output/k8s-config.yaml
     flat: yes
     src: /etc/kubernetes/admin.conf
 
 - name: apply weave CNI
+  become: true
   command: kubectl apply -f "https://cloud.weave.works/k8s/net?k8s-version=$(kubectl version | base64 | tr -d '\n')"
 # - name: register k8s token
 #   changed_when: false

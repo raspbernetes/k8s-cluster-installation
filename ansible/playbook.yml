@@ -19,9 +19,10 @@
 - hosts: worker
   roles:
     - worker
-# - hosts: master
-#   roles:
-#     - master
+
+- hosts: master
+  roles:
+    - master
 # - include_role:
 #     name: worker
 #   hosts: workers
