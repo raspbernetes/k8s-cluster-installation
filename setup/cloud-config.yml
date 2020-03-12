@@ -1,0 +1,29 @@
+---
+# Example: https://gist.githubusercontent.com/RenEvo/6a9e244b670df334c42578b8fe95400b/raw/user-data.yml
+
+# Set your hostname here, the manage_etc_hosts will update the hosts file entries as well
+hostname: k8s-master-01
+manage_etc_hosts: true
+
+# Set the locale of the system
+locale: 'en_AU.UTF-8'
+
+# Set the timezone
+# Value of 'timezone' must exist in /usr/share/zoneinfo
+timezone: 'Australia/Melbourne'
+
+# Update our packages on first boot, saves us some time
+package_update: true
+package_upgrade: true
+package_reboot_if_required: true
+
+# Update /etc/hosts network config
+write_files:
+  - path: /etc/hosts
+    permissions: '0644'
+    content: |
+      127.0.0.1 localhost
+      ::1       localhost ip6-localhost ip6-loopback
+      ff02::1   ip6-allnodes
+      ff02::2   ip6-allrouters
+      127.0.1.1 k8s-master-01
