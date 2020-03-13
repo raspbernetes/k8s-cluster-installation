@@ -2,7 +2,7 @@
 # Example: https://gist.githubusercontent.com/RenEvo/6a9e244b670df334c42578b8fe95400b/raw/user-data.yml
 
 # Set your hostname here, the manage_etc_hosts will update the hosts file entries as well
-hostname: k8s-master-01
+hostname: k8s-master-02
 manage_etc_hosts: true
 
 # Set the locale of the system
@@ -13,17 +13,56 @@ locale: 'en_AU.UTF-8'
 timezone: 'Australia/Melbourne'
 
 # Update our packages on first boot, saves us some time
-package_update: true
-package_upgrade: true
-package_reboot_if_required: true
+apt_preserve_sources_list: true
+apt_update: true
+apt_upgrade: true
 
-# Update /etc/hosts network config
+#
+# @CHANGEME - Update user config
+#
+users:
+  - name: example
+    primary-group: users
+    shell: /bin/bash
+    sudo: ALL=(ALL) NOPASSWD:ALL
+    groups: users
+    ssh_import_id: None
+    ## To enable SSH password log in
+    ## mkpasswd --method=SHA-512 --rounds=4096
+    # passwd: ""
+    # lock_passwd: false
+    # ssh_pwauth: true
+    lock_passwd: true
+    ssh_pwauth: false
+    ssh_authorized_keys:
+      - 'ssh-rsa ...'
+
+#
+# @CHANGEME - Update network config
+#
 write_files:
-  - path: /etc/hosts
+  - path: /etc/netplan/50-cloud-init.yaml
     permissions: '0644'
     content: |
-      127.0.0.1 localhost
-      ::1       localhost ip6-localhost ip6-loopback
-      ff02::1   ip6-allnodes
-      ff02::2   ip6-allrouters
-      127.0.1.1 k8s-master-01
+      network:
+        version: 2
+        ethernets:
+          eth0:
+            addresses:
+              - 192.168.1.100/24
+            gateway4: 192.168.1.109
+            nameservers:
+              addresses:
+                - 1.1.1.1
+                - 8.8.8.8
+
+runcmd:
+  - [sudo, netplan, apply]
+  - [
+      sudo,
+      sed,
+      -i,
+      's/PasswordAuthentication no/PasswordAuthentication yes/g',
+      /etc/ssh/sshd_config,
+    ]
+  - [sudo, systemctl, restart, sshd]
