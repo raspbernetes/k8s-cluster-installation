@@ -10,8 +10,8 @@ manage_etc_hosts: true
 #
 # @CHANGEME - Update locale and timezone
 #
-locale: 'en_US.UTF-8'
-timezone: 'America/New_York'
+locale: 'en_AU.UTF-8'
+timezone: 'Australia/Melbourne'
 
 apt_preserve_sources_list: true
 apt_update: true
@@ -29,7 +29,7 @@ packages:
 # @CHANGEME - Update user config
 #
 users:
-  - name: devin
+  - name: pi
     primary-group: users
     shell: /bin/bash
     sudo: ALL=(ALL) NOPASSWD:ALL
@@ -37,13 +37,13 @@ users:
     ssh_import_id: None
     ## To enable SSH password log in
     ## mkpasswd --method=SHA-512 --rounds=4096
-    # passwd: ""
-    # lock_passwd: false
-    # ssh_pwauth: true
-    lock_passwd: true
-    ssh_pwauth: false
+    passwd: '$6$rounds=4096$P6tw4IGFxqFNK4AX$VFyRpSmg5mczz/1mCXGTOShgnYEsfsdJbKLpSY5y9CEjvkKy6KWCFZ5/jbye4wYyuHGfo2Q6h9DQ72Tfdeby3/'
+    lock_passwd: false
+    ssh_pwauth: true
+    # lock_passwd: true
+    # ssh_pwauth: false
     ssh_authorized_keys:
-      - 'ssh-rsa ... ...@gmail.com'
+      - 'ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQCoXuKrmgKM7kHY6dirVdL+C/ofLFZ4kJHCoBb0KkNY8/DPLagc7gSDKidUwgTImsjtJ0u3W4KI+APsbQA8CkcGGnCRZRJObk2Bq8j5DJPizHYB8sReD27V4VB+0r7rEsTMhVJcd/+6QOCLxGAFWATjs6dDy0PRO/0lB3mhtpYApcnsQtFF/Vk7XteUzVTj1UH5cQjVFTPiVui4AaLKgCecDANpSuYBXV5UZxgthR3RlVXCR//mCwQsLBGLPlSdgG0E6EZ8se9KJ3PKOuXLs23uI7UYpzVftNpaOYHldKjHTe0KcIxbTLHdpLTIaQqdEOpcsgudZ9wKLci2cC/RpX2hxB1vwX6sCi0kfp/e172anClPH5cN5jyAkH3in2mM1Xw0H3MLThncpg6qGFvEBDLl+xowFkdNEA/0jyUwCAabKaYfoM79w4e+UPH12C39rJ+Ew7eVPj6LDD9B0Aqrbozd/I+WQMqk7tFtK7w3gFDw6JDGPyTv0Vca4SrMDpR60G9ybkB1hMV5h1J4Y/WOb1YYGamLF9SxnCuKFfmzDVLfK4jI8a0t3EWJaSYskIIIqQZvE9ynU1ssXrIrvQmaIMTfsUCBqBbnmaeqpF4MZf4YTGi68/fYXKt6b8goRNZ7dWagET6gGHM6HoYaFtCWEKbe/axO7tVjuKQWZjgmV4T81w== dreamappsoftware@gmail.com'
 
 #
 # @CHANGEME - Update network config
@@ -63,13 +63,8 @@ write_files:
               addresses:
                 - 1.1.1.1
                 - 8.8.8.8
+
 runcmd:
   - [sudo, netplan, apply]
-  - [
-      sudo,
-      sed,
-      -i,
-      's/PasswordAuthentication no/PasswordAuthentication yes/g',
-      /etc/ssh/sshd_config,
-    ]
+  - [sudo,sed,-i,'s/PasswordAuthentication no/PasswordAuthentication yes/g',/etc/ssh/sshd_config]
   - [sudo, systemctl, restart, sshd]
