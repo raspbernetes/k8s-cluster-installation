@@ -2,7 +2,8 @@
 # Example: https://gist.githubusercontent.com/RenEvo/6a9e244b670df334c42578b8fe95400b/raw/user-data.yml
 
 # Set your hostname here, the manage_etc_hosts will update the hosts file entries as well
-hostname: k8s-master-02
+hostname: k8s-master-01
+fqdn: k8s-master-01.raspbernetes.com
 manage_etc_hosts: true
 
 # Set the locale of the system
@@ -36,7 +37,6 @@ users:
     ssh_pwauth: false
     ssh_authorized_keys:
       - 'ssh-rsa ...'
-
 #
 # @CHANGEME - Update network config
 #
@@ -49,8 +49,7 @@ write_files:
         ethernets:
           eth0:
             addresses:
-              - 192.168.1.100/24
-            gateway4: 192.168.1.109
+              - 192.168.1.110/24
             nameservers:
               addresses:
                 - 1.1.1.1
