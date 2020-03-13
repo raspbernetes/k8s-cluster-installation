@@ -1,28 +1,35 @@
 ---
-# Example: https://gist.githubusercontent.com/RenEvo/6a9e244b670df334c42578b8fe95400b/raw/user-data.yml
+# cloud-config
 
-# Set your hostname here, the manage_etc_hosts will update the hosts file entries as well
-hostname: k8s-master-01
-fqdn: k8s-master-01.raspbernetes.com
+#
+# @CHANGEME - Update hostname
+#
+hostname: k8s-master
 manage_etc_hosts: true
 
-# Set the locale of the system
-locale: 'en_AU.UTF-8'
+#
+# @CHANGEME - Update locale and timezone
+#
+locale: 'en_US.UTF-8'
+timezone: 'America/New_York'
 
-# Set the timezone
-# Value of 'timezone' must exist in /usr/share/zoneinfo
-timezone: 'Australia/Melbourne'
-
-# Update our packages on first boot, saves us some time
 apt_preserve_sources_list: true
 apt_update: true
 apt_upgrade: true
+
+packages:
+  - apt-transport-https
+  - ca-certificates
+  - software-properties-common
+  - python3
+  - python3-pip
+  - gnupg2
 
 #
 # @CHANGEME - Update user config
 #
 users:
-  - name: example
+  - name: devin
     primary-group: users
     shell: /bin/bash
     sudo: ALL=(ALL) NOPASSWD:ALL
@@ -36,7 +43,8 @@ users:
     lock_passwd: true
     ssh_pwauth: false
     ssh_authorized_keys:
-      - 'ssh-rsa ...'
+      - 'ssh-rsa ... ...@gmail.com'
+
 #
 # @CHANGEME - Update network config
 #
@@ -49,12 +57,12 @@ write_files:
         ethernets:
           eth0:
             addresses:
-              - 192.168.1.110/24
+              - 192.168.1.150/24
+            gateway4: 192.168.1.1
             nameservers:
               addresses:
                 - 1.1.1.1
                 - 8.8.8.8
-
 runcmd:
   - [sudo, netplan, apply]
   - [
