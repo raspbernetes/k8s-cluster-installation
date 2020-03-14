@@ -1,0 +1,18 @@
+name: build
+
+on: [push]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v1
+
+      - name: Lint - Scripts
+        uses: 'bewuethr/shellcheck-action@v1'
+
+      - name: Lint Ansible
+        uses: ansible/ansible-lint-action@master
+        with:
+          targets: './ansible'

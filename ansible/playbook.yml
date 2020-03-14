@@ -15,11 +15,10 @@
     #     msg: 'Pis are being rebooted'
     #     reboot_timeout: 60
     #   ignore_errors: true
+# - hosts: worker
+#   roles:
+#     - worker
 
-- hosts: worker
-  roles:
-    - worker
-
-- hosts: master
-  roles:
-    - master
+# - hosts: master
+#   roles:
+#     - master

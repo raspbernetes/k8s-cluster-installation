@@ -1,26 +1,26 @@
 ---
-- name: Update RPI firmware
-  command: rpi-update
-  environment:
-    SKIP_WARNING: 1
-  register: rpi_update
-  become: true
+# - name: Update RPI firmware
+#   command: rpi-update
+#   environment:
+#     SKIP_WARNING: 1
+#   register: rpi_update
+#   become: true
 
-- name: 'Update hostnames'
-  hostname:
-    name: '{{ inventory_hostname }}'
+# - name: 'Update hostnames'
+#   hostname:
+#     name: '{{ inventory_hostname }}'
 
-- name: Ensure hostname is in /etc/hosts
-  lineinfile:
-    dest: /etc/hosts
-    regexp: "^{{ ansible_default_ipv4.address }}.+$"
-    line: "{{ ansible_default_ipv4.address }} {{ ansible_hostname }}"
-    state: present
+# - name: Ensure hostname is in /etc/hosts
+#   lineinfile:
+#     dest: /etc/hosts
+#     regexp: "^{{ ansible_default_ipv4.address }}.+$"
+#     line: "{{ ansible_default_ipv4.address }} {{ ansible_hostname }}"
+#     state: present
 
-- name: set timezone to UTC
-  timezone:
-    name: UTC
-  register: timezone
+# - name: set timezone to UTC
+#   timezone:
+#     name: UTC
+#   register: timezone
 
 - name: apt-get upgrade
   apt:
@@ -57,6 +57,36 @@
   retries: 5
   until: apt_install_common is success
 
+# Allowed to fail inorder to be idempotent
+- name: Stop log2ram service
+  systemd:
+    name: log2ram
+    state: stopped
+  ignore_errors: true
+
+- name: Cloning log2ram from GitHub
+  git:
+    repo: https://github.com/azlux/log2ram.git
+    dest: /opt/log2ram
+    version: "{{ log2ram_version }}"
+
+- name: Changing perms of "/opt/log2ram/install.sh"
+  file:
+    dest: /opt/log2ram/install.sh
+    mode: a+x
+
+- name: Install log2ram
+  command: /bin/sh ./install.sh
+  args:
+    chdir: "/opt/log2ram"
+  register: log2ram
+  changed_when: '"Reboot to activate log2ram" in log2ram.stdout'
+
+- name: Copy log2ram.conf
+  template:
+    src: log2ram.conf.j2
+    dest: /etc/log2ram.conf
+
 - name: Download docker install script
   get_url:
     url: https://get.docker.com
@@ -74,8 +104,8 @@
 - name: Set Docker to auto-start
   service: name=docker enabled=true state=started
 
-- name: Disable swap
-  shell: dphys-swapfile swapoff && dphys-swapfile uninstall && update-rc.d dphys-swapfile remove && systemctl disable dphys-swapfile.service
+# - name: Disable swap
+#   shell: dphys-swapfile swapoff && dphys-swapfile uninstall && update-rc.d dphys-swapfile remove && systemctl disable dphys-swapfile.service
 
 - name: Add Google Cloud Repo Key
   shell: curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key add -
@@ -96,7 +126,7 @@
       - kubelet
       - kubeadm
       - kubectl
-      - kubectx
+      # - kubectx - remove temporarily
     install_recommends: false
     update_cache: true
     force_apt_get: true
@@ -106,9 +136,9 @@
 
 - name: Enable required cgroup features
   lineinfile:
-    path: /boot/cmdline.txt
+    path: /boot/firmware/nobtcmd.txt
     backrefs: true
-    regexp: '^(.*rootwait)$'
+    regexp: '^(.*fixrtc)$'
     line: '\1 cgroup_enable=cpuset cgroup_memory=1 cgroup_enable=memory'
     state: present
 
