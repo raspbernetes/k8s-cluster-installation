@@ -9,10 +9,16 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v1
 
-      - name: Lint - Scripts
-        uses: 'bewuethr/shellcheck-action@v1'
+      # - name: Lint - Scripts
+      #   uses: 'bewuethr/shellcheck-action@v1'
 
       - name: Lint Ansible
         uses: ansible/ansible-lint-action@master
         with:
           targets: './ansible'
+
+      - name: Validate Cloud-Config
+        run: |
+          sudo apt-get update -y
+          sudo apt-get install -y cloud-init
+          cloud-init devel schema --config-file ./setup/cloud-config.yml
