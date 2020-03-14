@@ -1,33 +1,11 @@
 #cloud-config
 
-#
-# @CHANGEME - Update hostname
-#
 hostname: k8s-master
-fqdn: k8s-master
 manage_etc_hosts: true
 
-#
-# @CHANGEME - Update locale and timezone
-#
 locale: 'en_AU.UTF-8'
 timezone: 'Australia/Melbourne'
 
-apt_preserve_sources_list: true
-apt_update: true
-apt_upgrade: true
-
-packages:
-  - apt-transport-https
-  - ca-certificates
-  - software-properties-common
-  - python3
-  - python3-pip
-  - gnupg2
-
-#
-# @CHANGEME - Update user config
-#
 users:
   - name: pi
     primary-group: users
@@ -45,9 +23,6 @@ users:
     ssh_authorized_keys:
       - 'ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQCoXuKrmgKM7kHY6dirVdL+C/ofLFZ4kJHCoBb0KkNY8/DPLagc7gSDKidUwgTImsjtJ0u3W4KI+APsbQA8CkcGGnCRZRJObk2Bq8j5DJPizHYB8sReD27V4VB+0r7rEsTMhVJcd/+6QOCLxGAFWATjs6dDy0PRO/0lB3mhtpYApcnsQtFF/Vk7XteUzVTj1UH5cQjVFTPiVui4AaLKgCecDANpSuYBXV5UZxgthR3RlVXCR//mCwQsLBGLPlSdgG0E6EZ8se9KJ3PKOuXLs23uI7UYpzVftNpaOYHldKjHTe0KcIxbTLHdpLTIaQqdEOpcsgudZ9wKLci2cC/RpX2hxB1vwX6sCi0kfp/e172anClPH5cN5jyAkH3in2mM1Xw0H3MLThncpg6qGFvEBDLl+xowFkdNEA/0jyUwCAabKaYfoM79w4e+UPH12C39rJ+Ew7eVPj6LDD9B0Aqrbozd/I+WQMqk7tFtK7w3gFDw6JDGPyTv0Vca4SrMDpR60G9ybkB1hMV5h1J4Y/WOb1YYGamLF9SxnCuKFfmzDVLfK4jI8a0t3EWJaSYskIIIqQZvE9ynU1ssXrIrvQmaIMTfsUCBqBbnmaeqpF4MZf4YTGi68/fYXKt6b8goRNZ7dWagET6gGHM6HoYaFtCWEKbe/axO7tVjuKQWZjgmV4T81w== dreamappsoftware@gmail.com'
 
-#
-# @CHANGEME - Update network config
-#
 write_files:
   - path: /etc/netplan/50-cloud-init.yaml
     permissions: '0644'

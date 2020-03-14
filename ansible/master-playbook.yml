@@ -1,0 +1,15 @@
+---
+- hosts: all
+  become: true
+  gather_facts: true
+
+  vars_files:
+    - ./vars.yml
+
+  tasks:
+    - include_role:
+        name: common
+      tags: ['common']
+    - include_role:
+        name: master
+      tags: ['master']

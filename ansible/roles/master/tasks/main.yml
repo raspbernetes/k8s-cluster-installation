@@ -46,20 +46,7 @@
   become: true
   changed_when: false
   shell: kubeadm token create --print-join-command
-  register: k8s_token
-
-- name: Dump k8s join token into a file
-  copy:
-    content: '{{ k8s_token.stdout }}'
-    owner: root
-    group: root
-    mode: '0755'
-    dest: k8s-join-token
-    backup: yes
+  register: k8s_join_command
 
 - name: Copy Kubernetes join token locally
-  become: true
-  fetch:
-    dest: output/k8s-join-token
-    flat: yes
-    src: k8s-token
+  local_action: copy content="{{ k8s_join_command.stdout_lines[0] }}" dest="output/k8s-join-command"
