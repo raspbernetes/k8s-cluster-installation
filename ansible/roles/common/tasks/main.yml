@@ -1,0 +1,239 @@
+---
+- name: apt-get upgrade
+  apt:
+    upgrade: full
+    force_apt_get: true
+  register: apt_upgrade
+  retries: 5
+  until: apt_upgrade is success
+
+- name: apt-get update
+  apt:
+    update_cache: yes
+    cache_valid_time: 3600
+    autoclean: yes
+    autoremove: yes
+  register: apt_update
+  retries: 5
+  until: apt_update is success
+
+- name: Install Common Packages
+  apt:
+    name:
+      - apt-transport-https
+      - ca-certificates
+      - software-properties-common
+      - zip
+      - jq
+      - git
+      - vim
+      - curl
+    install_recommends: false
+    update_cache: true
+    force_apt_get: true
+  register: apt_install_common
+  retries: 5
+  until: apt_install_common is success
+
+# Instructions: https://github.com/azlux/log2ram#install
+- name: Stop log2ram service
+  systemd:
+    name: log2ram
+    state: stopped
+  ignore_errors: true
+
+- name: Cloning log2ram from GitHub
+  git:
+    repo: https://github.com/azlux/log2ram.git
+    dest: /opt/log2ram
+    version: "{{ log2ram_version }}"
+
+- name: Changing perms of "/opt/log2ram/install.sh"
+  file:
+    dest: /opt/log2ram/install.sh
+    mode: a+x
+
+- name: Install log2ram
+  command: /bin/sh ./install.sh
+  args:
+    chdir: "/opt/log2ram"
+  register: log2ram
+  changed_when: '"Reboot to activate log2ram" in log2ram.stdout'
+
+- name: Copy log2ram.conf
+  template:
+    src: log2ram.conf.j2
+    dest: /etc/log2ram.conf
+
+# Instructions: https://kubernetes.io/docs/setup/production-environment/container-runtimes/#docker
+# TODO: https://github.com/raspbernetes/k8s-cluster-installation/issues/2
+- name: Add an apt signing key for Docker
+  apt_key:
+    url: https://download.docker.com/linux/ubuntu/gpg
+    state: present
+
+- name: Add apt repository for stable version
+  apt_repository:
+    repo: deb [arch=arm64] https://download.docker.com/linux/ubuntu xenial stable
+    state: present
+
+- name: Install docker and its dependecies
+  apt: 
+    name: "{{ packages }}"
+    state: present
+    update_cache: yes
+  vars:
+    packages:
+    - docker-ce 
+    - docker-ce-cli 
+    - containerd.io
+
+- name: Remove swapfile from /etc/fstab
+  mount:
+    name: "{{ item }}"
+    fstype: swap
+    state: absent
+  with_items:
+    - swap
+    - none
+
+- name: Disable swap
+  command: swapoff -a
+  when: ansible_swaptotal_mb > 0
+
+- name: Copy Docker Daemon Config
+  copy:
+    src: "{{ item }}"
+    dest: "/etc/docker/daemon.json"
+    owner: root
+    group: root
+    mode: 0644
+  with_items:
+    - daemon.json
+
+- name: Create a Docker service
+  file:
+    path: /etc/systemd/system/docker.service.d
+    state: directory
+    mode: '0755'
+
+- name: Reload service daemon-reload
+  systemd:
+    name: daemon-reload
+    daemon_reload: yes
+
+- name: Restart service Docker
+  systemd:
+    name: docker
+    state: restarted
+
+# Instructions: https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/install-kubeadm/#installing-kubeadm-kubelet-and-kubectl
+- name: Add an apt signing key for Kubernetes
+  apt_key:
+    url: https://packages.cloud.google.com/apt/doc/apt-key.gpg
+    state: present
+
+- name: Adding apt repository for Kubernetes
+  apt_repository:
+    repo: deb https://apt.kubernetes.io/ kubernetes-xenial main
+    state: present
+  register: kubernetes_repository
+  retries: 5
+  until: kubernetes_repository is success
+
+- name: Install Kubernetes binaries
+  apt: 
+    name: "{{ packages }}"
+    state: present
+    update_cache: yes
+  register: apt_install_kube
+  retries: 5
+  until: apt_install_kube is success
+  vars:
+    packages:
+      - kubelet
+      - kubeadm 
+      - kubectl
+
+# Instructions: https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/install-kubeadm/#configure-cgroup-driver-used-by-kubelet-on-control-plane-node
+- name: Enable required cgroup features
+  lineinfile:
+    path: /boot/firmware/nobtcmd.txt
+    backrefs: true
+    regexp: '^(.*fixrtc)$'
+    line: '\1 cgroup_enable=cpuset cgroup_memory=1 cgroup_enable=memory'
+    state: present
+  register: reboot_task
+
+# Instructions: https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/install-kubeadm/#ensure-iptables-tooling-does-not-use-the-nftables-backend
+- name: Install IPTable Packages
+  apt:
+    name:
+      - ebtables
+      - arptables
+    install_recommends: false
+    update_cache: true
+    force_apt_get: true
+  register: apt_install_iptabls
+  retries: 5
+  until: apt_install_iptabls is success
+
+- name: Use arptables-legacy
+  alternatives:
+    name: arptables
+    path: /usr/sbin/arptables-legacy
+  failed_when: false
+
+- name: Use ebtables-legacy
+  alternatives:
+    name: ebtables
+    path: /usr/sbin/ebtables-legacy
+  failed_when: false
+
+- name: Use iptables-legacy
+  alternatives:
+    name: iptables
+    path: /usr/sbin/iptables-legacy
+  failed_when: false
+
+- name: Use ip6tables-legacy
+  alternatives:
+    name: ip6tables
+    path: /usr/sbin/ip6tables-legacy
+  failed_when: false
+
+# Set /proc/sys/net/bridge/bridge-nf-call-iptables to 1 by running
+# sysctl net.bridge.bridge-nf-call-iptables=1 to pass bridged IPv4 traffic to iptables’ chains.
+# This is a requirement for some CNI plugins to work.
+- name: Update bridged IPv4 traffic to iptables' chains
+  sysctl:
+    name: net.bridge.bridge-nf-call-iptables
+    value: '1'
+    state: present
+
+- name: Update bridged IPv4 traffic to ip6tables' chains
+  sysctl:
+    name: net.bridge.bridge-nf-call-ip6tables
+    value: '1'
+    state: present
+
+- name: Update bridged IPv4 traffic to arptables' chains
+  sysctl:
+    name: net.bridge.bridge-nf-call-arptables
+    value: '1'
+    state: present
+
+- name: Rebooting hosts
+  reboot:
+    msg: 'Pis are being rebooted'
+    reboot_timeout: 120
+  ignore_errors: true
+  when: reboot_task is changed
+
+- name: Wait for the reboot to complete if there was a change.
+  wait_for_connection:
+    connect_timeout: 60
+    sleep: 5
+    delay: 5
+    timeout: 300
+  when: reboot_task is changed

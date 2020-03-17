@@ -1,0 +1,70 @@
+---
+- name: Reset Kubernetes Master
+  become: true
+  shell: kubeadm reset -f
+  register: kubeadm_reset
+
+- name: Initialize Master
+  become: true
+  command: kubeadm init
+  register: kubeadm_init
+
+- name: Create Kubernetes config directory
+  become: true
+  file:
+    path: /root/.kube/
+    state: directory
+    owner: root
+    group: root
+    mode: '0755'
+
+- name: Copy admin.conf to config directory
+  become: true
+  copy:
+    src: /etc/kubernetes/admin.conf
+    dest: /root/.kube/config
+    owner: root
+    group: root
+    mode: '0755'
+    remote_src: yes
+    backup: yes
+  when: kubeadm_init
+
+- name: Copy Kubernetes config locally
+  become: true
+  fetch:
+    dest: output/k8s-config.yaml
+    flat: yes
+    src: /etc/kubernetes/admin.conf
+
+- name: Apply Weave CNI
+  become: true
+  shell: kubectl apply -f "https://cloud.weave.works/k8s/net?k8s-version=$(kubectl version | base64 | tr -d '\n')"
+  register: weave
+
+- name: Generate k8s join token
+  become: true
+  changed_when: false
+  shell: kubeadm token create --print-join-command
+  register: k8s_join_command
+
+- name: Dump k8s join token into a file
+  copy:
+    content: '{{ k8s_join_command.stdout }}'
+    owner: root
+    group: root
+    mode: '0755'
+    dest: k8s-join-command
+    backup: yes
+
+- name: Copy Kubernetes join token locally
+  become: true
+  fetch:
+    dest: output/k8s-join-command
+    flat: yes
+    src: k8s-join-command
+# TODO: investigate error
+# Failed to get information on remote file (output/k8s-join-command): sudo: a password is required
+# - name: Copy Kubernetes join token locally
+#   become: true
+#   local_action: copy content="{{ k8s_join_command.stdout_lines[0] }}" dest="output/k8s-join-command"
