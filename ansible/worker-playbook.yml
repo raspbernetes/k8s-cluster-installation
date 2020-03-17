@@ -1,5 +1,5 @@
 ---
-- hosts: all
+- hosts: worker
   become: true
   gather_facts: true
 
@@ -13,8 +13,3 @@
     - include_role:
         name: worker
       tags: ['worker']
-    # - name: 'rebooting hosts'
-    #   reboot:
-    #     msg: 'Pis are being rebooted'
-    #     reboot_timeout: 60
-    #   ignore_errors: true

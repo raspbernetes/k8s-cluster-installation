@@ -87,8 +87,6 @@
     - docker-ce 
     - docker-ce-cli 
     - containerd.io
-  notify:
-    - docker status
 
 - name: Remove swapfile from /etc/fstab
   mount:
@@ -139,7 +137,9 @@
   apt_repository:
     repo: deb https://apt.kubernetes.io/ kubernetes-xenial main
     state: present
-    filename: kubernetes.list
+  register: kubernetes_repository
+  retries: 5
+  until: kubernetes_repository is success
 
 - name: Install Kubernetes binaries
   apt: 
