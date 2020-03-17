@@ -151,7 +151,7 @@
   until: apt_install_kube is success
   vars:
     packages:
-      - kubelet 
+      - kubelet
       - kubeadm 
       - kubectl
 
