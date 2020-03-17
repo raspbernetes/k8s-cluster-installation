@@ -18,6 +18,7 @@ jobs:
         uses: ansible/ansible-lint-action@master
         with:
           targets: './ansible'
+          args: '--exclude ./ansible/handlers'
 
       - name: Validate Cloud-Config
         run: |
