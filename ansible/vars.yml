@@ -16,3 +16,11 @@ cni: weave
 
 # Configure Haproxy
 ha_proxy_port: 8443
+
+# VIP to be used with keepalived
+master_virtual_ip: 192.168.1.100
+
+# Network interface
+# Options: "eth0" or "wlan0"
+# Default: "eth0"
+network_interface: eth0
