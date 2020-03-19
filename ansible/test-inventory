@@ -1,0 +1,7 @@
+[masters]
+k8s-worker-01 hostname=k8s-worker-03 ansible_host=192.168.1.190
+k8s-worker-03 hostname=k8s-worker-03 ansible_host=192.168.1.113
+
+[test]
+k8s-worker-02 hostname=k8s-worker-03 ansible_host=192.168.1.113
+k8s-worker-04 hostname=k8s-worker-03 ansible_host=192.168.1.113

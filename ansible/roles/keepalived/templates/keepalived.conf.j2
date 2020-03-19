@@ -8,6 +8,6 @@ vrrp_instance VI_1 {
         auth_pass kubernetes
     }
     virtual_ipaddress {
-        {{ master_virtual_ip }}
+        {{ load_balancer_dns }}
     }
 }

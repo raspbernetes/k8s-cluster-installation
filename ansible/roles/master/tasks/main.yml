@@ -6,7 +6,7 @@
 
 - name: Initialize Master
   become: true
-  command: kubeadm init
+  command: kubeadm init --control-plane-endpoint "{{ load_balancer_dns }}:{{ load_balancer_port }}" --upload-certs
   register: kubeadm_init
 
 - name: Create Kubernetes config directory
