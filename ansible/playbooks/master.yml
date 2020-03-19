@@ -1,0 +1,9 @@
+---
+- hosts: master
+  become: true
+
+  vars_files:
+    - ../vars.yml
+
+  roles:
+    - master
