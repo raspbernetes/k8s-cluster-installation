@@ -1,6 +1,7 @@
 # Ubuntu
 
-> All these commands are run from your computer, not the RPi.
+The following instructions are to flash your SD card with the desired OS and configuration specified in the cloud-init config [file](./cloud-config.yml).
+> See http://cloudinit.readthedocs.io/en/0.7.9/ for more details.
 
 ## Downloads the Flash tool
 
@@ -10,8 +11,6 @@ sudo chmod +x /usr/local/bin/flash
 ```
 
 ## Download and extract the image
-
-> Rasbian Lite
 
 ```bash
 curl -L "http://cdimage.ubuntu.com/releases/eoan/release/ubuntu-19.10.1-preinstalled-server-arm64+raspi3.img.xz" -o ~/Downloads/ubuntu-19.10.1-preinstalled-server-arm64+raspi3.img.xz
@@ -28,4 +27,4 @@ flash \
 
 ## Boot
 
-Place the SD Card in your RPi and give the system 5 minutes to boot before trying to SSH.
+Place the SD Card in your RPi and give the system approx ~10 minutes to boot before trying to SSH.
