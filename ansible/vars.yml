@@ -4,7 +4,12 @@ ansible_user: pi
 log2ram_version: v1.4
 log2ram_size: 128M
 
-# Kubernetes binary versions
+# Configure Kubernetes binary versions
 kubernetes_version: 1.9.6
 kubelet_version: 1.9.6-0
 kubeadm_version: 1.10.1
+
+# Configure Kubernetes CNI
+# Options: "weave" or "flannel"
+# Default: "weave"
+cni: weave
