@@ -1,5 +1,5 @@
 ---
-- hosts: worker
+- hosts: workers
   become: true
 
   vars_files:

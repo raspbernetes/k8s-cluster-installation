@@ -13,6 +13,6 @@ backend back-api-proxy
     mode tcp
     option tcp-check
     balance roundrobin
-{% for item in groups['test'] %}
+{% for item in groups['masters'] %}
     server {{ item }} {{hostvars[item]['ansible_host']}}:6443 check
 {% endfor %}

@@ -13,3 +13,6 @@ kubeadm_version: 1.10.1
 # Options: "weave" or "flannel"
 # Default: "weave"
 cni: weave
+
+# Configure Haproxy
+ha_proxy_port: 8443
