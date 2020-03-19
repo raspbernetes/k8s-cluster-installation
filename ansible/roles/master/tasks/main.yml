@@ -58,8 +58,3 @@
     dest: output/k8s-join-command
     flat: yes
     src: k8s-join-command
-# TODO: investigate error
-# Failed to get information on remote file (output/k8s-join-command): sudo: a password is required
-# - name: Copy Kubernetes join token locally
-#   become: true
-#   local_action: copy content="{{ k8s_join_command.stdout_lines[0] }}" dest="output/k8s-join-command"
