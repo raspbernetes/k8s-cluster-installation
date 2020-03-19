@@ -11,7 +11,7 @@
 
 - name: generate and copy HAProxy config
   template:
-    src: haproxyConfig.j2
+    src: haproxy.j2
     dest: /etc/haproxy/haproxy.cfg
   register: haproxy_config
 
