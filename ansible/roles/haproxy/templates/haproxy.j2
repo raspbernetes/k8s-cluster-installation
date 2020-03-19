@@ -1,0 +1,18 @@
+####################
+# api-proxy config #
+####################
+
+frontend front-api-proxy
+    bind 0.0.0.0:{{ha_proxy_port}}
+    bind 127.0.0.1:{{ha_proxy_port}}
+    mode tcp
+    option tcplog
+    default_backend back-api-proxy
+
+backend back-api-proxy
+    mode tcp
+    option tcp-check
+    balance roundrobin
+{% for item in groups['test'] %}
+    server {{ item }} {{hostvars[item]['ansible_host']}}:6443 check
+{% endfor %}
