@@ -1,0 +1,5 @@
+---
+- name: 'Setup {{ cni }} CNI'
+  become: true
+  include: '{{ cni }}.yml'
+  register: '{{ cni }}'

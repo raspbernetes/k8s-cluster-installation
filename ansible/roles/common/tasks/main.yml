@@ -46,7 +46,7 @@
   git:
     repo: https://github.com/azlux/log2ram.git
     dest: /opt/log2ram
-    version: "{{ log2ram_version }}"
+    version: '{{ log2ram_version }}'
 
 - name: Changing perms of "/opt/log2ram/install.sh"
   file:
@@ -56,7 +56,7 @@
 - name: Install log2ram
   command: /bin/sh ./install.sh
   args:
-    chdir: "/opt/log2ram"
+    chdir: '/opt/log2ram'
   register: log2ram
   changed_when: '"Reboot to activate log2ram" in log2ram.stdout'
 
@@ -78,19 +78,19 @@
     state: present
 
 - name: Install docker and its dependecies
-  apt: 
-    name: "{{ packages }}"
+  apt:
+    name: '{{ packages }}'
     state: present
     update_cache: yes
   vars:
     packages:
-    - docker-ce 
-    - docker-ce-cli 
-    - containerd.io
+      - docker-ce
+      - docker-ce-cli
+      - containerd.io
 
 - name: Remove swapfile from /etc/fstab
   mount:
-    name: "{{ item }}"
+    name: '{{ item }}'
     fstype: swap
     state: absent
   with_items:
@@ -103,8 +103,8 @@
 
 - name: Copy Docker Daemon Config
   copy:
-    src: "{{ item }}"
-    dest: "/etc/docker/daemon.json"
+    src: '{{ item }}'
+    dest: '/etc/docker/daemon.json'
     owner: root
     group: root
     mode: 0644
@@ -138,12 +138,12 @@
     repo: deb https://apt.kubernetes.io/ kubernetes-xenial main
     state: present
   register: kubernetes_repository
-  retries: 5
+  retries: 10
   until: kubernetes_repository is success
 
 - name: Install Kubernetes binaries
-  apt: 
-    name: "{{ packages }}"
+  apt:
+    name: '{{ packages }}'
     state: present
     update_cache: yes
   register: apt_install_kube
@@ -152,7 +152,7 @@
   vars:
     packages:
       - kubelet
-      - kubeadm 
+      - kubeadm
       - kubectl
 
 # Instructions: https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/install-kubeadm/#configure-cgroup-driver-used-by-kubelet-on-control-plane-node
