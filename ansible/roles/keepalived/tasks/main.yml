@@ -1,0 +1,23 @@
+---
+- name: Install Keepalived
+  apt:
+    name:
+      - keepalived
+    install_recommends: false
+    update_cache: true
+    force_apt_get: true
+  register: apt_install_keepalived
+  retries: 5
+  until: apt_install_keepalived is success
+
+- name: Generate Keepalived config
+  template:
+    src: keepalived.conf.j2
+    dest: /etc/keepalived/keepalived.conf
+  register: keepalived_config
+
+- name: Reload service Keepalived
+  systemd:
+    name: keepalived
+    daemon_reload: yes
+    enabled: yes

@@ -1,0 +1,9 @@
+---
+- hosts: workers
+  become: true
+
+  vars_files:
+    - ../vars.yml
+
+  roles:
+    - worker

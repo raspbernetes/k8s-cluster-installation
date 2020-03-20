@@ -1,6 +1,6 @@
 #cloud-config
 
-hostname: k8s-worker
+hostname: k8s-master-01
 manage_etc_hosts: true
 
 locale: 'en_AU.UTF-8'
