@@ -6,7 +6,7 @@
 
 - name: Initialize Master
   become: true
-  command: kubeadm init
+  command: kubeadm init --control-plane-endpoint "{{ load_balancer_dns }}:{{ load_balancer_port }}" --upload-certs
   register: kubeadm_init
 
 - name: Create Kubernetes config directory
@@ -37,11 +37,6 @@
     flat: yes
     src: /etc/kubernetes/admin.conf
 
-- name: Apply Weave CNI
-  become: true
-  shell: kubectl apply -f "https://cloud.weave.works/k8s/net?k8s-version=$(kubectl version | base64 | tr -d '\n')"
-  register: weave
-
 - name: Generate k8s join token
   become: true
   changed_when: false
@@ -63,8 +58,3 @@
     dest: output/k8s-join-command
     flat: yes
     src: k8s-join-command
-# TODO: investigate error
-# Failed to get information on remote file (output/k8s-join-command): sudo: a password is required
-# - name: Copy Kubernetes join token locally
-#   become: true
-#   local_action: copy content="{{ k8s_join_command.stdout_lines[0] }}" dest="output/k8s-join-command"

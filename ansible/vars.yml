@@ -4,24 +4,20 @@ ansible_user: pi
 log2ram_version: v1.4
 log2ram_size: 128M
 
-# Kubernetes binary versions
+# Configure Kubernetes binary versions
 kubernetes_version: 1.9.6
 kubelet_version: 1.9.6-0
 kubeadm_version: 1.10.1
 
-# optional vip to be used with keepalived
-virtual_ip: 10.54.235.61
+load_balancer_dns: 192.168.1.100
+load_balancer_port: 8443
 
-# change to your interface
+# Configure Kubernetes CNI
+# Options: "weave" or "flannel"
+# Default: "weave"
+cni: weave
+
+# Network interface
+# Options: "eth0" or "wlan0"
+# Default: "eth0"
 network_interface: eth0
-smoke_test_node_port: 31111
-kubelet_workers_eviction_hard: memory.available<10%
-kubelet_masters_eviction_hard: memory.available<10%
-etcd_version: v3.1.12
-haproxy_stats_port: 9000
-ha_proxy_port: 5446
-
-# haproxy port for etcd
-etcd_proxy_port: 3379
-proxy_port: 6443
-image_pull_type: always

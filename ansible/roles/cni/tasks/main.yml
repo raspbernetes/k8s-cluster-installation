@@ -1,0 +1,6 @@
+---
+# Instructions: https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/create-cluster-kubeadm/#pod-network
+- name: 'Setup {{ cni }} CNI'
+  become: true
+  include: '{{ cni }}.yml'
+  register: '{{ cni }}'
