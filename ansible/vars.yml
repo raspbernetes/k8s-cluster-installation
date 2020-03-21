@@ -17,6 +17,12 @@ load_balancer_port: 8443
 # Default: "weave"
 cni: weave
 
+# Configure Kubernetes CRI
+# Options: "containerd" or "Docker"
+# Default: "containerd" for now
+cri: containerd
+
+
 # Network interface
 # Options: "eth0" or "wlan0"
 # Default: "eth0"

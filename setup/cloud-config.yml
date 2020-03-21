@@ -1,6 +1,6 @@
 #cloud-config
 
-hostname: k8s-master-01
+hostname: k8s-worker
 manage_etc_hosts: true
 
 locale: 'en_AU.UTF-8'
@@ -25,7 +25,7 @@ users:
     lock_passwd: true
     ssh_pwauth: false
     ssh_authorized_keys:
-      - 'ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDFgxTVSx99UCkFdOHnGI6R7W7UMBwsjH8uBRMfx38DKGbCOnATW6jqAvxHkB32MQLE70lGOymsgkgahnuT2NmrIRBiHWPp8vGkQzUFWx54VyLN0zo+PMpy590iUW+0uHzcFfbywvHv1DCPnA+34oXA45iiOj1K5QbzEMNGOJuuaJsFszOr0WvnlNfvYw8lA5Be2AddkC2WMz4ZwpF9Z8r7O8fBwENxETlGej/VMb4Q2RMDrg05096QsszJijYNysmVRxqcACuxbphvR53eW8dvzO69Ga4qXxHGxINzgxX4sy7hxEl4A4DXEZhvgEiVMughQjrr3sfS6JufWE+V4tsL siyuanhu@SIYUANs-MBP'
+      - 'ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQCoXuKrmgKM7kHY6dirVdL+C/ofLFZ4kJHCoBb0KkNY8/DPLagc7gSDKidUwgTImsjtJ0u3W4KI+APsbQA8CkcGGnCRZRJObk2Bq8j5DJPizHYB8sReD27V4VB+0r7rEsTMhVJcd/+6QOCLxGAFWATjs6dDy0PRO/0lB3mhtpYApcnsQtFF/Vk7XteUzVTj1UH5cQjVFTPiVui4AaLKgCecDANpSuYBXV5UZxgthR3RlVXCR//mCwQsLBGLPlSdgG0E6EZ8se9KJ3PKOuXLs23uI7UYpzVftNpaOYHldKjHTe0KcIxbTLHdpLTIaQqdEOpcsgudZ9wKLci2cC/RpX2hxB1vwX6sCi0kfp/e172anClPH5cN5jyAkH3in2mM1Xw0H3MLThncpg6qGFvEBDLl+xowFkdNEA/0jyUwCAabKaYfoM79w4e+UPH12C39rJ+Ew7eVPj6LDD9B0Aqrbozd/I+WQMqk7tFtK7w3gFDw6JDGPyTv0Vca4SrMDpR60G9ybkB1hMV5h1J4Y/WOb1YYGamLF9SxnCuKFfmzDVLfK4jI8a0t3EWJaSYskIIIqQZvE9ynU1ssXrIrvQmaIMTfsUCBqBbnmaeqpF4MZf4YTGi68/fYXKt6b8goRNZ7dWagET6gGHM6HoYaFtCWEKbe/axO7tVjuKQWZjgmV4T81w== dreamappsoftware@gmail.com'
 
 write_files:
   - path: /etc/netplan/50-cloud-init.yaml
@@ -36,8 +36,8 @@ write_files:
         ethernets:
           eth0:
             addresses:
-              - 192.168.8.150/24
-            gateway4: 192.168.8.1
+              - 192.168.1.151/24
+            gateway4: 192.168.1.1
             nameservers:
               addresses:
                 - 1.1.1.1

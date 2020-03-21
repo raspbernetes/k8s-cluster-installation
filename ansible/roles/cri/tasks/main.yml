@@ -1,0 +1,31 @@
+# Instructions: https://kubernetes.io/docs/setup/production-environment/container-runtimes/#docker
+# TODO: enable other CRI options(Docker etc)
+- name: Add Docker’s official GPG key
+  apt_key:
+    url: https://download.docker.com/linux/ubuntu/gpg
+    state: present
+
+- name: Add apt repository for stable version
+  apt_repository:
+    repo: deb [arch=arm64] https://download.docker.com/linux/ubuntu xenial stable
+    state: present
+
+- name: Install containerd
+  apt: 
+    name: "{{ packages }}"
+    state: present
+    update_cache: yes
+  vars:
+    packages:
+    - containerd.io
+
+- name: Configure containered
+  file:
+    path: /etc/containerd/config.toml
+    state: directory
+    mode: '0755'
+
+- name: Restart containered
+  systemd:
+    name: docker
+    state: containered
