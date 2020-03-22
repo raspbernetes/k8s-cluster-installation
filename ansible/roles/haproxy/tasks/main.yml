@@ -1,0 +1,23 @@
+---
+- name: Install HAproxy
+  apt:
+    name:
+      - haproxy
+    install_recommends: false
+    update_cache: true
+    force_apt_get: true
+  register: apt_install_haproxy
+  retries: 5
+  until: apt_install_haproxy is success
+
+- name: Generate HAProxy config
+  template:
+    src: haproxy.cfg.j2
+    dest: /etc/haproxy/haproxy.cfg
+  register: haproxy_config
+
+- name: Reload service HAProxy
+  systemd:
+    name: haproxy
+    daemon_reload: yes
+    enabled: yes

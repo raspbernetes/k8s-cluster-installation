@@ -9,7 +9,15 @@ kubernetes_version: 1.9.6
 kubelet_version: 1.9.6-0
 kubeadm_version: 1.10.1
 
+load_balancer_dns: 192.168.1.100
+load_balancer_port: 8443
+
 # Configure Kubernetes CNI
 # Options: "weave" or "flannel"
 # Default: "weave"
 cni: weave
+
+# Network interface
+# Options: "eth0" or "wlan0"
+# Default: "eth0"
+network_interface: eth0

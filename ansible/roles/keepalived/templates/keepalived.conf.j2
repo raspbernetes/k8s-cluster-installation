@@ -1,0 +1,13 @@
+vrrp_instance VI_1 {
+    interface {{ network_interface }}
+    virtual_router_id 1
+    priority {{ '102' if hostvars[groups['masters'][0]] else '100' }}
+    advert_int 2
+    authentication {
+        auth_type AH
+        auth_pass kubernetes
+    }
+    virtual_ipaddress {
+        {{ load_balancer_dns }}
+    }
+}
