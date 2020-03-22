@@ -1,5 +1,5 @@
 [master]
-k8s-master hostname=k8s-master ansible_host=192.168.8.150
+k8s-master hostname=k8s-master ansible_host=192.168.1.150
 
 [worker]
 k8s-worker hostname=k8s-worker ansible_host=192.168.1.151
