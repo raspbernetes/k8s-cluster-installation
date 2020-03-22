@@ -1,5 +1,10 @@
 # Instructions: https://kubernetes.io/docs/setup/production-environment/container-runtimes/#containerd
 ---
+- name: Copy containerd.conf
+  template:
+    src: containerd.conf.j2
+    dest: /etc/modules-load.d/containerd.conf
+
 - name: Load overlay
   modprobe:
     name: overlay
@@ -17,14 +22,14 @@
     state: present
     sysctl_file: /etc/sysctl.d/99-kubernetes-cri.conf
 
-- name: "Set ip4_forward"
+- name: Set ip4_forward
   sysctl:
     name: net.ipv4.ip_forward
     value: 1
     state: present
     sysctl_file: /etc/sysctl.d/99-kubernetes-cri.conf
 
-- name: "Set ip6_forward"
+- name: Set ip6_forward
   sysctl:
     name: net.bridge.bridge-nf-call-ip6tables
     value: 1  
