@@ -1,5 +1,5 @@
 ---
-- hosts: all
+- hosts: masters
   become: true
 
   vars_files:
