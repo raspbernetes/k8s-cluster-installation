@@ -156,13 +156,19 @@
       - kubectl
 
 # Instructions: https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/install-kubeadm/#configure-cgroup-driver-used-by-kubelet-on-control-plane-node
-- name: Create blank file for kubelet
+- name: Create a firmware folder if it does not exist
   file:
-    path: /etc/default/kubelet
+    path: /boot/firmware
+    state: directory
+    mode: '0755'
+
+- name: Create the config files if they do not exist
+  file:
+    path: "{{ item }}"
     state: touch
-    owner: root
-    group: root
-    mode: 0644
+  with_items:
+    - /boot/firmware/nobtcmd.txt
+    - /boot/firmware/syscfg.txt
 
 - name: Enable required cgroup features
   lineinfile:
