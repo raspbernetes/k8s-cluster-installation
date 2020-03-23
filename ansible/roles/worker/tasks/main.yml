@@ -1,7 +1,7 @@
 ---
 - name: register k8s token
   changed_when: false
-  local_action: command cat output/k8s-join-command
+  local_action: command cat output/k8s-worker-join-command
   register: k8s_join_token
   run_once: yes
   vars:
