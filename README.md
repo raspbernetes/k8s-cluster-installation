@@ -1,99 +1,27 @@
 # Raspbernetes
 
-A guide to setup Kubernetes running on a Raspberry Pi cluster
+This is an open source project designed to bootstrap a running Kubernetes cluster on Raspberry Pi's.
 
-## Contents
+## Introduction
 
-* [Prerequisites](#Prerequisites)
-* [Getting Started](#Getting-Started)
-  * [Master Node(s)](#Master-Node(s))
-  * [Worker Node(s)](#Worker-Node(s))
-* [Contributing](#Contributing)
-* [Authors](#Authors)
-* [License](#License)
-* [Acknowledgments](#Acknowledgments)
+This guide will walk through the steps required to bootstrap a running Kubernetes cluster with a highly available topology. You will learn and configure the CRI and CNI of your choice (assuming it is supported) and understand how to setup load balancing between your multi master cluster.
+
+> Note: If you wish to use Raspbian Lite please use the following [guide](raspbian/README.md).
 
 ## Prerequisites
 
-Prior to getting started you must have completed the following setup instructions:
+Prior to getting started you will need to have several things done first. Assuming you already have the [hardware](#Hardware) available, you will need to do the following:
 
-The SD card must be flashed with Raspbian Lite. If this has not been completed the official guide can be found [HERE](https://www.raspberrypi.org/documentation/installation/installing-images/README.md).
-
-Note: To setup SSH to your Raspberry Pi, you simply need a empty `ssh` file in the boot directory.
-
-You must also have the following dependencies installed on your machine:
-
-* make
-* sshpass
-
-An internet connection is also required for configuring the Raspberry Pi's.
+1. Flash OS onto SD card. Guide [Here](setup/README.md)
+2. Install Ansible. Download [Here](https://docs.ansible.com/ansible/latest/installation_guide/intro_installation.html)
+3. SSH connectivity to each node. (Step 1 requires you setup SSH keys)
 
 ## Getting Started
 
-When configuring a Raspberry Pi there are two options for configuring it as a node in your Kubernetes cluster, it can either be a `master` or `worker`.
+## Architecture
 
-At this point the Raspberry Pi should be running and on the same network as your machine so it can be accessed over ssh.
+The following diagram demonstrates the overall cluster design. To obtain a highly available Kubernetes cluster we've chosen to use the [stacked etcd toplogy](https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/ha-topology/#stacked-etcd-topology). This is the default configuration as the [external etcd cluster](https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/ha-topology/#external-etcd-topology) alternative requires additional compute resources.
 
-### Master Node(s)
+<img src="./docs/images/raspbernetes-cluster-design.png"/>
 
-The master node configuration is copied from your machine to the Raspberry Pi with the following command:
-
-```bash
-RPI_HOSTNAME=k8s-master-01 KUBE_NODE_TYPE=master RPI_IP=192.168.1.101 make deploy
-```
-
-Once the deployment has completed you should be now able to manually `ssh` to the newly configured master node using the folling command:
-
-```bash
-ssh pi@k8s-master-01.local
-```
-
-Kubernetes should be running and you can view the syslogs with the following command:
-
-```bash
-tail -f /var/log/syslog
-```
-
-Additionally you can verify your nodes status is `READY` with the following command:
-
-```bash
-kubectl get nodes
-```
-
-Now that the master node is running successfully you can either add more master nodes to the cluster or create worker nodes within the cluster. To be able to connect additional nodes into the cluster we will need to extract the kube config and the join token output by the master node. This can be done with the following command:
-
-```bash
-RPI_HOSTNAME=k8s-master-01 KUBE_NODE_TYPE=master RPI_IP=192.168.1.101  make post-install
-```
-
-The kube config and join token should now be in the ./output directory and will be used in configuring additional nodes.
-
-Note: Running the above commands will use a set of default variables, these are configured for setting up a master node and must be overriden for subsequent master or worker nodes. Also if the nodes status is `NOTREADY` then you should go back to checking the syslogs and check for any errors that may have occurs whilst setting up the node.
-
-### Worker Node(s)
-
-Work In Progress...
-
-```bash
-RPI_HOSTNAME=k8s-worker-01 KUBE_NODE_TYPE=worker RPI_IP=192.168.1.111 make deploy
-```
-
-## Contributing
-
-Please read [CONTRIBUTING.md](CONTRIBUTION.md) for details on our code of conduct, and the process for submitting pull requests to us.
-
-## Authors
-
-* **Michael Fornaro** - *Initial work* - [LinkedIn](https://www.linkedin.com/in/michael-fornaro-5b756179/)
-
-See also the list of [contributors](https://github.com/xUnholy/raspbernetes/contributors) who participated in this project.
-
-## License
-
-This project is licensed under the Apache License - see the [LICENSE](LICENSE) file for details
-
-## Acknowledgments
-
-Wish to acknowledge the following people:
-
-**Lucas Teligioridis** - [Github](https://github.com/lucasteligioridis) - Initial creator of the Raspbernetes setup with a fantastic setup guide for Linux based systems which can be found [HERE](https://itnext.io/headless-kubernetes-on-15-raspberry-pis-boot-in-under-8-minutes-808402ea2348?)
+## Hardware

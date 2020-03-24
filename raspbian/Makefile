@@ -58,17 +58,17 @@ endif
 
 .PHONY: env
 env:
-	echo "export RPI_HOSTNAME=$(RPI_HOSTNAME)" >> $(RPI_HOME)/config/env
-	echo "export RPI_IP=$(RPI_IP)" >> $(RPI_HOME)/config/env
-	echo "export RPI_DNS=$(RPI_DNS)" >> $(RPI_HOME)/config/env
-	echo "export RPI_NETWORK_TYPE=$(RPI_NETWORK_TYPE)" >> $(RPI_HOME)/config/env
-	echo "export RPI_TIMEZONE=$(RPI_TIMEZONE)" >> $(RPI_HOME)/config/env
-	echo "export KUBE_NODE_TYPE=$(KUBE_NODE_TYPE)" >> $(RPI_HOME)/config/env
-	echo "export RPI_HOME=/home/pi" >> $(RPI_HOME)/config/env
+	echo "export RPI_HOSTNAME=$(RPI_HOSTNAME)" >> $(RPI_HOME)/scripts/env
+	echo "export RPI_IP=$(RPI_IP)" >> $(RPI_HOME)/scripts/env
+	echo "export RPI_DNS=$(RPI_DNS)" >> $(RPI_HOME)/scripts/env
+	echo "export RPI_NETWORK_TYPE=$(RPI_NETWORK_TYPE)" >> $(RPI_HOME)/scripts/env
+	echo "export RPI_TIMEZONE=$(RPI_TIMEZONE)" >> $(RPI_HOME)/scripts/env
+	echo "export KUBE_NODE_TYPE=$(KUBE_NODE_TYPE)" >> $(RPI_HOME)/scripts/env
+	echo "export RPI_HOME=/home/pi" >> $(RPI_HOME)/scripts/env
 
 .PHONY: configure
 configure:
-	cp -r ./raspbernetes/* $(RPI_HOME)/
+	cp -r ./install/* $(RPI_HOME)/
 	mv ./$(RPI_HOME)/.ssh/id_ed25519.pub $(RPI_HOME)/.ssh/authorized_keys
 
 .PHONY: ssh
