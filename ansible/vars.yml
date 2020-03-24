@@ -18,7 +18,7 @@ load_balancer_port: 8443
 cni: weave
 
 # Configure Kubernetes CRI
-# Options: "containerd" or "Docker"
+# Options: "containerd" or "docker"
 # Default: "containerd" for now
 cri: containerd
 

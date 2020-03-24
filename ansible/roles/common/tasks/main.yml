@@ -140,27 +140,6 @@
     path: /usr/sbin/ip6tables-legacy
   failed_when: false
 
-# Set /proc/sys/net/bridge/bridge-nf-call-iptables to 1 by running
-# sysctl net.bridge.bridge-nf-call-iptables=1 to pass bridged IPv4 traffic to iptables’ chains.
-# This is a requirement for some CNI plugins to work.
-- name: Update bridged IPv4 traffic to iptables' chains
-  sysctl:
-    name: net.bridge.bridge-nf-call-iptables
-    value: '1'
-    state: present
-
-- name: Update bridged IPv4 traffic to ip6tables' chains
-  sysctl:
-    name: net.bridge.bridge-nf-call-ip6tables
-    value: '1'
-    state: present
-
-- name: Update bridged IPv4 traffic to arptables' chains
-  sysctl:
-    name: net.bridge.bridge-nf-call-arptables
-    value: '1'
-    state: present
-
 - name: Rebooting hosts
   reboot:
     msg: 'Pis are being rebooted'
