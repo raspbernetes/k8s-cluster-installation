@@ -1,9 +1,4 @@
 ---
-- name: Reset Kubernetes Master
-  become: true
-  shell: kubeadm reset -f
-  register: kubeadm_reset
-
 - name: Initialize Master
   become: true
   command: 'kubeadm init --control-plane-endpoint {{ load_balancer_dns }}:{{ load_balancer_port }} --upload-certs'

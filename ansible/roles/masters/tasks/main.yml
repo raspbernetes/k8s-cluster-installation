@@ -1,13 +1,5 @@
 ---
-- name: register k8s token
-  changed_when: false
-  local_action: command cat output/k8s-master-join-command
-  register: k8s_master_join_token
-  run_once: yes
-  vars:
-    ansible_become: no
-
-- name: kubeadm join
-  command: '{{ k8s_master_join_token.stdout }}'
-  args:
-    creates: /etc/kubernetes/kubelet.conf
+- name: Reset Kubernetes Master
+  become: true
+  shell: kubeadm reset -f
+  register: kubeadm_reset

@@ -1,13 +1,13 @@
 ---
-- name: register k8s token
+- name: Register worker join command
   changed_when: false
   local_action: command cat output/k8s-worker-join-command
-  register: k8s_join_token
+  register: k8s_worker_join
   run_once: yes
   vars:
     ansible_become: no
 
-- name: kubeadm join
-  command: '{{ k8s_join_token.stdout }}'
+- name: Execute worker kubeadm join
+  command: '{{ k8s_worker_join.stdout }}'
   args:
     creates: /etc/kubernetes/kubelet.conf
