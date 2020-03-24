@@ -41,7 +41,7 @@
 - name: Generate k8s master join token
   become: true
   changed_when: false
-  shell: 'kubeadm token create --print-join-command --certificate-key {{ kubeadm_init_phase.stdout_lines[-1] }}'
+  command: 'kubeadm token create --print-join-command --certificate-key {{ kubeadm_init_phase.stdout_lines[-1] }}'
   register: k8s_master_join_command
 
 - name: Dump k8s join token into a file
@@ -64,7 +64,7 @@
 - name: Generate k8s worker join token
   become: true
   changed_when: false
-  shell: kubeadm token create --print-join-command
+  command: kubeadm token create --print-join-command
   register: k8s_worker_join_command
 
 - name: Dump k8s join token into a file

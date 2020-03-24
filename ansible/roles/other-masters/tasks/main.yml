@@ -1,7 +1,8 @@
 ---
 - name: Register master join command
   changed_when: false
-  local_action: command cat output/k8s-master-join-command
+  delegate_to: localhost
+  command: cat output/k8s-master-join-command
   register: k8s_master_join
   vars:
     ansible_become: no

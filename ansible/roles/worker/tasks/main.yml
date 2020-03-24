@@ -1,7 +1,8 @@
 ---
 - name: Register worker join command
   changed_when: false
-  local_action: command cat output/k8s-worker-join-command
+  delegate_to: localhost
+  command: cat output/k8s-worker-join-command
   register: k8s_worker_join
   run_once: yes
   vars:

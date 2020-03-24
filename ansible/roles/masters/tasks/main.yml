@@ -1,5 +1,5 @@
 ---
 - name: Reset Kubernetes Master
   become: true
-  shell: kubeadm reset -f
+  command: kubeadm reset -f
   register: kubeadm_reset
