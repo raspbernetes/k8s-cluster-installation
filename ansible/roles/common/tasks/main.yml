@@ -74,7 +74,7 @@
 
 - name: Add apt repository for stable version
   apt_repository:
-    repo: "deb [arch=arm64] https://download.docker.com/linux/ubuntu {{ ansible_lsb.codename }} stable"
+    repo: 'deb [arch=arm64] https://download.docker.com/linux/ubuntu {{ ansible_lsb.codename }} stable'
     state: present
 
 - name: Install docker and its dependecies
@@ -157,14 +157,16 @@
 
 # Instructions: https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/install-kubeadm/#configure-cgroup-driver-used-by-kubelet-on-control-plane-node
 - name: Create a firmware folder if it does not exist
+  become: true
   file:
     path: /boot/firmware
     state: directory
     mode: '0755'
 
 - name: Create the config files if they do not exist
+  become: true
   file:
-    path: "{{ item }}"
+    path: '{{ item }}'
     state: touch
   with_items:
     - /boot/firmware/nobtcmd.txt

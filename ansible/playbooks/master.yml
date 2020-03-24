@@ -6,4 +6,9 @@
     - ../vars.yml
 
   roles:
-    - master
+    - keepalived
+    - haproxy
+    - masters
+    - { role: initial-master, when: "groups['masters'][0] == inventory_hostname" }
+    - { role: cni, when: "groups['masters'][0] == inventory_hostname" }
+    - { role: other-masters, when: "groups['masters'][0] != inventory_hostname" }
