@@ -20,28 +20,6 @@
      name: br_netfilter
      state: present
 
-- name: Set bridge-nf-call-iptables
-  sysctl:
-    name: net.bridge.bridge-nf-call-iptables
-    value: '1'
-    state: present
-    sysctl_file: /etc/sysctl.d/99-kubernetes-cri.conf
-
-- name: Set ip4_forward
-  sysctl:
-    name: net.ipv4.ip_forward
-    value: '1'
-    state: present
-    sysctl_file: /etc/sysctl.d/99-kubernetes-cri.conf
-
-- name: Set ip6_forward
-  sysctl:
-    name: net.bridge.bridge-nf-call-ip6tables
-    value: '1'  
-    state: present 
-    sysctl_file: /etc/sysctl.d/99-kubernetes-cri.conf
-    reload: yes
-
 - name: Add Docker’s official GPG key
   apt_key:
     url: https://download.docker.com/linux/ubuntu/gpg
@@ -70,7 +48,6 @@
   file:
     path: /etc/containerd/config.toml
     state: file
-
 
 - name: Configure containerd
   shell: containerd config default > /etc/containerd/config.toml
