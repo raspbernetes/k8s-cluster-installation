@@ -7,3 +7,5 @@
 
   roles:
     - common
+    - cri
+    - iptables

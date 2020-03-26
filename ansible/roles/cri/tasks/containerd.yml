@@ -1,0 +1,58 @@
+# Instructions: https://kubernetes.io/docs/setup/production-environment/container-runtimes/#containerd
+---
+- name: Copy containerd config file
+  copy: 
+    src: '{{ item }}'
+    dest: '/etc/modules-load.d/containerd.conf'
+    owner: root
+    group: root
+    mode: 0644
+  with_items:
+    - containerd.conf
+
+- name: Load overlay
+  modprobe:
+    name: overlay
+    state: present
+
+- name: Load br_netfilter
+  modprobe:
+     name: br_netfilter
+     state: present
+
+- name: Add Docker’s official GPG key
+  apt_key:
+    url: https://download.docker.com/linux/ubuntu/gpg
+    state: present
+
+- name: get lsb_release -cs
+  command: lsb_release -cs
+  register: lsb_release
+  changed_when: lsb_release.rc > 0
+
+- name: Add apt repository for stable version
+  apt_repository:
+    repo: deb [arch=arm64] https://download.docker.com/linux/ubuntu {{ lsb_release.stdout }} stable
+    state: present
+
+- name: Install containerd
+  apt: 
+    name: "{{ packages }}"
+    state: present
+    update_cache: yes
+  vars:
+    packages:
+    - containerd.io
+
+- name: Create configure file
+  file:
+    path: /etc/containerd/config.toml
+    state: file
+
+- name: Configure containerd
+  shell: containerd config default > /etc/containerd/config.toml
+
+- name: Restart containered
+  systemd:
+    name: containerd
+    state: restarted
