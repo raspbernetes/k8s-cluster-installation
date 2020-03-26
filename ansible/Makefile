@@ -20,13 +20,10 @@ install: ##install requirements
 	ansible-galaxy install -r requirements.yml
 
 lint: ##test files for syntax errors
-	# https://formulae.brew.sh/formula/yamllint
-	# https://formulae.brew.sh/formula/ansible-lint
 	yamllint . || true
 	ansible-lint playbooks/*.yml || true
 
-pretty: ##correct formatting errors 
-	# https://formulae.brew.sh/formula/prettier 
+pretty: ##correct formatting errors
 	prettier --parser=markdown --write '*.md' '**/*.md' || true
 	prettier --parser=json --write '**/*.json' '**/*.json.j2' || true
 	prettier --parser=yaml --write '*.y*ml' '**/*.y*ml' || true
