@@ -1,0 +1,5 @@
+---
+- name: 'Setup {{ cri }} CRI'
+  become: true
+  include: '{{ cri }}.yml'
+  register: '{{ cri }}'

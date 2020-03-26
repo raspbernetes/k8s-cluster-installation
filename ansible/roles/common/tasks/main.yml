@@ -65,68 +65,6 @@
     src: log2ram.conf.j2
     dest: /etc/log2ram.conf
 
-# Instructions: https://kubernetes.io/docs/setup/production-environment/container-runtimes/#docker
-# TODO: https://github.com/raspbernetes/k8s-cluster-installation/issues/2
-- name: Add an apt signing key for Docker
-  apt_key:
-    url: https://download.docker.com/linux/ubuntu/gpg
-    state: present
-
-- name: Add apt repository for stable version
-  apt_repository:
-    repo: "deb [arch=arm64] https://download.docker.com/linux/ubuntu {{ ansible_lsb.codename }} stable"
-    state: present
-
-- name: Install docker and its dependecies
-  apt:
-    name: "{{ packages }}"
-    state: present
-    update_cache: true
-  vars:
-    packages:
-      - docker-ce
-      - docker-ce-cli
-      - containerd.io
-
-- name: Remove swapfile from /etc/fstab
-  mount:
-    name: "{{ item }}"
-    fstype: swap
-    state: absent
-  with_items:
-    - swap
-    - none
-
-- name: Disable swap
-  command: swapoff -a
-  when: ansible_swaptotal_mb > 0
-
-- name: Copy Docker Daemon Config
-  copy:
-    src: "{{ item }}"
-    dest: "/etc/docker/daemon.json"
-    owner: root
-    group: root
-    mode: 0644
-  with_items:
-    - daemon.json
-
-- name: Create a Docker service
-  file:
-    path: /etc/systemd/system/docker.service.d
-    state: directory
-    mode: "0755"
-
-- name: Reload service daemon-reload
-  systemd:
-    name: daemon-reload
-    daemon_reload: true
-
-- name: Restart service Docker
-  systemd:
-    name: docker
-    state: restarted
-
 # Instructions: https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/install-kubeadm/#installing-kubeadm-kubelet-and-kubectl
 - name: Add an apt signing key for Kubernetes
   apt_key:
@@ -217,27 +155,6 @@
     name: ip6tables
     path: /usr/sbin/ip6tables-legacy
   failed_when: false
-
-# Set /proc/sys/net/bridge/bridge-nf-call-iptables to 1 by running
-# sysctl net.bridge.bridge-nf-call-iptables=1 to pass bridged IPv4 traffic to iptables’ chains.
-# This is a requirement for some CNI plugins to work.
-- name: Update bridged IPv4 traffic to iptables' chains
-  sysctl:
-    name: net.bridge.bridge-nf-call-iptables
-    value: "1"
-    state: present
-
-- name: Update bridged IPv4 traffic to ip6tables' chains
-  sysctl:
-    name: net.bridge.bridge-nf-call-ip6tables
-    value: "1"
-    state: present
-
-- name: Update bridged IPv4 traffic to arptables' chains
-  sysctl:
-    name: net.bridge.bridge-nf-call-arptables
-    value: "1"
-    state: present
 
 - name: Rebooting hosts
   reboot:

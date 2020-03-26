@@ -7,3 +7,5 @@
 
   roles:
     - ../roles/common
+    - ../roles/cri
+    - ../roles/iptables
