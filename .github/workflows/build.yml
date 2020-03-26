@@ -14,11 +14,17 @@ jobs:
         with:
           path: 'raspbernetes'
 
+      - name: Lint yaml
+        uses: karancode/yamllint-github-action@v1.0.0
+        with:
+          yamllint_file_or_dir: './ansible'
+          yamllint_config_filepath: './ansible/.yamllint'
+
       - name: Lint Ansible
         uses: ansible/ansible-lint-action@master
         with:
           targets: './ansible'
-          args: '--exclude ./ansible/handlers'
+          args: '--exclude ./ansible/handlers -c ./ansible/.ansible-lint'
 
       - name: Validate Cloud-Config
         run: |
