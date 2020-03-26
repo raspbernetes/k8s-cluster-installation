@@ -1,6 +1,7 @@
 # Ubuntu
 
 The following instructions are to flash your SD card with the desired OS and configuration specified in the cloud-init config [file](./cloud-config.yml).
+
 > See http://cloudinit.readthedocs.io/en/0.7.9/ for more details.
 
 ## Downloads the Flash tool
