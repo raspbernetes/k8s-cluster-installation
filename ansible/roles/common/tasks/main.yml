@@ -9,10 +9,10 @@
 
 - name: apt-get update
   apt:
-    update_cache: yes
+    update_cache: true
     cache_valid_time: 3600
-    autoclean: yes
-    autoremove: yes
+    autoclean: true
+    autoremove: true
   register: apt_update
   retries: 5
   until: apt_update is success
@@ -46,7 +46,7 @@
   git:
     repo: https://github.com/azlux/log2ram.git
     dest: /opt/log2ram
-    version: '{{ log2ram_version }}'
+    version: "{{ log2ram_version }}"
 
 - name: Changing perms of "/opt/log2ram/install.sh"
   file:
@@ -56,7 +56,7 @@
 - name: Install log2ram
   command: /bin/sh ./install.sh
   args:
-    chdir: '/opt/log2ram'
+    chdir: "/opt/log2ram"
   register: log2ram
   changed_when: '"Reboot to activate log2ram" in log2ram.stdout'
 
@@ -74,14 +74,14 @@
 
 - name: Add apt repository for stable version
   apt_repository:
-    repo: 'deb [arch=arm64] https://download.docker.com/linux/ubuntu {{ ansible_lsb.codename }} stable'
+    repo: "deb [arch=arm64] https://download.docker.com/linux/ubuntu {{ ansible_lsb.codename }} stable"
     state: present
 
 - name: Install docker and its dependecies
   apt:
-    name: '{{ packages }}'
+    name: "{{ packages }}"
     state: present
-    update_cache: yes
+    update_cache: true
   vars:
     packages:
       - docker-ce
@@ -90,7 +90,7 @@
 
 - name: Remove swapfile from /etc/fstab
   mount:
-    name: '{{ item }}'
+    name: "{{ item }}"
     fstype: swap
     state: absent
   with_items:
@@ -103,8 +103,8 @@
 
 - name: Copy Docker Daemon Config
   copy:
-    src: '{{ item }}'
-    dest: '/etc/docker/daemon.json'
+    src: "{{ item }}"
+    dest: "/etc/docker/daemon.json"
     owner: root
     group: root
     mode: 0644
@@ -115,12 +115,12 @@
   file:
     path: /etc/systemd/system/docker.service.d
     state: directory
-    mode: '0755'
+    mode: "0755"
 
 - name: Reload service daemon-reload
   systemd:
     name: daemon-reload
-    daemon_reload: yes
+    daemon_reload: true
 
 - name: Restart service Docker
   systemd:
@@ -143,9 +143,9 @@
 
 - name: Install Kubernetes binaries
   apt:
-    name: '{{ packages }}'
+    name: "{{ packages }}"
     state: present
-    update_cache: yes
+    update_cache: true
   register: apt_install_kube
   retries: 5
   until: apt_install_kube is success
@@ -161,12 +161,12 @@
   file:
     path: /boot/firmware
     state: directory
-    mode: '0755'
+    mode: "0755"
 
 - name: Create the config files if they do not exist
   become: true
   file:
-    path: '{{ item }}'
+    path: "{{ item }}"
     state: touch
   with_items:
     - /boot/firmware/nobtcmd.txt
@@ -176,7 +176,7 @@
   lineinfile:
     path: /boot/firmware/nobtcmd.txt
     backrefs: true
-    regexp: '^(.*fixrtc)$'
+    regexp: "^(.*fixrtc)$"
     line: '\1 cgroup_enable=cpuset cgroup_memory=1 cgroup_enable=memory'
     state: present
   register: reboot_task
@@ -224,24 +224,24 @@
 - name: Update bridged IPv4 traffic to iptables' chains
   sysctl:
     name: net.bridge.bridge-nf-call-iptables
-    value: '1'
+    value: "1"
     state: present
 
 - name: Update bridged IPv4 traffic to ip6tables' chains
   sysctl:
     name: net.bridge.bridge-nf-call-ip6tables
-    value: '1'
+    value: "1"
     state: present
 
 - name: Update bridged IPv4 traffic to arptables' chains
   sysctl:
     name: net.bridge.bridge-nf-call-arptables
-    value: '1'
+    value: "1"
     state: present
 
 - name: Rebooting hosts
   reboot:
-    msg: 'Pis are being rebooted'
+    msg: "Pis are being rebooted"
     reboot_timeout: 120
   ignore_errors: true
   when: reboot_task is changed

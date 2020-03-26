@@ -1,7 +1,7 @@
 ---
 - name: Initialize Master
   become: true
-  command: 'kubeadm init --control-plane-endpoint {{ load_balancer_dns }}:{{ load_balancer_port }} --upload-certs'
+  command: "kubeadm init --control-plane-endpoint {{ load_balancer_dns }}:{{ load_balancer_port }} --upload-certs"
   register: kubeadm_init
 
 - name: Create Kubernetes config directory
@@ -11,7 +11,7 @@
     state: directory
     owner: root
     group: root
-    mode: '0755'
+    mode: "0755"
 
 - name: Copy admin.conf to config directory
   become: true
@@ -20,44 +20,44 @@
     dest: /root/.kube/config
     owner: root
     group: root
-    mode: '0755'
-    remote_src: yes
-    backup: yes
+    mode: "0755"
+    remote_src: true
+    backup: true
   when: kubeadm_init
 
 - name: Copy Kubernetes config locally
   become: true
   fetch:
     dest: output/k8s-config.yaml
-    flat: yes
+    flat: true
     src: /etc/kubernetes/admin.conf
 
 # Generate master join command
 - name: Generate master join key
   become: true
-  command: 'kubeadm init phase upload-certs --upload-certs'
+  command: "kubeadm init phase upload-certs --upload-certs"
   register: kubeadm_init_phase
 
 - name: Generate k8s master join token
   become: true
   changed_when: false
-  command: 'kubeadm token create --print-join-command --certificate-key {{ kubeadm_init_phase.stdout_lines[-1] }}'
+  command: "kubeadm token create --print-join-command --certificate-key {{ kubeadm_init_phase.stdout_lines[-1] }}"
   register: k8s_master_join_command
 
 - name: Dump k8s join token into a file
   copy:
-    content: '{{ k8s_master_join_command.stdout }}'
+    content: "{{ k8s_master_join_command.stdout }}"
     owner: root
     group: root
-    mode: '0755'
+    mode: "0755"
     dest: k8s-master-join-command
-    backup: yes
+    backup: true
 
 - name: Copy Kubernetes join token locally
   become: true
   fetch:
     dest: output/k8s-master-join-command
-    flat: yes
+    flat: true
     src: k8s-master-join-command
 
 # Generate worker join command
@@ -69,16 +69,16 @@
 
 - name: Dump k8s join token into a file
   copy:
-    content: '{{ k8s_worker_join_command.stdout }}'
+    content: "{{ k8s_worker_join_command.stdout }}"
     owner: root
     group: root
-    mode: '0755'
+    mode: "0755"
     dest: k8s-worker-join-command
-    backup: yes
+    backup: true
 
 - name: Copy Kubernetes join token locally
   become: true
   fetch:
     dest: output/k8s-worker-join-command
-    flat: yes
+    flat: true
     src: k8s-worker-join-command

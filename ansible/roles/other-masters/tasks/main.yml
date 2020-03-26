@@ -5,9 +5,9 @@
   command: cat output/k8s-master-join-command
   register: k8s_master_join
   vars:
-    ansible_become: no
+    ansible_become: false
 
 - name: Execute master kubeadm join
-  command: '{{ k8s_master_join.stdout }}'
+  command: "{{ k8s_master_join.stdout }}"
   args:
     creates: /etc/kubernetes/kubelet.conf
