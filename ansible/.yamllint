@@ -1,0 +1,26 @@
+# Sensible Ansible Default from :
+# https://raw.githubusercontent.com/ansible/ansible/15b6837daf08f8baa94c4fea7935eb02d94fe9d5/test/sanity/yamllint/config/default.yml
+# Removed from master, so commit id will do.
+
+extends: default
+format: parsable
+ignore: |
+  .yamllint
+
+rules:
+  braces: {max-spaces-inside: 1, level: error}
+  brackets: {max-spaces-inside: 1, level: error}
+  colons: {max-spaces-after: -1, level: error}
+  commas: {max-spaces-after: -1, level: error}
+  comments: disable
+  comments-indentation: disable
+  document-start: enable
+  empty-lines: {max: 3,  max-start: 2, max-end: 2,level: error}
+  hyphens: {level: error}
+  indentation: disable
+  key-duplicates: enable
+  line-length: disable
+  new-line-at-end-of-file: disable
+  new-lines: {type: unix}
+  trailing-spaces: enable
+  truthy: enable
