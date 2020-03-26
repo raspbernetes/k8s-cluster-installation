@@ -1,6 +1,3 @@
 - import_playbook: common.yml
-- import_playbook: cri.yml
-- import_playbook: iptables.yml
 - import_playbook: master.yml
-- import_playbook: cni.yml
 - import_playbook: worker.yml
