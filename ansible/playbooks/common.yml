@@ -6,4 +6,4 @@
     - ../vars.yml
 
   roles:
-    - common
+    - ../roles/common

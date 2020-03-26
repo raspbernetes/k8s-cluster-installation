@@ -6,15 +6,15 @@
     - ../vars.yml
 
   roles:
-    - keepalived
-    - haproxy
-    - masters
+    - ../roles/keepalived
+    - ../roles/haproxy
+    - ../roles/masters
     - {
-        role: initial-master,
+        role: ../roles/initial-master,
         when: "groups['masters'][0] == inventory_hostname",
       }
-    - { role: cni, when: "groups['masters'][0] == inventory_hostname" }
+    - { role: ../roles/cni, when: "groups['masters'][0] == inventory_hostname" }
     - {
-        role: other-masters,
+        role: ../roles/other-masters,
         when: "groups['masters'][0] != inventory_hostname",
       }
