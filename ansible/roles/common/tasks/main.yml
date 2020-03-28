@@ -64,7 +64,7 @@
   template:
     src: log2ram.conf.j2
     dest: /etc/log2ram.conf
-    
+
 # Instructions: https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/install-kubeadm/#installing-kubeadm-kubelet-and-kubectl
 - name: Add an apt signing key for Kubernetes
   apt_key:
@@ -155,6 +155,18 @@
     name: ip6tables
     path: /usr/sbin/ip6tables-legacy
   failed_when: false
+
+- name: Disable SWAP since kubernetes can't work with swap enabled (1/2)
+  command: swapoff -a
+
+- name: Disable SWAP in /etc/fstab since kubernetes can't work with swap enabled (2/2)
+  mount:
+    name: '{{ item }}'
+    fstype: swap
+    state: absent
+  with_items:
+    - swap
+    - none
 
 - name: Rebooting hosts
   reboot:
