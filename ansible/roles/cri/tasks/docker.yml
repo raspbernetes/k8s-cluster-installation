@@ -10,7 +10,7 @@
     repo: deb [arch=arm64] https://download.docker.com/linux/ubuntu xenial stable
     state: present
 
-- name: Install docker and its dependecies
+- name: Install docker and its dependencies
   apt:
     name: '{{ packages }}'
     state: present
@@ -20,19 +20,6 @@
       - docker-ce
       - docker-ce-cli
       - containerd.io
-
-- name: Remove swapfile from /etc/fstab
-  mount:
-    name: '{{ item }}'
-    fstype: swap
-    state: absent
-  with_items:
-    - swap
-    - none
-
-- name: Disable swap
-  command: swapoff -a
-  when: ansible_swaptotal_mb > 0
 
 - name: Copy Docker Daemon Config
   copy:
