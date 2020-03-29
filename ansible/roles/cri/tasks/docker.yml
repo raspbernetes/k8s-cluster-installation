@@ -7,7 +7,7 @@
 
 - name: Add apt repository for stable version
   apt_repository:
-    repo: deb [arch=arm64] https://download.docker.com/linux/ubuntu xenial stable
+    repo: deb [arch=arm64] https://download.docker.com/linux/ubuntu {{ ansible_lsb.codename}} stable
     state: present
 
 - name: Install docker and its dependencies
