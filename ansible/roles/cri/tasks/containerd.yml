@@ -1,12 +1,12 @@
 # Instructions: https://kubernetes.io/docs/setup/production-environment/container-runtimes/#containerd
 ---
 - name: Copy containerd config file
-  copy: 
+  copy:
     src: '{{ item }}'
     dest: '/etc/modules-load.d/containerd.conf'
     owner: root
     group: root
-    mode: 0644
+    mode: '0644'
   with_items:
     - containerd.conf
 
@@ -17,37 +17,36 @@
 
 - name: Load br_netfilter
   modprobe:
-     name: br_netfilter
-     state: present
+    name: br_netfilter
+    state: present
 
-- name: Add Docker’s official GPG key
+- name: Add an apt signing key for Docker
   apt_key:
     url: https://download.docker.com/linux/ubuntu/gpg
     state: present
 
-- name: get lsb_release -cs
-  command: lsb_release -cs
-  register: lsb_release
-  changed_when: lsb_release.rc > 0
-
 - name: Add apt repository for stable version
   apt_repository:
-    repo: deb [arch=arm64] https://download.docker.com/linux/ubuntu {{ lsb_release.stdout }} stable
+    repo: deb [arch=arm64] https://download.docker.com/linux/ubuntu {{ ansible_lsb.codename}} stable
     state: present
 
-- name: Install containerd
-  apt: 
-    name: "{{ packages }}"
+- name: Install containerd package
+  apt:
+    name: '{{ packages }}'
     state: present
     update_cache: yes
   vars:
     packages:
-    - containerd.io
+      - containerd.io
 
-- name: Create configure file
+- name: Create containerd config directory
+  become: true
   file:
-    path: /etc/containerd/config.toml
-    state: file
+    path: /etc/containerd/
+    state: directory
+    owner: root
+    group: root
+    mode: '0755'
 
 - name: Configure containerd
   shell: containerd config default > /etc/containerd/config.toml
