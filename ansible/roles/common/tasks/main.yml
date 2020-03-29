@@ -66,7 +66,7 @@
     dest: /etc/log2ram.conf
 
 # Instructions: https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/install-kubeadm/#installing-kubeadm-kubelet-and-kubectl
-- name: Add an apt signing key for Kubernetes
+- name: Add apt signing key for Kubernetes
   apt_key:
     url: https://packages.cloud.google.com/apt/doc/apt-key.gpg
     state: present
@@ -79,7 +79,7 @@
   retries: 10
   until: kubernetes_repository is success
 
-- name: Install Kubernetes binaries
+- name: Install Kubernetes packages
   apt:
     name: '{{ packages }}'
     state: present
@@ -92,6 +92,21 @@
       - kubelet
       - kubeadm
       - kubectl
+
+- name: Add apt-mark hold to avoid version skew issues. (1/3)
+  dpkg_selections:
+    name: 'kubectl'
+    selection: hold
+
+- name: Add apt-mark hold to avoid version skew issues. (2/3)
+  dpkg_selections:
+    name: 'kubelet'
+    selection: hold
+
+- name: Add apt-mark hold to avoid version skew issues. (3/3)
+  dpkg_selections:
+    name: 'kubeadm'
+    selection: hold
 
 # Instructions: https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/install-kubeadm/#configure-cgroup-driver-used-by-kubelet-on-control-plane-node
 - name: Create a firmware folder if it does not exist
