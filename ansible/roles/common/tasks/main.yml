@@ -173,7 +173,7 @@
 
 - name: Disable SWAP since kubernetes can't work with swap enabled (1/2)
   command: swapoff -a
-  
+
 - name: Disable SWAP in /etc/fstab since kubernetes can't work with swap enabled (2/2)
   mount:
     name: '{{ item }}'
