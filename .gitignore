@@ -34,3 +34,6 @@ override.tf.json
 # Remove local output
 output
 argo
+
+# Test Inventory
+**/test-inventory
