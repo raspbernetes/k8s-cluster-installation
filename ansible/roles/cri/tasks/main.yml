@@ -1,5 +1,5 @@
 ---
-- name: 'Setup {{ cri }} CRI'
+- name: 'Setup {{ cri }} container runtime (CRI)'
   become: true
   include: '{{ cri }}.yml'
   register: '{{ cri }}'
