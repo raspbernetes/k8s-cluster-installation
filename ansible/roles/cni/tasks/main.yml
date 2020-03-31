@@ -1,6 +1,6 @@
 ---
 # Instructions: https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/create-cluster-kubeadm/#pod-network
-- name: 'Setup {{ cni }} CNI'
+- name: 'Setup {{ cni }} container network interface (CNI)'
   become: true
   include: '{{ cni }}.yml'
   register: '{{ cni }}'

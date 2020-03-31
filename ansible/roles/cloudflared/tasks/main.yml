@@ -1,0 +1,52 @@
+---
+# This role is experimental and still a work in progress...
+# Currently this role assumes you've already performed the cloudflared login steps.
+- name: Install golang packages
+  apt:
+    name: 'golang-go'
+    state: present
+    update_cache: yes
+  register: apt_install_golang
+  retries: 5
+  until: apt_install_golang is success
+
+- name: Clone cloudflared repository locally
+  git:
+    repo: https://github.com/xUnholy/cloudflared.git
+    dest: cloudflared
+
+- name: Compile cloudflared binary
+  command: make cloudflared
+  args:
+    chdir: cloudflared
+    creates: cloudflared
+
+- name: Copy cloudflared binary to /usr/local/bin
+  command: cp cloudflared /usr/local/bin
+  args:
+    chdir: cloudflared
+
+- name: Create cloudflared config directory
+  become: true
+  file:
+    path: /etc/cloudflared
+    state: directory
+    owner: root
+    group: root
+    mode: '0755'
+
+- name: Copy cloudflared config.conf
+  template:
+    src: api-server.yml.j2
+    dest: /etc/cloudflared/config.yml
+  register: cloudflared_config
+
+- name: Initialize cloudflared tunnel to api-server
+  command: cloudflared service install
+
+- name: Enable cloudflared service
+  systemd:
+    name: cloudflared
+    daemon_reload: yes
+    enabled: yes
+    state: restarted

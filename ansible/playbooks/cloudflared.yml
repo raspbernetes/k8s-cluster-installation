@@ -1,9 +1,9 @@
 ---
-- hosts: workers
+- hosts: masters
   become: true
 
   vars_files:
     - ../vars.yml
 
   roles:
-    - workers
+    - cloudflared
