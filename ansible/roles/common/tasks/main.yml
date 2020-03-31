@@ -89,9 +89,9 @@
   until: apt_install_kube is success
   vars:
     packages:
-      - kubelet
-      - kubeadm
-      - kubectl
+      - kubelet={{ kubelet_version }}
+      - kubeadm={{ kubeadm_version }}
+      - kubectl={{ kubectl_version }}
 
 - name: Add apt-mark hold to avoid version skew issues. (1/3)
   dpkg_selections:

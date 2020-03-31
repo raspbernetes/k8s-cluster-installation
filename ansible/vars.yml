@@ -7,10 +7,11 @@ ansible_user: pi
 log2ram_version: v1.4
 log2ram_size: 128M
 
-# Configure Kubernetes binary versions
-kubernetes_version: 1.9.6
-kubelet_version: 1.9.6-0
-kubeadm_version: 1.10.1
+# Configure Kubernetes package versions independently - see docs for guidance
+# https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/install-kubeadm/#installing-kubeadm-kubelet-and-kubectl
+kubectl_version: 1.18.0-00
+kubelet_version: 1.18.0-00
+kubeadm_version: 1.18.0-00
 
 # Cloudflare options for exposing Kubernetes services via HTTPS/SSH
 cloudflared_kube_api_server_dns: 'api-server.raspbernetes.com'
@@ -18,7 +19,7 @@ cloudflared_ingress_sans: '*.raspbernetes.com'
 cloudflared_ssh_port: 22
 
 # Virtual IP and port used by Keepalived
-load_balancer_dns: 192.168.1.201
+load_balancer_dns: 192.168.1.200
 load_balancer_port: 6443
 
 # Configure Kubernetes container network interface (CNI)
