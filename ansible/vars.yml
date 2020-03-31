@@ -1,6 +1,9 @@
 ---
+# Configure user Ansible uses to ssh into the machine
+# Note: Should match the user configured via cloud-init
 ansible_user: pi
 
+# Configure Log2ram version and memory allocation
 log2ram_version: v1.4
 log2ram_size: 128M
 
@@ -10,7 +13,8 @@ kubelet_version: 1.9.6-0
 kubeadm_version: 1.10.1
 
 # Cloudflare options for exposing Kubernetes services via HTTPS/SSH
-cloudflared_ingress_dns: master.raspbernetes.com
+cloudflared_kube_api_server_dns: 'api-server.raspbernetes.com'
+cloudflared_ingress_sans: '*.raspbernetes.com'
 cloudflared_ssh_port: 22
 
 # Virtual IP and port used by Keepalived
