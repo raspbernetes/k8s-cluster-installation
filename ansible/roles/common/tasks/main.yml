@@ -71,9 +71,10 @@
     url: https://packages.cloud.google.com/apt/doc/apt-key.gpg
     state: present
 
+# Removed the following repo due to stability issues: https://apt.kubernetes.io/
 - name: Adding apt repository for Kubernetes
   apt_repository:
-    repo: deb https://apt.kubernetes.io/ kubernetes-xenial main
+    repo: deb http://packages.cloud.google.com/apt/ kubernetes-xenial main
     state: present
   register: kubernetes_repository
   retries: 10
