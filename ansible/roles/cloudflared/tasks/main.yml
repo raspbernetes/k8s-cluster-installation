@@ -1,5 +1,6 @@
 ---
 # This role is experimental and still a work in progress...
+# TODO: Initial attempt will fail, currently requires a "cloudflared tunnel login" which prompts the user to visit the site
 # Currently this role assumes you've already performed the cloudflared login steps.
 - name: Install golang packages
   apt:
@@ -21,6 +22,7 @@
     chdir: cloudflared
     creates: cloudflared
 
+# TODO: Don't copy if it already exists? OR perhaps update only if newer version?
 - name: Copy cloudflared binary to /usr/local/bin
   command: cp cloudflared /usr/local/bin
   args:
@@ -37,7 +39,7 @@
 
 - name: Copy cloudflared config.conf
   template:
-    src: api-server.yml.j2
+    src: config.yml.j2
     dest: /etc/cloudflared/config.yml
   register: cloudflared_config
 
