@@ -1,6 +1,7 @@
 hostname: '{{ cloudflared_kube_api_server_dns }}'
 url: 'https://{{ load_balancer_dns }}:{{ load_balancer_port }}'
 origin-server-name: '{{ cloudflared_ingress_sans }}'
+lb-pool: master-pool
 origin-ca-pool: /etc/kubernetes/pki/ca.crt
 logfile: /var/log/cloudflared.log
 loglevel: info

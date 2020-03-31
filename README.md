@@ -27,7 +27,7 @@ Open the [inventory file](ansible/inventory) - each machine that will be joining
 When the inventory has been configured with all the hosts that will be joining the Kubernetes cluster we can run the following command to verify SSH connectivity can be established.
 
 ```bash
-ansible all -m ping -i inventory -u pi
+ansible all -m ping -i ansible/inventory -u pi
 ```
 
 A successful response should look something like the following:

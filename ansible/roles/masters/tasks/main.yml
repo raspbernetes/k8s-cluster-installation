@@ -3,3 +3,8 @@
   become: true
   command: kubeadm reset -f
   register: kubeadm_reset
+
+- name: Pull Kubernetes Images
+  become: true
+  command: kubeadm config images pull
+  register: kubeadm_pull
