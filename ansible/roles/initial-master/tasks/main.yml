@@ -1,7 +1,8 @@
 ---
+# TODO: Only pass `--apiserver-cert-extra-sans {{ cloudflared_ingress_sans }}` if required
 - name: Initialize Master
   become: true
-  command: 'kubeadm init --control-plane-endpoint {{ load_balancer_dns }}:{{ load_balancer_port }} --upload-certs --apiserver-cert-extra-sans {{ cloudflared_ingress_dns }}'
+  command: 'kubeadm init --control-plane-endpoint {{ load_balancer_dns }}:{{ load_balancer_port }} --upload-certs --apiserver-cert-extra-sans {{ cloudflared_ingress_sans }}'
   register: kubeadm_init
 
 - name: Create Kubernetes config directory

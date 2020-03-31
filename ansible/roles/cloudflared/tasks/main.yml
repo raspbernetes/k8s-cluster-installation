@@ -17,18 +17,36 @@
 
 - name: Compile cloudflared binary
   command: make cloudflared
-  chdir: cloudflared
-  creates: cloudflared
+  args:
+    chdir: cloudflared
+    creates: cloudflared
 
-- name: Compile cloudflared binary
+- name: Copy cloudflared binary to /usr/local/bin
   command: cp cloudflared /usr/local/bin
-  chdir: cloudflared
+  args:
+    chdir: cloudflared
+
+- name: Create cloudflared config directory
+  become: true
+  file:
+    path: /etc/cloudflared
+    state: directory
+    owner: root
+    group: root
+    mode: '0755'
 
 - name: Copy cloudflared config.conf
   template:
-    src: config.yml.j2
+    src: api-server.yml.j2
     dest: /etc/cloudflared/config.yml
   register: cloudflared_config
 
-- name: Install cloudflared
+- name: Initialize cloudflared tunnel to api-server
   command: cloudflared service install
+
+- name: Enable cloudflared service
+  systemd:
+    name: cloudflared
+    daemon_reload: yes
+    enabled: yes
+    state: restarted
