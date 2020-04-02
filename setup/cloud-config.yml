@@ -1,9 +1,14 @@
 #cloud-config
 
+## Set your hostname here, the manage_etc_hosts will update the hosts file entries as well
 hostname: k8s-master-01
 manage_etc_hosts: true
 
+## Set the locale of the system
 locale: 'en_AU.UTF-8'
+
+## Set the timezone
+## Value of 'timezone' must exist in /usr/share/zoneinfo
 timezone: 'Australia/Melbourne'
 
 apt_preserve_sources_list: true
@@ -35,6 +40,7 @@ write_files:
         version: 2
         ethernets:
           eth0:
+            dhcp4: true
             addresses:
               - 192.168.1.101/24
             gateway4: 192.168.1.1
@@ -42,6 +48,17 @@ write_files:
               addresses:
                 - 1.1.1.1
                 - 8.8.8.8
+    ## To enable WiFi network connection
+    ## Note: IP allocation is dynamic and won't match the defined state as in eth0.
+    ##       This will require manually configuring the Ansible inventory file with
+    ##       the assigned IP values.
+    #     wifis:
+    #       wlan0:
+    #         optional: true
+    #         dhcp4: true
+    #         access-points:
+    #           'YOUR-SSID-NAME':
+    #             password: 'YOUR-NETWORK-PASSWORD'
 
 runcmd:
   - [sudo, netplan, apply]
