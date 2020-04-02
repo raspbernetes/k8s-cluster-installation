@@ -1,16 +1,16 @@
 # Instructions: https://kubernetes.io/docs/setup/production-environment/container-runtimes/#docker
 ---
-- name: Add an apt signing key for Docker
+- name: Add an apt signing key for Docker (1/7)
   apt_key:
     url: https://download.docker.com/linux/ubuntu/gpg
     state: present
 
-- name: Add apt repository for stable version
+- name: Add apt repository for stable version (2/7)
   apt_repository:
     repo: deb [arch=arm64] https://download.docker.com/linux/ubuntu {{ ansible_lsb.codename}} stable
     state: present
 
-- name: Install docker and its dependencies
+- name: Install docker and its dependencies (3/7)
   apt:
     name: '{{ packages }}'
     state: present
@@ -21,7 +21,7 @@
       - docker-ce-cli
       - containerd.io
 
-- name: Copy Docker Daemon Config
+- name: Copy Docker Daemon Config (4/7)
   copy:
     src: '{{ item }}'
     dest: '/etc/docker/daemon.json'
@@ -31,18 +31,18 @@
   with_items:
     - daemon.json
 
-- name: Create a Docker service
+- name: Create a Docker service (5/7)
   file:
     path: /etc/systemd/system/docker.service.d
     state: directory
     mode: '0755'
 
-- name: Reload service daemon-reload
+- name: Reload service daemon-reload (6/7)
   systemd:
     name: daemon-reload
     daemon_reload: yes
 
-- name: Restart service Docker
+- name: Restart service Docker (7/7)
   systemd:
     name: docker
     state: restarted
