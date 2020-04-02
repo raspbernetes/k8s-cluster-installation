@@ -1,6 +1,6 @@
 # Instructions: https://kubernetes.io/docs/setup/production-environment/container-runtimes/#containerd
 ---
-- name: Copy containerd config file
+- name: Copy containerd config file (1/9)
   copy:
     src: '{{ item }}'
     dest: '/etc/modules-load.d/containerd.conf'
@@ -10,27 +10,27 @@
   with_items:
     - containerd.conf
 
-- name: Load overlay
+- name: Load overlay (2/9)
   modprobe:
     name: overlay
     state: present
 
-- name: Load br_netfilter
+- name: Load br_netfilter (3/9)
   modprobe:
     name: br_netfilter
     state: present
 
-- name: Add an apt signing key for Docker
+- name: Add an apt signing key for Docker (4/9)
   apt_key:
     url: https://download.docker.com/linux/ubuntu/gpg
     state: present
 
-- name: Add apt repository for stable version
+- name: Add apt repository for stable version (5/9)
   apt_repository:
     repo: deb [arch=arm64] https://download.docker.com/linux/ubuntu {{ ansible_lsb.codename}} stable
     state: present
 
-- name: Install containerd package
+- name: Install containerd package (6/9)
   apt:
     name: '{{ packages }}'
     state: present
@@ -39,7 +39,7 @@
     packages:
       - containerd.io
 
-- name: Create containerd config directory
+- name: Create containerd config directory (7/9)
   become: true
   file:
     path: /etc/containerd/
@@ -48,10 +48,10 @@
     group: root
     mode: '0755'
 
-- name: Configure containerd
+- name: Configure containerd (8/9)
   shell: containerd config default > /etc/containerd/config.toml
 
-- name: Restart containered
+- name: Restart containered (9/9)
   systemd:
     name: containerd
     state: restarted

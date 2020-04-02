@@ -31,9 +31,10 @@ cni: weave
 # Configure Kubernetes container runtime (CRI)
 # Options: "containerd" or "docker"
 # Default: "docker"
-cri: containerd
+cri: docker
 
 # Network interface
+# Note: Flash SD with wlan0 configuration doesn't guarantee IP allocation is static and match as defined in eth0
 # Options: "eth0" or "wlan0"
 # Default: "eth0"
 network_interface: eth0
