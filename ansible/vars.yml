@@ -10,9 +10,9 @@ log2ram_size: 128M
 # Configure Kubernetes package versions independently - see docs for guidance
 # https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/install-kubeadm/#installing-kubeadm-kubelet-and-kubectl
 # Note: To check available versions for a package "apt list -a <package-name>""
-kubectl_version: 1.18.0-00
-kubelet_version: 1.18.0-00
-kubeadm_version: 1.18.0-00
+kubectl_version: 1.17.4-00
+kubelet_version: 1.17.4-00
+kubeadm_version: 1.17.4-00
 
 # Cloudflare options for exposing Kubernetes services via HTTPS/SSH
 cloudflared_kube_api_server_dns: 'api-server.raspbernetes.com'

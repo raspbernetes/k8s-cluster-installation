@@ -28,6 +28,7 @@
       - git
       - vim
       - curl
+      - net-tools
     install_recommends: false
     update_cache: true
     force_apt_get: true
@@ -66,13 +67,13 @@
     dest: /etc/log2ram.conf
 
 # Instructions: https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/install-kubeadm/#installing-kubeadm-kubelet-and-kubectl
-- name: Add apt signing key for Kubernetes
+- name: Add apt signing key for Kubernetes (1/6)
   apt_key:
     url: https://packages.cloud.google.com/apt/doc/apt-key.gpg
     state: present
 
 # Removed the following repo due to stability issues: https://apt.kubernetes.io/
-- name: Adding apt repository for Kubernetes
+- name: Adding apt repository for Kubernetes (2/6)
   apt_repository:
     repo: deb http://packages.cloud.google.com/apt/ kubernetes-xenial main
     state: present
@@ -80,7 +81,10 @@
   retries: 10
   until: kubernetes_repository is success
 
-- name: Install Kubernetes packages
+# To downgrade these packages use the following apt options:
+#   dpkg_options: force-downgrade
+#   force: yes
+- name: Install Kubernetes packages (3/6)
   apt:
     name: '{{ packages }}'
     state: present
@@ -94,17 +98,17 @@
       - kubeadm={{ kubeadm_version }}
       - kubectl={{ kubectl_version }}
 
-- name: Add apt-mark hold to avoid version skew issues. (1/3)
+- name: Add apt-mark hold to avoid version skew issues. (4/6)
   dpkg_selections:
     name: 'kubectl'
     selection: hold
 
-- name: Add apt-mark hold to avoid version skew issues. (2/3)
+- name: Add apt-mark hold to avoid version skew issues. (5/6)
   dpkg_selections:
     name: 'kubelet'
     selection: hold
 
-- name: Add apt-mark hold to avoid version skew issues. (3/3)
+- name: Add apt-mark hold to avoid version skew issues. (6/6)
   dpkg_selections:
     name: 'kubeadm'
     selection: hold
