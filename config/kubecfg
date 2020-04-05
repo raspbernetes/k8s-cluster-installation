@@ -1,0 +1,145 @@
+#!/usr/bin/env bash
+
+set -eo pipefail
+
+[[ -n $DEBUG ]] && set -x
+
+USER_NAME=cluster-admin-user
+CLUSTER_NAME=kubernetes
+
+usage(){
+    echo "Usage:"
+    echo "  gen [command]"
+    echo "    all           (a)     Approve a Kubernetes certificate signing request"
+    echo "    create        (c)     Create a Kubernetes certificate signing request and apply manifest"
+    echo "    approve       (p)     Approve a Kubernetes certificate signing request"
+    echo "    kubeconfig    (k)     Generates the kubeconfig - requires existing CSR has been approved and exists in the cluster"
+    echo "    show          (s)     Print the kubeconfig to STDOUT"
+    echo "    delete        (d)     Delete all locally generated files. This does not include resources created in the cluster"
+    echo ""
+    echo "  Configurable env vars:"
+    echo "    \$CLUSTER_NAME    Sets cluster name to use, this should match what is in your kubeconfig. Default: 'kubernetes'. (optional)"
+    echo "    \$USER_NAME       Sets the user name to use for RBAC, this will be the user provided with auth access. Default: 'cluster-admin-user'. (optional)"
+    echo "    \$DEBUG           Sets logging to verbose. (optional)"
+}
+
+if ! [ -x "$(command -v openssl)" ]; then
+    echo 'Error: openssl is not installed.' >&2
+    exit 1
+fi
+
+if ! [ -x "$(command -v kubectl)" ]; then
+    echo 'Error: kubectl is not installed.' >&2
+    exit 1
+fi
+
+all() {
+    create
+    approve
+    config
+    generate_kubeconfig
+    set_rbac_permissions
+}
+
+config() {
+    # After CSR is approved it takes a few seconds to update the resources
+    sleep 2
+    kubectl get csr k8s-access -o jsonpath='{.status.certificate}' | base64 --decode > k8s-access.crt
+    kubectl config view -o=jsonpath="{.clusters[?(@.name=='${CLUSTER_NAME}')].cluster.certificate-authority-data}" --raw | base64 --decode - > k8s-ca.crt
+}
+
+create() {
+    echo "Checking if key already exists..."
+    sed "s/\$CSR/${USER_NAME}/g" template.conf > user.conf
+    if [[ ! -f user.csr ]]; then
+        echo "Generating certificate signing request and key with OpenSSL..."
+        openssl req -new -config user.conf -keyout user.key -out user.csr
+    fi
+    CSR_OUTPUT=$(< user.csr base64 | tr -d '\n')
+    sed "s/\$CSR/${CSR_OUTPUT}/g" template.yaml > csr.yaml
+    echo "Generated kubernetes certificate signing request manifest..."
+    kubectl apply -f csr.yaml
+}
+
+approve() {
+    echo "Approving certificate signing request"
+    kubectl certificate approve k8s-access
+}
+
+create_kubeconfig() {
+    config
+    generate_kubeconfig
+}
+
+generate_kubeconfig() {
+    kubectl config set-cluster "$(kubectl config view -o jsonpath='{.clusters[0].name}')" \
+        --server="$(kubectl config view -o jsonpath='{.clusters[0].cluster.server}')" \
+        --certificate-authority=k8s-ca.crt \
+        --kubeconfig=k8s-config \
+        --embed-certs
+    kubectl config set-credentials "${USER_NAME}" \
+        --client-certificate=k8s-access.crt \
+        --client-key=user.key \
+        --kubeconfig=k8s-config \
+        --embed-certs
+    kubectl config set-context "${USER_NAME}@${CLUSTER_NAME}" \
+        --cluster="$(kubectl config view -o jsonpath='{.clusters[0].name}')" \
+        --user="${USER_NAME}" \
+        --kubeconfig=k8s-config
+    kubectl config use-context "${USER_NAME}@${CLUSTER_NAME}" \
+        --kubeconfig=k8s-config
+}
+
+print_kubeconfig() {
+    if [[ ! -f k8s-config ]]; then
+        echo "kubeconfig hasn't been created"
+        exit 1
+    fi
+    cat k8s-config
+    echo ""
+    echo "To use the generated kubeconfig simple pass \"--kubeconfig=k8s-config\" into the kubectl command"
+    echo "Examples:"
+    echo -e "\tkubectl get pods --kubeconfig=k8s-config"
+    echo -e "\tkubectl get nodes --kubeconfig=k8s-config"
+}
+
+set_rbac_permissions() {
+    echo "Setting admin permissions for user: ${USER_NAME}"
+    kubectl create clusterrolebinding ${USER_NAME} --namespace=default --clusterrole=admin --user=${USER_NAME}
+}
+
+delete() {
+    echo "Delete all locally generated files..."
+    rm -f user.csr user.key csr.yaml k8s-ca.crt k8s-config k8s-access.crt user.conf
+    echo "Delete Kubernetes resources manually using the following commands:"
+    echo -e "\tkubectl delete csr k8s-access"
+    echo -e "\tkubectl delete clusterrolebinding ${USER_NAME}"
+}
+
+case "${1:-}" in
+    all|a)
+        all
+        ;;
+    create|c)
+        create
+        ;;
+    approve|p)
+        approve
+        ;;
+    kubeconfig|k)
+        create_kubeconfig
+        ;;
+    show|s)
+        print_kubeconfig
+        ;;
+    rbac|r)
+        set_rbac_permissions
+        ;;
+    delete|d)
+        delete
+        ;;
+    *)
+        usage >&2
+        exit 1
+        ;;
+esac
