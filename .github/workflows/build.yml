@@ -17,7 +17,7 @@ jobs:
       - name: Lint Ansible
         uses: ansible/ansible-lint-action@master
         with:
-          targets: './ansible'
+          targets: './ansible/playbooks/*.yml'
 
       - name: Validate Cloud-Config
         run: |
