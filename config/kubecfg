@@ -57,11 +57,11 @@ create() {
     CSR_OUTPUT=$(< "${USER_NAME}.csr" base64 | tr -d '\n')
     sed "s/\$CSR/${CSR_OUTPUT}/g" template.yaml > csr.yaml
     echo "Generated kubernetes certificate signing request manifest..."
-    kubectl apply -f csr.yaml
 }
 
 approve() {
     echo "Approving certificate signing request"
+    kubectl apply -f csr.yaml
     kubectl certificate approve access-request
 }
 
@@ -76,8 +76,8 @@ generate_kubeconfig() {
     #     --server="https://api-server.raspbernetes.com" \
     #     --insecure-skip-tls-verify \
     #     --kubeconfig=kube-config
-    kubectl config set-cluster "$(kubectl config view -o jsonpath='{.clusters[0].name}')" \
-        --server="$(kubectl config view -o jsonpath='{.clusters[0].cluster.server}')" \
+    kubectl config set-cluster "${CLUSTER_NAME}" \
+        --server="$(kubectl config view -o jsonpath="{.clusters[?(@.name=='${CLUSTER_NAME}')].cluster.server}")" \
         --certificate-authority=ca.pem \
         --kubeconfig=kube-config \
         --embed-certs
@@ -87,7 +87,7 @@ generate_kubeconfig() {
         --kubeconfig=kube-config \
         --embed-certs
     kubectl config set-context "${USER_NAME}@${CLUSTER_NAME}" \
-        --cluster="$(kubectl config view -o jsonpath='{.clusters[0].name}')" \
+        --cluster="${CLUSTER_NAME}" \
         --user="${USER_NAME}" \
         --namespace=default \
         --kubeconfig=kube-config
