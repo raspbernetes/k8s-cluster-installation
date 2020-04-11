@@ -8,6 +8,18 @@ This guide will walk through the steps required to bootstrap a running Kubernete
 
 > Note: If you wish to use Raspbian Lite please use the following [guide](raspbian/README.md).
 
+## Directory Structure
+
+```bash
+.
+├── .github     # Github workflows and CODEOWNERS files
+├── ansible     # Ansible playbook to run after the RPis have been flashed
+├── cloudflare  # k8s resources for cloudflare auth healthcheck configuration
+├── docs        # Documentation
+├── rasbian     # k8s bootstrap scripts (deprecated)
+└── setup       # Cloud init scripts used to flash RPis
+```
+
 ## Prerequisites
 
 Prior to getting started you will need to have several things done first. Assuming you already have the [hardware](#Hardware) available, you will need to do the following:
@@ -22,7 +34,7 @@ Once the Raspberry Pi's are running and all the prerequisites have been complete
 
 Open the [inventory file](ansible/inventory) - each machine that will be joining the Kubernetes cluster must be defined as either a master or worker node. To leverage the highly available topology configuration you would ideally have 3 masters available as a minimum, otherwise 1 master node is fine, however, it won't be highly available.
 
-> Note: Ensure the `hostname` matches what the machine was given when flashed the SD card and `ansible_host` matches the IP allocated to the host on your prefered subnet.
+> Note: Ensure the `hostname` matches what the machine was given when flashed the SD card and `ansible_host` matches the IP allocated to the host on your preferred subnet.
 
 When the inventory has been configured with all the hosts that will be joining the Kubernetes cluster we can run the following command to verify SSH connectivity can be established.
 
@@ -89,11 +101,20 @@ k8s-worker-01   Ready      <none>   16s     v1.17.4
 
 > If you weren't lucky enough to have everything successful on the first attempt please open an [issue](https://github.com/raspbernetes/k8s-cluster-installation/issues/new) with as much context and we'll try to solve and improve for future people.
 
+## Network topology
+
+|IP|Function|
+| :---: | :---: |
+|192.168.1.1|Router|
+|192.168.1.121|master (k8s-master-01)|
+|192.168.1.122|master (k8s-master-02)|
+|192.168.1.123|master (k8s-master-03)|
+|192.168.1.131|worker (k8s-worker-01)|
+
 ## Architecture
 
-The following diagram demonstrates the overall cluster design which will be implemented via the Ansible automation if you follow the above guide. 
+The following diagram demonstrates the overall cluster design which will be implemented via the Ansible automation if you follow the above guide.
 
 > To obtain a highly available Kubernetes cluster we've chosen to use the [stacked etcd toplogy](https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/ha-topology/#stacked-etcd-topology). This is the default configuration as the [external etcd cluster](https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/ha-topology/#external-etcd-topology) alternative requires additional compute resources.
 
 <img src="./docs/images/raspbernetes-cluster-design.png"/>
-
