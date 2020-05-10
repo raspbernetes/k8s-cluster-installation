@@ -6,6 +6,6 @@
     - ../vars.yml
 
   roles:
-    - common
-    - cri
-    - iptables
+    - ../roles/common
+    - ../roles/cri
+    - ../roles/iptables
