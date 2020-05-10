@@ -43,12 +43,13 @@
     dest: /etc/cloudflared/config.yml
   register: cloudflared_config
 
-- name: Initialize cloudflared tunnel to api-server
-  command: cloudflared service install
+# Disabled due to requiring manual intervention to download the cert.pem on startup
+# - name: Initialize cloudflared tunnel to api-server
+#   command: cloudflared service install
 
-- name: Enable cloudflared service
-  systemd:
-    name: cloudflared
-    daemon_reload: yes
-    enabled: yes
-    state: restarted
+# - name: Enable cloudflared service
+#   systemd:
+#     name: cloudflared
+#     daemon_reload: yes
+#     enabled: yes
+#     state: restarted
