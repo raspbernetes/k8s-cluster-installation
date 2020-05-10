@@ -3,25 +3,28 @@ name: build
 on: [push]
 
 jobs:
-  build:
+  validation:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v1
 
       - name: Shellcheck
-        uses: azohra/shell-linter@v0.2.0
+        uses: reviewdog/action-shellcheck@v1
         with:
-          path: 'raspbernetes'
-
-      - name: Lint Ansible
-        uses: ansible/ansible-lint-action@master
-        with:
-          targets: './ansible'
-          args: '--exclude ./ansible/handlers'
+          reporter: github-check
+          path: '.'
+          pattern: '*.sh'
+          exclude: './.git/*'
 
       - name: Validate Cloud-Config
         run: |
           sudo apt-get update -y
           sudo apt-get install -y cloud-init
           cloud-init devel schema --config-file ./setup/cloud-config.yml
+
+      - name: Lint Ansible
+        uses: ansible/ansible-lint-action@master
+        with:
+          targets: './ansible'
+          args: '--exclude ./ansible/handlers'
