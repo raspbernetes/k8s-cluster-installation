@@ -128,11 +128,10 @@
     state: touch
   with_items:
     - /boot/firmware/nobtcmd.txt
-    - /boot/firmware/syscfg.txt
 
 - name: Enable required cgroup features
   lineinfile:
-    path: /boot/firmware/nobtcmd.txt
+    path: /boot/firmware/cmdline.txt
     backrefs: true
     regexp: '^(.*fixrtc)$'
     line: '\1 cgroup_enable=cpuset cgroup_memory=1 cgroup_enable=memory'
