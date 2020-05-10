@@ -1,6 +1,7 @@
 # Set /proc/sys/net/bridge/bridge-nf-call-iptables to 1 by running
 # sysctl net.bridge.bridge-nf-call-iptables=1 to pass bridged IPv4 traffic to iptables’ chains.
 # This is a requirement for some CNI plugins to work.
+# https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/install-kubeadm/#letting-iptables-see-bridged-traffic
 ---
 - name: Update bridged IPv4 traffic to iptables' chains
   sysctl:
