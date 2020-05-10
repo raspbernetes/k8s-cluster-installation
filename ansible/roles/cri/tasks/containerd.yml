@@ -25,9 +25,10 @@
     url: https://download.docker.com/linux/ubuntu/gpg
     state: present
 
+# Hardcoding due to the 20.04 ubuntu dist not currently available.
 - name: Add apt repository for stable version (5/9)
   apt_repository:
-    repo: deb [arch=arm64] https://download.docker.com/linux/ubuntu {{ ansible_lsb.codename }} stable
+    repo: deb [arch=arm64] https://download.docker.com/linux/ubuntu xenial stable
     state: present
 
 - name: Install containerd package (6/9)

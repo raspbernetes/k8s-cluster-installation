@@ -6,4 +6,4 @@
     - ../vars.yml
 
   roles:
-    - workers
+    - ../roles/workers
