@@ -4,12 +4,14 @@
 # Currently this role assumes you've already performed the cloudflared login steps.
 - name: Install golang packages
   apt:
-    name: 'golang-go'
+    name:
+      - 'golang-go'
+      - 'make'
     state: present
     update_cache: yes
-  register: apt_install_golang
+  register: apt_install_cloudflared_deps
   retries: 5
-  until: apt_install_golang is success
+  until: apt_install_cloudflared_deps is success
 
 - name: Clone cloudflared repository locally
   git:
