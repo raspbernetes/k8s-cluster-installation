@@ -14,8 +14,8 @@ sudo chmod +x /usr/local/bin/flash
 ## Download and extract the image
 
 ```bash
-curl -L "http://cdimage.ubuntu.com/releases/eoan/release/ubuntu-19.10.1-preinstalled-server-arm64+raspi3.img.xz" -o ~/Downloads/ubuntu-19.10.1-preinstalled-server-arm64+raspi3.img.xz
-unxz -T 0 ~/Downloads/ubuntu-19.10.1-preinstalled-server-arm64+raspi3.img.xz
+curl -L "http://cdimage.ubuntu.com/releases/focal/release/ubuntu-20.04-preinstalled-server-arm64+raspi.img.xz" -o ~/Downloads/ubuntu-20.04-preinstalled-server-arm64+raspi.img.xz
+unxz -T 0 ~/Downloads/ubuntu-20.04-preinstalled-server-arm64+raspi.img.xz
 ```
 
 ## Flash
@@ -23,7 +23,7 @@ unxz -T 0 ~/Downloads/ubuntu-19.10.1-preinstalled-server-arm64+raspi3.img.xz
 ```bash
 flash \
     --userdata setup/cloud-config.yml \
-    ~/Downloads/ubuntu-19.10.1-preinstalled-server-arm64+raspi3.img
+    ~/Downloads/ubuntu-20.04-preinstalled-server-arm64+raspi.img
 ```
 
 ## Boot
