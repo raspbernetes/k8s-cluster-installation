@@ -84,7 +84,7 @@ env ANSIBLE_CONFIG=ansible.cfg ansible-playbook \
 IF there was no errors you should be able to execute the following command to check the status of the nodes in the cluster:
 
 ```bash
-k get nodes --kubeconfig ansible/playbooks/output/k8s-config.yam
+k get nodes --kubeconfig ansible/playbooks/output/k8s-config.yaml
 ```
 
 Output:
