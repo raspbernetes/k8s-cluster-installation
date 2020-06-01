@@ -7,5 +7,6 @@
 
   roles:
     - ../roles/common
+    - ../roles/openebs
     - ../roles/cri
     - ../roles/iptables
