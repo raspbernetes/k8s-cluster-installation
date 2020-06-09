@@ -15,7 +15,7 @@
 
 - name: Clone cloudflared repository locally
   git:
-    repo: https://github.com/xUnholy/cloudflared.git
+    repo: https://github.com/cloudflare/cloudflared.git
     dest: cloudflared
 
 - name: Compile cloudflared binary
@@ -45,13 +45,22 @@
     dest: /etc/cloudflared/config.yml
   register: cloudflared_config
 
-# Disabled due to requiring manual intervention to download the cert.pem on startup
-# - name: Initialize cloudflared tunnel to api-server
-#   command: cloudflared service install
+- name: Copy cloudflared cert
+  copy:
+    src: '{{ item }}'
+    dest: '/etc/cloudflared/cert.pem'
+    owner: root
+    group: root
+    mode: '0644'
+  with_items:
+    - cert.pem
 
-# - name: Enable cloudflared service
-#   systemd:
-#     name: cloudflared
-#     daemon_reload: yes
-#     enabled: yes
-#     state: restarted
+- name: Initialize cloudflared tunnel to api-server
+  command: cloudflared service install
+
+- name: Enable cloudflared service
+  systemd:
+    name: cloudflared
+    daemon_reload: yes
+    enabled: yes
+    state: restarted

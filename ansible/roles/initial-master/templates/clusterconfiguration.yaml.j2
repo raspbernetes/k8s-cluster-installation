@@ -1,0 +1,53 @@
+---
+apiVersion: kubeadm.k8s.io/v1beta2
+kind: ClusterConfiguration
+kubernetesVersion: v1.18.0
+clusterName: kubernetes
+certificatesDir: /etc/kubernetes/pki
+controlPlaneEndpoint: "{{ load_balancer_dns }}:{{ load_balancer_port }}"
+apiServer:
+  timeoutForControlPlane: 4m0s
+  certSANs:
+  - "{{ ingress_sans }}"
+  extraArgs:
+    enable-admission-plugins: "NodeRestriction,EventRateLimit,AlwaysPullImages,PodSecurityPolicy"
+    authorization-mode: "Node,RBAC"
+    anonymous-auth: false
+    audit-log-path: /var/log/kubernetes/audit.log
+    audit-log-maxage: 30
+    audit-log-maxbackup: 10
+    audit-log-maxsize: 100
+    kubelet-https: true
+    insecure-port: 0
+    secure-port: 6443
+    profiling: false
+    request-timeout: 60
+    service-account-lookup: true
+    tls-cipher-suites: "TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305,TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384,TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305,TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384"
+controllerManager:
+  extraArgs:
+    bind-address: 127.0.0.1
+    terminated-pod-gc-threshold: 50
+    profiling: false
+    use-service-account-credentials: true
+    feature-gates: "RotateKubeletServerCertificate"
+dns:
+  type: CoreDNS
+etcd:
+  local:
+    dataDir: /var/lib/etcd
+    serverCertSANs:
+    - "{{ ingress_sans }}"
+    extraArgs:
+      client-cert-auth: true
+      peer-client-cert-auth: true
+      peer-auto-tls: false
+imageRepository: k8s.gcr.io
+networking:
+  dnsDomain: cluster.local
+  serviceSubnet: 10.96.0.0/12
+scheduler:
+  extraArgs:
+    bind-address: 127.0.0.1
+    profiling: false
+

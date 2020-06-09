@@ -1,6 +1,6 @@
-hostname: '{{ cloudflared_kube_api_server_dns }}'
-url: 'tcp://{{ load_balancer_dns }}:{{ load_balancer_port }}'
-origin-server-name: '{{ cloudflared_ingress_sans }}'
-lb-pool: master-pool
+hostname: '{{ kube_api_server_dns }}'
+url: 'http://{{ nginx_ingress_dns }}:{{ nginx_port }}'
+origin-server-name: '{{ ingress_sans }}'
+lb-pool: master-node-pool
 logfile: /var/log/cloudflared.log
 loglevel: info
