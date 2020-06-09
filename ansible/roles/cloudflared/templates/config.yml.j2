@@ -1,4 +1,4 @@
-hostname: '{{ kube_api_server_dns }}'
+hostname: '{{ ingress_dns }}'
 url: 'http://{{ nginx_ingress_dns }}:{{ nginx_port }}'
 origin-server-name: '{{ ingress_sans }}'
 lb-pool: master-node-pool
