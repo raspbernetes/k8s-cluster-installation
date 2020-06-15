@@ -3,4 +3,4 @@ url: 'http://{{ nginx_ingress_dns }}:{{ nginx_port }}'
 origin-server-name: '{{ ingress_sans }}'
 lb-pool: master-node-pool
 logfile: /var/log/cloudflared.log
-loglevel: info
+loglevel: debug

@@ -15,7 +15,7 @@ kubelet_version: 1.18.2-00
 kubeadm_version: 1.18.2-00
 
 # Cloudflare options for exposing Kubernetes services via HTTPS/SSH
-ingress_dns: 'raspbernetes.com'
+ingress_dns: 'ingress.raspbernetes.com'
 ingress_sans: '*.raspbernetes.com'
 
 # Nginx Ingress IP and port

@@ -10,7 +10,7 @@ apiServer:
   certSANs:
   - "{{ ingress_sans }}"
   extraArgs:
-    enable-admission-plugins: "NodeRestriction,EventRateLimit,AlwaysPullImages,PodSecurityPolicy"
+    enable-admission-plugins: "NodeRestriction,EventRateLimit,AlwaysPullImages,PodSecurityPolicy,ImagePolicyWebhook"
     authorization-mode: "Node,RBAC"
     anonymous-auth: false
     audit-log-path: /var/log/kubernetes/audit.log
