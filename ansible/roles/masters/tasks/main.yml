@@ -1,5 +1,5 @@
 ---
-- name: Pull Kubernetes Images (3/3)
+- name: Pull Kubernetes Images
   become: true
   command: kubeadm config images pull
   register: kubeadm_pull

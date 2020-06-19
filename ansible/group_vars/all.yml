@@ -3,9 +3,6 @@
 # Note: Should match the user configured via cloud-init
 ansible_user: pi
 
-# CAUTION: Overclock Raspberry Pi is disabled by default. Overriding these values may damage hardware.
-common_rpi_overclock: true
-
 # Configure Log2ram version and memory allocation
 log2ram_version: v1.4
 log2ram_size: 128M

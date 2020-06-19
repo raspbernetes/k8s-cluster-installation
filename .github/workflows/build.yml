@@ -25,6 +25,8 @@ jobs:
 
       - name: Lint Ansible
         uses: ansible/ansible-lint-action@master
+        env:
+          ANSIBLE_CONFIG: ansible/ansible.cfg
         with:
           targets: './ansible'
           args: '--exclude ./ansible/handlers'

@@ -13,7 +13,7 @@
 
 - name: install common packages
   apt:
-    name: "{{ common_packages }}"
+    name: '{{ common_packages }}'
     install_recommends: false
     update_cache: yes
     cache_valid_time: 3600
@@ -147,7 +147,7 @@
 
 - name: enable required cgroup features
   lineinfile:
-    path: "{{ common_rpi_cmd_file }}"
+    path: '{{ common_rpi_cmd_file }}'
     state: present
     backrefs: true
     regexp: '^(.*fixrtc)$'

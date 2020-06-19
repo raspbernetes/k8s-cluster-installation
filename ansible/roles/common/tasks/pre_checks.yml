@@ -5,7 +5,7 @@
       - common_packages | type_debug == 'list'
     fail_msg:
       - "Variable 'common_packages' should be of type 'list'"
-      - "Type is: {{ common_packages | type_debug }}"
+      - 'Type is: {{ common_packages | type_debug }}'
       - "Value is: {{ common_packages | default('undefined') }}"
 
 - name: 'validate variable : common_rpi_cmd_file'
@@ -14,7 +14,7 @@
       - common_rpi_cmd_file | type_debug == 'AnsibleUnicode'
     fail_msg:
       - "Variable 'common_rpi_cmd_file' should be of type AnsibleUnicode (string)"
-      - "Type is: {{ common_rpi_cmd_file | type_debug }}"
+      - 'Type is: {{ common_rpi_cmd_file | type_debug }}'
       - "Value is: {{ common_rpi_cmd_file | default('undefined') }}"
 
 - name: 'validate variable : common_rpi_config_file'
@@ -23,7 +23,7 @@
       - common_rpi_config_file | type_debug == 'AnsibleUnicode'
     fail_msg:
       - "Variable 'common_rpi_config_file' should be of type AnsibleUnicode (string)"
-      - "Type is: {{ common_rpi_config_file | type_debug }}"
+      - 'Type is: {{ common_rpi_config_file | type_debug }}'
       - "Value is: {{ common_rpi_config_file | default('undefined') }}"
 
 - name: 'validate variable : common_rpi_gpu_memory'
@@ -34,7 +34,7 @@
       - common_rpi_gpu_memory <= 944
     fail_msg:
       - "Variable 'common_rpi_gpu_memory' should be of type 'int' between 16 and 944"
-      - "Type is: {{ common_rpi_gpu_memory | type_debug }}"
+      - 'Type is: {{ common_rpi_gpu_memory | type_debug }}'
       - "Value is: {{ common_rpi_gpu_memory | default('undefined') }}"
 
 - name: 'validate variable : common_rpi_overclock'
@@ -43,7 +43,7 @@
       - common_rpi_overclock | type_debug == 'bool'
     fail_msg:
       - "Variable 'common_rpi_overclock' should be of type 'bool'"
-      - "Type is: {{ common_rpi_overclock | type_debug }}"
+      - 'Type is: {{ common_rpi_overclock | type_debug }}'
       - "Value is: {{ common_rpi_overclock | default('undefined') }}"
 
 - name: 'validate variable : common_rpi_overvoltage'
@@ -54,7 +54,7 @@
       - common_rpi_overvoltage <= 6
     fail_msg:
       - "Variable 'common_rpi_overvoltage' should be of type 'int' between -16 and 6"
-      - "Type is: {{ common_rpi_overvoltage | type_debug }}"
+      - 'Type is: {{ common_rpi_overvoltage | type_debug }}'
       - "Value is: {{ common_rpi_overvoltage | default('undefined') }}"
 
 - name: 'validate variable : common_rpi_arm_frequency'
@@ -63,7 +63,7 @@
       - common_rpi_arm_frequency | type_debug == 'int'
     fail_msg:
       - "Variable 'common_rpi_arm_frequency' should be of type 'int'"
-      - "Type is: {{ common_rpi_arm_frequency | type_debug }}"
+      - 'Type is: {{ common_rpi_arm_frequency | type_debug }}'
       - "Value is: {{ common_rpi_arm_frequency | default('undefined') }}"
 
 - name: 'validate variable : common_reboot_handler_enabled'
@@ -72,5 +72,5 @@
       - common_reboot_handler_enabled | type_debug == 'bool'
     fail_msg:
       - "Variable 'common_reboot_handler_enabled' should be of type 'bool'"
-      - "Type is: {{ common_reboot_handler_enabled | type_debug }}"
+      - 'Type is: {{ common_reboot_handler_enabled | type_debug }}'
       - "Value is: {{ common_reboot_handler_enabled | default('undefined') }}"
