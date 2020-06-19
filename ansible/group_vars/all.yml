@@ -1,10 +1,10 @@
 ---
 # Configure user Ansible uses to ssh into the machine
 # Note: Should match the user configured via cloud-init
-ansible_user: pi
+ansible_user: alarm
 
 # CAUTION: Overclock Raspberry Pi is disabled by default. Overriding these values may damage hardware.
-overclock: false
+common_rpi_overclock: true
 
 # Configure Log2ram version and memory allocation
 log2ram_version: v1.4

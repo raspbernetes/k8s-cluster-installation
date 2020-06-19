@@ -1,0 +1,20 @@
+---
+# Role: common
+common_packages:
+  - rxvt-unicode-terminfo
+  - fakeroot
+  - binutils
+  - make
+  - gcc
+  - bash-completion
+  - inetutils
+  - bind-tools
+  - ca-certificates
+  - zip
+  - jq
+  - git
+  - vim
+  - curl
+  - net-tools
+common_rpi_cmd_file: /boot/cmdline.txt
+common_rpi_config_file: /boot/config.txt
