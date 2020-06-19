@@ -1,20 +1,17 @@
 ---
 - hosts: masters
   become: true
-
-  vars_files:
-    - ../vars.yml
-
   roles:
-    - ../roles/keepalived
-    - ../roles/haproxy
-    - ../roles/masters
+    - keepalived
+    - haproxy
+    - kubernetes
+    - masters
     - {
-        role: ../roles/initial-master,
+        role: initial-master,
         when: "groups['masters'][0] == inventory_hostname",
       }
-    - { role: ../roles/cni, when: "groups['masters'][0] == inventory_hostname" }
+    - { role: cni, when: "groups['masters'][0] == inventory_hostname" }
     - {
-        role: ../roles/other-masters,
+        role: other-masters,
         when: "groups['masters'][0] != inventory_hostname",
       }

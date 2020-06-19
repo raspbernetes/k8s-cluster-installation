@@ -37,3 +37,6 @@ argo
 
 # Test Inventory
 **/test-inventory
+
+# IDE
+.idea/

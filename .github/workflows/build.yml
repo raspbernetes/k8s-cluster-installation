@@ -1,6 +1,6 @@
 name: build
 
-on: [push]
+on: [pull_request]
 
 jobs:
   validation:
@@ -12,7 +12,6 @@ jobs:
       - name: Shellcheck
         uses: reviewdog/action-shellcheck@v1
         with:
-          path: 'raspbernetes'
           reporter: github-check
           path: '.'
           pattern: '*.sh'
@@ -26,6 +25,7 @@ jobs:
 
       - name: Lint Ansible
         uses: ansible/ansible-lint-action@master
+        env:
+          ANSIBLE_CONFIG: ansible/ansible.cfg
         with:
-          targets: './ansible'
-          args: '--exclude ./ansible/handlers'
+          targets: './ansible/playbooks/*.yml'

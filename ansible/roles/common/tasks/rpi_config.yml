@@ -1,0 +1,26 @@
+---
+- name: set gpu_mem
+  lineinfile:
+    path: '{{ common_rpi_config_file }}'
+    state: present
+    regexp: '^gpu_mem'
+    line: 'gpu_mem={{ common_rpi_gpu_memory }}'
+  notify: reboot hosts
+
+- name: 'overclock : set over_volatage (1/2)'
+  lineinfile:
+    path: '{{ common_rpi_config_file }}'
+    state: present
+    regexp: '^over_voltage'
+    line: 'over_voltage={{ common_rpi_overvoltage }}'
+  when: common_rpi_overclock
+  notify: reboot hosts
+
+- name: 'overclock : set arm_freq (2/2)'
+  lineinfile:
+    path: '{{ common_rpi_config_file }}'
+    state: present
+    regexp: '^arm_freq'
+    line: 'arm_freq={{ common_rpi_arm_frequency }}'
+  when: common_rpi_overclock
+  notify: reboot hosts
