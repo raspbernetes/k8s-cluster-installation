@@ -187,6 +187,30 @@
     - swap
     - none
 
+- name: 'Overclock: Set gpu_mem (1/3)'
+  lineinfile:
+    path: /boot/firmware/syscfg.txt
+    state: present
+    regexp: '^gpu_mem'
+    line: 'gpu_mem=16'
+  when: overclock = true
+
+- name: 'Overclock: Set over_volatage (2/3)'
+  lineinfile:
+    path: /boot/firmware/syscfg.txt
+    state: present
+    regexp: '^over_voltage'
+    line: 'over_voltage=6'
+  when: overclock = true
+
+- name: 'Overclock: Set arm_freq (3/3)'
+  lineinfile:
+    path: /boot/firmware/syscfg.txt
+    state: present
+    regexp: '^arm_freq'
+    line: 'arm_freq=2000'
+  when: overclock = true
+
 - name: Rebooting hosts
   reboot:
     msg: 'Pis are being rebooted'
