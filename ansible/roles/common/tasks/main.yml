@@ -193,7 +193,7 @@
     state: present
     regexp: '^gpu_mem'
     line: 'gpu_mem=16'
-  when: overclock = true
+  when: overclock
 
 - name: 'Overclock: Set over_volatage (2/3)'
   lineinfile:
@@ -201,7 +201,7 @@
     state: present
     regexp: '^over_voltage'
     line: 'over_voltage=6'
-  when: overclock = true
+  when: overclock
 
 - name: 'Overclock: Set arm_freq (3/3)'
   lineinfile:
@@ -209,7 +209,7 @@
     state: present
     regexp: '^arm_freq'
     line: 'arm_freq=2000'
-  when: overclock = true
+  when: overclock
 
 - name: Rebooting hosts
   reboot:
