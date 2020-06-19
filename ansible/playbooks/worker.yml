@@ -6,4 +6,5 @@
     - ../vars.yml
 
   roles:
+    - ../roles/kubernetes
     - ../roles/workers

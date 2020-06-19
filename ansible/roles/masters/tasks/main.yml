@@ -1,15 +1,4 @@
 ---
-- name: Reset Kubernetes Master (1/3)
-  become: true
-  command: kubeadm reset -f
-  register: kubeadm_reset
-
-- name: Cleanup /etc/cni/net.d file (2/3)
-  become: true
-  file:
-    path: /etc/cni/net.d
-    state: absent
-
 - name: Pull Kubernetes Images (3/3)
   become: true
   command: kubeadm config images pull

@@ -8,6 +8,7 @@
   roles:
     - ../roles/keepalived
     - ../roles/haproxy
+    - ../roles/kubernetes
     - ../roles/masters
     - {
         role: ../roles/initial-master,
