@@ -28,5 +28,4 @@ jobs:
         env:
           ANSIBLE_CONFIG: ansible/ansible.cfg
         with:
-          targets: './ansible'
-          args: '--exclude ./ansible/handlers'
+          targets: './ansible/playbooks/*.yml'
