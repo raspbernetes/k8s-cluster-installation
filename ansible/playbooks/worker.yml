@@ -1,10 +1,6 @@
 ---
 - hosts: workers
   become: true
-
-  vars_files:
-    - ../vars.yml
-
   roles:
-    - ../roles/kubernetes
-    - ../roles/workers
+    - kubernetes
+    - workers
