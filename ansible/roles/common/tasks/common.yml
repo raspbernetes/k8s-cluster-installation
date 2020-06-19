@@ -1,0 +1,13 @@
+---
+- name: disable swap since kubernetes can't work with swap enabled (1/2)
+  command: swapoff -a
+  when: ansible_swaptotal_mb > 0
+
+- name: disable swap in /etc/fstab since kubernetes can't work with swap enabled (2/2)
+  mount:
+    name: '{{ item }}'
+    fstype: swap
+    state: absent
+  with_items:
+    - swap
+    - none
