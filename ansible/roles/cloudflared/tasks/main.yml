@@ -17,21 +17,22 @@
   git:
     repo: https://github.com/xUnholy/cloudflared.git
     dest: cloudflared
+    version: master
 
 - name: Compile cloudflared binary
-  command: make cloudflared
-  args:
+  make:
     chdir: cloudflared
-    creates: cloudflared
+    target: cloudflared
+  register: cloudflared_binary
 
 # TODO: Don't copy if it already exists? OR perhaps update only if newer version?
 - name: Copy cloudflared binary to /usr/local/bin
-  command: cp cloudflared /usr/local/bin
-  args:
+  command:
+    cmd: cp cloudflared /usr/local/bin
     chdir: cloudflared
+  when: cloudflared_binary.changed
 
 - name: Create cloudflared config directory
-  become: true
   file:
     path: /etc/cloudflared
     state: directory

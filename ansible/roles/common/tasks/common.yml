@@ -8,6 +8,6 @@
     name: '{{ item }}'
     fstype: swap
     state: absent
-  with_items:
+  loop:
     - swap
     - none

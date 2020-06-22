@@ -7,7 +7,7 @@
     owner: root
     group: root
     mode: '0644'
-  with_items:
+  loop:
     - containerd.conf
 
 - name: Load overlay (2/9)

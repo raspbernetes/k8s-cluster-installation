@@ -28,7 +28,7 @@
     owner: root
     group: root
     mode: 0644
-  with_items:
+  loop:
     - daemon.json
 
 - name: Create a Docker service (5/7)
