@@ -1,33 +1,32 @@
 ---
 # TODO: Only pass `--apiserver-cert-extra-sans {{ cloudflared_ingress_sans }}` if required
 - name: Initialize Master
-  become: true
-  command: 'kubeadm init --control-plane-endpoint {{ load_balancer_dns }}:{{ load_balancer_port }} --upload-certs --apiserver-cert-extra-sans {{ cloudflared_ingress_sans }} --v=5'
+  command:
+    cmd: "kubeadm init --control-plane-endpoint {{ load_balancer_dns }}:{{ load_balancer_port }} --upload-certs --apiserver-cert-extra-sans {{ cloudflared_ingress_sans }}"
+    creates: /etc/kubernetes/admin.conf
   register: kubeadm_init
 
+
 - name: Create Kubernetes config directory
-  become: true
   file:
     path: /root/.kube/
     state: directory
     owner: root
     group: root
-    mode: '0755'
+    mode: 0755
 
 - name: Copy admin.conf to config directory
-  become: true
   copy:
     src: /etc/kubernetes/admin.conf
     dest: /root/.kube/config
     owner: root
     group: root
-    mode: '0755'
+    mode: 0755
     remote_src: yes
     backup: yes
   when: kubeadm_init
 
 - name: Copy Kubernetes config locally
-  become: true
   fetch:
     dest: output/k8s-config.yaml
     flat: yes
@@ -35,27 +34,23 @@
 
 # Generate master join command
 - name: Generate Kubernetes master join key
-  become: true
-  command: 'kubeadm init phase upload-certs --upload-certs'
+  command: "kubeadm init phase upload-certs --upload-certs"
   register: kubeadm_init_phase
 
 - name: Generate k8s master join token
-  become: true
-  changed_when: false
-  command: 'kubeadm token create --print-join-command --certificate-key {{ kubeadm_init_phase.stdout_lines[-1] }}'
+  command: "kubeadm token create --print-join-command --certificate-key {{ kubeadm_init_phase.stdout_lines[-1] }}"
   register: k8s_master_join_command
 
 - name: Create Kubernetes master join token file
   copy:
-    content: '{{ k8s_master_join_command.stdout }}'
+    content: "{{ k8s_master_join_command.stdout }}"
     owner: root
     group: root
-    mode: '0755'
+    mode: 0755
     dest: k8s-master-join-command
     backup: yes
 
 - name: Copy Kubernetes master join token locally
-  become: true
   fetch:
     dest: output/k8s-master-join-command
     flat: yes
@@ -63,22 +58,19 @@
 
 # Generate worker join command
 - name: Generate Kubernetes worker join token
-  become: true
-  changed_when: false
   command: kubeadm token create --print-join-command
   register: k8s_worker_join_command
 
 - name: Create Kubernetes worker join token file
   copy:
-    content: '{{ k8s_worker_join_command.stdout }}'
+    content: "{{ k8s_worker_join_command.stdout }}"
     owner: root
     group: root
-    mode: '0755'
+    mode: 0755
     dest: k8s-worker-join-command
     backup: yes
 
 - name: Copy Kubernetes worker join token locally
-  become: true
   fetch:
     dest: output/k8s-worker-join-command
     flat: yes

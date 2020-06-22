@@ -1,5 +1,5 @@
 ---
-- name: reboot hosts
+- name: "reboot hosts"
   reboot:
     msg: "RPi's are being rebooted"
     reboot_timeout: '{{ reboot_timeout | default(600) }}'

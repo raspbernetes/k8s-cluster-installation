@@ -4,8 +4,6 @@
   roles:
     - keepalived
     - haproxy
-    - kubernetes
-    - masters
     - {
         role: initial-master,
         when: "groups['masters'][0] == inventory_hostname",
