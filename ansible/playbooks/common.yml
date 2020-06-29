@@ -8,5 +8,4 @@
     - common
     - openebs
     - cri
-    - iptables
     - kubernetes
