@@ -1,0 +1,20 @@
+---
+- name: 'debian : install haproxy'
+  apt:
+    name: haproxy
+    install_recommends: false
+    update_cache: true
+    force_apt_get: true
+  register: apt_install_haproxy
+  retries: 5
+  until: apt_install_haproxy is success
+  when: ansible_os_family | lower == 'debian'
+
+- name: 'archlinux : install haproxy'
+  pacman:
+    name: haproxy
+    update_cache: true
+  register: pacman_install_haproxy
+  retries: 5
+  until: pacman_install_haproxy is success
+  when: ansible_os_family | lower == 'archlinux'

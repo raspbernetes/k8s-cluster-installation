@@ -3,7 +3,7 @@
 ####################
 
 frontend front-api-proxy
-    bind 0.0.0.0:8443
+    bind {{ keepalived_vip}}:8443
     bind 127.0.0.1:8443
     mode tcp
     option tcplog
@@ -13,9 +13,10 @@ frontend front-api-proxy
 backend kube-api
     mode tcp
     option tcp-check
+    timeout connect 10s
     timeout server 4h
     balance roundrobin
     default-server inter 10s downinter 5s rise 2 fall 2 slowstart 60s maxconn 250 maxqueue 256 weight 100
-{% for item in groups['masters'] %}
-    server {{ item }} {{hostvars[item]['ansible_host']}}:6443 check
+{% for host in groups['masters'] %}
+    server {{ hostvars[host]['ansible_hostname'] }} {{ hostvars[host]['ansible_host'] }}:6443 check
 {% endfor %}
