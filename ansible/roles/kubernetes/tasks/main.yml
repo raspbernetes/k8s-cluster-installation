@@ -1,20 +1,23 @@
 ---
-- name: debian family specific tasks
+- name: include debian family specific tasks
   include_tasks: debian.yml
   when: ansible_os_family | lower == 'debian'
 
-- name: archlinux family specific tasks
+- name: include archlinux family specific tasks
   include_tasks: archlinux.yml
   when: ansible_os_family | lower == 'archlinux'
 
-- name: Reset Kubernetes Instance (1/2)
-  command:
-    cmd: kubeadm reset -f --v=5
-    removes: /var/lib/kubelet/config.yaml
-  register: kubeadm_reset
+- name: include common tasks
+  include_tasks: common.yml
 
-
-- name: Cleanup /etc/cni/net.d file (2/2)
-  file:
-    path: /etc/cni/net.d
-    state: absent
+#- name: Reset Kubernetes Instance (1/2)
+#  command:
+#    cmd: kubeadm reset -f --v=5
+#    removes: /var/lib/kubelet/config.yaml
+#  register: kubeadm_reset
+#
+#
+#- name: Cleanup /etc/cni/net.d file (2/2)
+#  file:
+#    path: /etc/cni/net.d
+#    state: absent
