@@ -1,0 +1,7 @@
+---
+- name: check os_family support
+  assert:
+    that:
+      - ansible_os_family | lower in openebs_supported_os_families
+    fail_msg:
+      - "os_family '{{ ansible_os_family }}' is not supported at this time"

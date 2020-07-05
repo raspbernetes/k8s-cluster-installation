@@ -1,18 +1,9 @@
 ---
-- name: Install OpenEBS Required Packages
-  apt:
-    name:
-      - open-iscsi
-    install_recommends: false
-    update_cache: true
-    force_apt_get: true
-  register: apt_install_iscsi
-  retries: 5
-  until: apt_install_iscsi is success
+- name: preflight checks
+  include_tasks: pre_checks.yml
 
-# Required: Used for OpenEBS https://docs.openebs.io/v090/docs/next/prerequisites.html#ubuntu
-- name: Start iscsid Service
-  systemd:
-    name: iscsid
-    enabled: yes
-    state: restarted
+- name: include family specific tasks
+  include_tasks: "{{ ansible_os_family | lower }}.yml"
+
+- name: include common tasks
+  include_tasks: common.yml
