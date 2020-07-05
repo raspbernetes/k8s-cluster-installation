@@ -24,3 +24,17 @@
     line: 'arm_freq={{ common_rpi_arm_frequency }}'
   when: common_rpi_overclock
   notify: reboot hosts
+
+- name: 'poe fan settings'
+  lineinfile:
+    path: '{{ common_rpi_config_file }}'
+    state: present
+    regexp: "^dtparam={{ item.name }}"
+    line: "dtparam={{ item.name }}={{ item.value }}"
+  when: common_rpi_poe_hat
+  loop:
+    - { name: 'poe_fan_temp0', value: "{{ common_rpi_poe_fan_temp0 }}"}
+    - { name: 'poe_fan_temp1', value: "{{ common_rpi_poe_fan_temp1 }}"}
+    - { name: 'poe_fan_temp2', value: "{{ common_rpi_poe_fan_temp2 }}"}
+    - { name: 'poe_fan_temp3', value: "{{ common_rpi_poe_fan_temp3 }}"}
+  notify: reboot hosts

@@ -24,3 +24,41 @@
     line: '\1 cgroup_enable=memory cgroup_memory=1'
   notify: reboot hosts
   when: ansible_os_family | lower == 'archlinux'
+
+- name: check for yay
+  stat:
+    path: /usr/bin/yay
+  register: yay
+
+- name: create temp folder
+  tempfile:
+    state: directory
+    suffix: yay
+  register: tempfolder
+  become: no
+  when:
+    - not yay.stat.exists
+
+- name: checkout yay repo
+  git:
+    repo: https://aur.archlinux.org/yay.git
+    dest: "{{ tempfolder.path }}"
+    depth: 1
+  become: no
+  when:
+    - not yay.stat.exists
+
+- name: build and install yay
+  command:
+    chdir: "{{ tempfolder.path }}"
+    cmd: makepkg -si --noconfirm
+  become: no
+  when:
+    - not yay.stat.exists
+
+- name: remove temp folder
+  file:
+    path: "{{ tempfolder.path }}"
+    state: absent
+  when:
+    - not yay.stat.exists

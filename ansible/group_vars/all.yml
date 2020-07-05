@@ -38,3 +38,7 @@ cri: containerd
 # Options: "eth0" or "wlan0"
 # Default: "eth0"
 network_interface: eth0
+
+# Role: common
+#common_rpi_overclock: true
+#common_rpi_poe_hat: true

@@ -16,5 +16,6 @@ common_packages:
   - vim
   - curl
   - net-tools
+  - sysstat
 common_rpi_cmd_file: /boot/cmdline.txt
 common_rpi_config_file: /boot/config.txt
