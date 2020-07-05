@@ -1,0 +1,15 @@
+---
+- name: haproxy config file
+  template:
+    src: haproxy.cfg.j2
+    dest: /etc/haproxy/haproxy.cfg
+  notify: restart haproxy
+
+- name: set sysctl net.ipv4.ip_nonlocal_bind
+  sysctl:
+    name: net.ipv4.ip_nonlocal_bind
+    value: '1'
+    sysctl_set: yes
+    sysctl_file: /etc/sysctl.d/ip_nonlocal_bind.conf
+    state: present
+  notify: restart haproxy
