@@ -1,0 +1,10 @@
+---
+- name: install openebs required packages
+  apt:
+    name: open-iscsi
+    install_recommends: false
+    update_cache: true
+    force_apt_get: true
+  register: apt_install_iscsi
+  retries: 5
+  until: apt_install_iscsi is success

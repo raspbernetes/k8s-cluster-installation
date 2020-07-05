@@ -1,0 +1,4 @@
+---
+openebs_supported_os_families:
+  - debian
+  - archlinux

@@ -1,0 +1,8 @@
+---
+# Required: Used for OpenEBS https://docs.openebs.io/v090/docs/next/prerequisites.html
+- name: start iscsid service
+  systemd:
+    name: iscsid
+    enabled: yes
+    state: started
+    daemon_reload: yes
