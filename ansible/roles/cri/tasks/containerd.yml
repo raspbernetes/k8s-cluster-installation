@@ -1,46 +1,53 @@
 # Instructions: https://kubernetes.io/docs/setup/production-environment/container-runtimes/#containerd
 ---
-- name: Copy containerd config file (1/9)
+- name: copy containerd config file
   copy:
-    src: '{{ item }}'
+    src: containerd/containerd.conf
     dest: '/etc/modules-load.d/containerd.conf'
     owner: root
     group: root
     mode: '0644'
-  loop:
-    - containerd.conf
 
-- name: Load overlay (2/9)
+- name: load overlay
   modprobe:
     name: overlay
     state: present
 
-- name: Load br_netfilter (3/9)
+- name: load br_netfilter
   modprobe:
     name: br_netfilter
     state: present
 
-- name: Add an apt signing key for Docker (4/9)
+- name: 'debian : add an apt signing key for docker'
   apt_key:
     url: https://download.docker.com/linux/ubuntu/gpg
     state: present
+  when: ansible_os_family | lower == 'debian'
 
 # Hardcoding due to the 20.04 ubuntu dist not currently available.
-- name: Add apt repository for stable version (5/9)
+- name: 'debian : add apt repository for stable version'
   apt_repository:
     repo: deb [arch=arm64] https://download.docker.com/linux/ubuntu xenial stable
     state: present
+  when: ansible_os_family | lower == 'debian'
 
-- name: Install containerd package (6/9)
+- name: 'debian : install containerd package'
   apt:
-    name: '{{ packages }}'
+    name:
+      - containerd.io
     state: present
     update_cache: yes
-  vars:
-    packages:
-      - containerd.io
+  when: ansible_os_family | lower == 'debian'
 
-- name: Create containerd config directory (7/9)
+- name: 'archlinux : install containerd package'
+  pacman:
+    name:
+      - containerd
+    state: present
+    update_cache: yes
+  when: ansible_os_family | lower == 'archlinux'
+
+- name: create containerd config directory
   become: true
   file:
     path: /etc/containerd/
@@ -49,10 +56,6 @@
     group: root
     mode: '0755'
 
-- name: Configure containerd (8/9)
+- name: configure containerd
   shell: containerd config default > /etc/containerd/config.toml
-
-- name: Restart containered (9/9)
-  systemd:
-    name: containerd
-    state: restarted
+  notify: restart containerd
