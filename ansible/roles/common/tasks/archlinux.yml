@@ -41,6 +41,7 @@
 - name: checkout yay repo
   git:
     repo: https://aur.archlinux.org/yay.git
+    version: master
     dest: "{{ tempfolder.path }}"
     depth: 1
   become: no
@@ -61,7 +62,3 @@
     state: absent
   when:
     - not yay.stat.exists
-
-- name: include aur role
-  include_role:
-    name: aur
