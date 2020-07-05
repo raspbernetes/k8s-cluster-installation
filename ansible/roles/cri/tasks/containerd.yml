@@ -57,5 +57,7 @@
     mode: '0755'
 
 - name: configure containerd
-  shell: containerd config default > /etc/containerd/config.toml
+  command:
+    cmd: containerd config default > /etc/containerd/config.toml
+    creates: /etc/containerd/config.toml
   notify: restart containerd
