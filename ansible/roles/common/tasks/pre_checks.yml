@@ -74,3 +74,17 @@
       - "Variable 'common_reboot_handler_enabled' should be of type 'bool'"
       - 'Type is: {{ common_reboot_handler_enabled | type_debug }}'
       - "Value is: {{ common_reboot_handler_enabled | default('undefined') }}"
+
+- name: 'validate variable types'
+  assert:
+    that:
+      - vars[item.variable] | type_debug == item.type
+    fail_msg:
+      - "Variable '{{ item.variable }}' should be of type '{{ item.type }}'"
+      - "Type is: {{ vars[item.variable] | type_debug }}"
+      - "Value is: {{ vars[item.variable] | default('undefined') }}"
+  loop:
+    - { variable: 'common_rpi_poe_fan_temp0', type: 'int'}
+    - { variable: 'common_rpi_poe_fan_temp1', type: 'int'}
+    - { variable: 'common_rpi_poe_fan_temp2', type: 'int'}
+    - { variable: 'common_rpi_poe_fan_temp3', type: 'int'}
