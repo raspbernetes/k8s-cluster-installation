@@ -1,1 +1,22 @@
 ---
+- name: install k8s binaries via aur
+  aur:
+    name:
+      - kubelet-bin
+      - kubeadm-bin
+      - kubectl-bin
+      - crictl-bin
+    use: yay
+    state: present
+  become: no
+
+- name: install other k8s packages via pacman
+  pacman:
+    name:
+      - cni-plugins
+      - ethtool
+      - ebtables
+      - socat
+      - conntrack-tools
+      - lvm2
+    state: present
