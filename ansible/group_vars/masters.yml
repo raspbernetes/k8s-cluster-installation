@@ -1,5 +1,4 @@
 ---
-
 # Role: keepalived
 keepalived_interface: eth0
 keepalived_vip: 192.168.100.50
