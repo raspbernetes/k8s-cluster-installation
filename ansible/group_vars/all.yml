@@ -19,10 +19,6 @@ cloudflared_kube_api_server_dns: 'api-server.raspbernetes.com'
 cloudflared_ingress_sans: '*.raspbernetes.com'
 cloudflared_ssh_port: 22
 
-# Virtual IP and port used by Keepalived
-load_balancer_dns: 192.168.1.200
-load_balancer_port: 6443
-
 # Configure Kubernetes container network interface (CNI)
 # Options: "weave" or "flannel"
 # Default: "weave"
@@ -32,12 +28,6 @@ cni: weave
 # Options: "containerd" or "docker"
 # Default: "containerd"
 cri: containerd
-
-# Network interface
-# Note: Flash SD with wlan0 configuration doesn't guarantee IP allocation is static and match as defined in eth0
-# Options: "eth0" or "wlan0"
-# Default: "eth0"
-network_interface: eth0
 
 # Role: common
 #common_rpi_overclock: true

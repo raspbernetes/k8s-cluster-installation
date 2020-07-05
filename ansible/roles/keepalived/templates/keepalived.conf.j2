@@ -1,13 +1,14 @@
 vrrp_instance VI_1 {
-    interface {{ network_interface }}
+    state  {{ 'MASTER' if hostvars[groups['masters'][0]] else 'BACKUP' }}
+    interface {{ keepalived_interface }}
     virtual_router_id 1
     priority {{ '150' if hostvars[groups['masters'][0]] else '100' }}
-    advert_int 2
+    advert_int 1
     authentication {
-        auth_type AH
+        auth_type PASS
         auth_pass kubernetes
     }
     virtual_ipaddress {
-        {{ load_balancer_dns }}
+        {{ keepalived_vip }}
     }
 }

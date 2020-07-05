@@ -1,0 +1,19 @@
+---
+- name: 'validate variable : keepalived_interface'
+  assert:
+    that:
+      - keepalived_interface | type_debug == 'AnsibleUnicode'
+      - keepalived_interface | length > 0
+    fail_msg:
+      - "Variable 'keepalived_interface' should be set and of type 'AnsibleUnicode' (string)"
+      - 'Type is: {{ keepalived_interface | type_debug }}'
+      - "Value is: {{ keepalived_interface | default('undefined') }}"
+
+- name: 'validate variable : keepalived_vip'
+  assert:
+    that:
+      - keepalived_vip | ipaddr
+    fail_msg:
+      - "Variable 'keepalived_vip' should be a valid ip address"
+      - 'Type is: {{ keepalived_vip | type_debug }}'
+      - "Value is: {{ keepalived_vip | default('undefined') }}"
