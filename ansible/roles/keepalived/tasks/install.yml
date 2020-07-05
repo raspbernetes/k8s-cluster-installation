@@ -1,0 +1,20 @@
+---
+- name: 'debian : install keepalived'
+  apt:
+    name: keepalived
+    install_recommends: false
+    update_cache: true
+    force_apt_get: true
+  register: apt_install_keepalived
+  retries: 5
+  until: apt_install_keepalived is success
+  when: ansible_os_family | lower == 'debian'
+
+- name: 'archlinux : install keepalived'
+  pacman:
+    name: keepalived
+    update_cache: true
+  register: pacman_install_keepalived
+  retries: 5
+  until: pacman_install_keepalived is success
+  when: ansible_os_family | lower == 'archlinux'

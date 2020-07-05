@@ -1,24 +1,11 @@
 ---
-- name: Install Keepalived (1/3)
-  apt:
-    name:
-      - keepalived
-    install_recommends: false
-    update_cache: true
-    force_apt_get: true
-  register: apt_install_keepalived
-  retries: 5
-  until: apt_install_keepalived is success
+- name: preflight checks
+  include_tasks: pre_checks.yml
 
-- name: Generate Keepalived config (2/3)
-  template:
-    src: keepalived.conf.j2
-    dest: /etc/keepalived/keepalived.conf
-  register: keepalived_config
+- name: include install tasks
+  include_tasks: install.yml
 
-- name: Reload service Keepalived (3/3)
-  systemd:
-    name: keepalived
-    daemon_reload: yes
-    enabled: yes
-    state: restarted
+- name: include configure tasks
+  include_tasks: configure.yml
+
+
