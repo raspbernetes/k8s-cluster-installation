@@ -1,0 +1,3 @@
+---
+cluster_name: kubernetes
+cluster_extra_sans: []

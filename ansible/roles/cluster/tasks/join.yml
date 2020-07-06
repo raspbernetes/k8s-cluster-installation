@@ -1,0 +1,32 @@
+---
+# Master
+- name: Register master join command
+  changed_when: false
+  delegate_to: localhost
+  command: cat output/k8s-master-join-command
+  register: k8s_master_join
+  vars:
+    ansible_become: no
+
+- name: Execute master kubeadm join
+  command: '{{ k8s_master_join.stdout }}'
+  args:
+    creates: /etc/kubernetes/kubelet.conf
+
+
+
+
+# Worker
+- name: Register worker join command
+  changed_when: false
+  delegate_to: localhost
+  command: cat output/k8s-worker-join-command
+  register: k8s_worker_join
+  run_once: yes
+  vars:
+    ansible_become: no
+
+- name: Execute worker kubeadm join
+  command: '{{ k8s_worker_join.stdout }}'
+  args:
+    creates: /etc/kubernetes/kubelet.conf

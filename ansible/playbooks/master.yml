@@ -4,12 +4,13 @@
   roles:
     - keepalived
     - haproxy
-    - {
-        role: initial-master,
-        when: "groups['masters'][0] == inventory_hostname",
-      }
-    - { role: cni, when: "groups['masters'][0] == inventory_hostname" }
-    - {
-        role: other-masters,
-        when: "groups['masters'][0] != inventory_hostname",
-      }
+    - cluster
+#    - {
+#        role: initial-master,
+#        when: "groups['masters'][0] == inventory_hostname",
+#      }
+#    - { role: cni, when: "groups['masters'][0] == inventory_hostname" }
+#    - {
+#        role: other-masters,
+#        when: "groups['masters'][0] != inventory_hostname",
+#      }
