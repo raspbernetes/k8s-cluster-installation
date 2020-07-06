@@ -3,7 +3,7 @@
 ####################
 
 frontend front-api-proxy
-    bind {{ keepalived_vip}}:8443
+    bind {{ keepalived_vip }}:8443
     bind 127.0.0.1:8443
     mode tcp
     option tcplog

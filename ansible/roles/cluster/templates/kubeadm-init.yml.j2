@@ -1,0 +1,42 @@
+---
+apiVersion: kubeadm.k8s.io/v1beta2
+kind: InitConfiguration
+bootstrapTokens:
+  - token: {{ kubeadm_join_token }}
+    ttl: 1h
+    groups:
+      - system:bootstrappers:kubeadm:default-node-token
+    usages:
+      - signing
+      - authentication
+{#localAPIEndpoint:#}
+{#  advertiseAddress: {{ cluster_api_address }}#}
+{#  bindPort: {{ cluster_api_port }}#}
+certificateKey: {{ kubeadm_certificate_key }}
+
+---
+apiVersion: kubeadm.k8s.io/v1beta2
+kind: ClusterConfiguration
+apiServer:
+  {% if cluster_extra_sans | length > 0 %}
+  certSANs:
+    {% for san in cluster_extra_sans %}
+    - {{ san }}
+    {% endfor %}
+  {% endif %}
+  timeoutForControlPlane: 4m0s
+certificatesDir: /etc/kubernetes/pki
+clusterName: {{ cluster_name }}
+etcd:
+  local:
+    dataDir: {{ cluster_etcd_datadir }}
+imageRepository: {{ cluster_image_repository }}
+networking:
+  dnsDomain: cluster.local
+  {%  if cluster_service_subnet | ipaddr -%}
+  serviceSubnet: {{ cluster_service_subnet }}
+  {% endif -%}
+  {%  if cluster_pod_subnet | default(None) | ipaddr -%}
+  podSubnet: {{ cluster_pod_subnet }}
+  {% endif -%}
+controlPlaneEndpoint: {{ cluster_control_plane_endpoint }}

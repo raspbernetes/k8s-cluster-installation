@@ -1,0 +1,14 @@
+---
+- name: preflight checks
+  include_tasks: pre_checks.yml
+
+- name: include initialize tasks
+  include_tasks: initialize.yml
+  when: groups['masters'][0] == inventory_hostname
+
+- debug:
+    var: kubeadm_join_token
+- debug:
+    var: kubeadm_certificate_key
+- debug:
+    var: cluster_ca_sha256
