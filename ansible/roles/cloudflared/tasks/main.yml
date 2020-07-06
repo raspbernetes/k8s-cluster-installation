@@ -2,7 +2,7 @@
 # This role is experimental and still a work in progress...
 # TODO: Initial attempt will fail, currently requires a "cloudflared tunnel login" which prompts the user to visit the site
 # Currently this role assumes you've already performed the cloudflared login steps.
-- name: Install golang packages
+- name: install golang packages
   apt:
     name:
       - 'golang-go'
@@ -13,26 +13,25 @@
   retries: 5
   until: apt_install_cloudflared_deps is success
 
-- name: Clone cloudflared repository locally
+- name: clone cloudflared repository locally
   git:
-    repo: https://github.com/xUnholy/cloudflared.git
+    repo: https://github.com/cloudflare/cloudflared.git
     dest: cloudflared
-    version: master
+    version: '{{ cloudflared_version }}'
 
-- name: Compile cloudflared binary
+- name: compile cloudflared binary
   make:
     chdir: cloudflared
     target: cloudflared
   register: cloudflared_binary
 
-# TODO: Don't copy if it already exists? OR perhaps update only if newer version?
-- name: Copy cloudflared binary to /usr/local/bin
+- name: copy cloudflared binary to /usr/local/bin
   command:
     cmd: cp cloudflared /usr/local/bin
     chdir: cloudflared
   when: cloudflared_binary.changed
 
-- name: Create cloudflared config directory
+- name: create cloudflared config directory
   file:
     path: /etc/cloudflared
     state: directory
@@ -40,19 +39,27 @@
     group: root
     mode: '0755'
 
-- name: Copy cloudflared config.conf
+- name:  copy cloudflared config.conf
   template:
     src: config.yml.j2
     dest: /etc/cloudflared/config.yml
-  register: cloudflared_config
+  notify:
+    - restart cloudflared
 
-# Disabled due to requiring manual intervention to download the cert.pem on startup
-# - name: Initialize cloudflared tunnel to api-server
-#   command: cloudflared service install
+- name: copy cloudflared cert
+  copy:
+    src: '{{ item }}'
+    dest: '/etc/cloudflared/cert.pem'
+    owner: root
+    group: root
+    mode: '0644'
+  with_items:
+    - cert.pem
+  notify:
+    - restart cloudflared
 
-# - name: Enable cloudflared service
-#   systemd:
-#     name: cloudflared
-#     daemon_reload: yes
-#     enabled: yes
-#     state: restarted
+- name: initialize cloudflared tunnel to api-server
+  command: cloudflared service install
+  when: cloudflared_binary.changed
+  notify:
+    - restart cloudflared

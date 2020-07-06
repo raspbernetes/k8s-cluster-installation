@@ -1,4 +1,4 @@
 ---
-- name: Applying Weave (1/1)
+- name: applying weave
   become: true
-  shell: kubectl apply -f "https://cloud.weave.works/k8s/net?k8s-version=$(kubectl version | base64 | tr -d '\n')"
+  shell: set -o pipefail && kubectl apply -f "https://cloud.weave.works/k8s/net?k8s-version=$(kubectl version | base64 | tr -d '\n')"
