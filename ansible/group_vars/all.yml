@@ -18,6 +18,7 @@ kubeadm_version: 1.18.2-00
 cloudflared_kube_api_server_dns: 'api-server.raspbernetes.com'
 cloudflared_ingress_sans: '*.raspbernetes.com'
 cloudflared_ssh_port: 22
+cloudflared_version: 2020.7.0
 
 # Configure Kubernetes container network interface (CNI)
 # Options: "weave" or "flannel"
