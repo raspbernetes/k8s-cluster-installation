@@ -12,3 +12,7 @@
     var: kubeadm_certificate_key
 - debug:
     var: cluster_ca_sha256
+
+- name: command
+  debug:
+    msg: "kubeadm join --discovery-token {{ kubeadm_join_token }} --certificate-key {{ kubeadm_certificate_key }} --control-plane {{ cluster_control_plane_endpoint }} --discovery-token-ca-cert-hash sha256:{{ cluster_ca_sha256 }}"

@@ -5,6 +5,7 @@
 from ansible.module_utils.basic import AnsibleModule
 from string import digits, ascii_lowercase
 import random
+from secrets import token_hex
 
 DOCUMENTATION = '''
 ---
@@ -67,8 +68,7 @@ def run_module():
         result['generated'] = f"{token[:6]}.{token[6:]}"
         result['kind'] = 'token'
     else:
-        certificate_key = ''.join(random.choices(digits + ascii_lowercase, k=64))
-        result['generated'] = certificate_key
+        result['generated'] = token_hex(32)
         result['kind'] = 'certificate-key'
 
     module.exit_json(**result)

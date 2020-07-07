@@ -1,3 +1,5 @@
 ---
 cluster_name: kubernetes
-cluster_extra_sans: []
+cluster_extra_sans:
+  - "{{ keepalived_vip }}"
+cluster_control_plane_endpoint: "{{ keepalived_vip }}:8443"
