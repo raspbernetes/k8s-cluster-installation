@@ -1,3 +1,4 @@
+#jinja2:lstrip_blocks: True
 ---
 apiVersion: kubeadm.k8s.io/v1beta2
 kind: InitConfiguration
@@ -33,10 +34,10 @@ etcd:
 imageRepository: {{ cluster_image_repository }}
 networking:
   dnsDomain: cluster.local
-  {%  if cluster_service_subnet | ipaddr -%}
+  {%  if cluster_service_subnet | ipaddr %}
   serviceSubnet: {{ cluster_service_subnet }}
-  {% endif -%}
-  {%  if cluster_pod_subnet | default(None) | ipaddr -%}
+  {% endif %}
+  {%  if cluster_pod_subnet | default(None) | ipaddr %}
   podSubnet: {{ cluster_pod_subnet }}
-  {% endif -%}
+  {% endif %}
 controlPlaneEndpoint: {{ cluster_control_plane_endpoint }}

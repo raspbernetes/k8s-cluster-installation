@@ -1,5 +1,4 @@
 ---
 cluster_etcd_datadir: /var/lib/etcd
 cluster_image_repository: k8s.gcr.io
-cluster_control_plane_endpoint: "{{ keepalived_vip }}:8443"
 cluster_service_subnet: 10.96.0.0/12
