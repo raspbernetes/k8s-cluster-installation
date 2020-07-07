@@ -1,33 +1,28 @@
 ---
-- name: check if init is needed
-  stat:
-    path: /etc/kubernetes/admin.conf
-  register: k8s_admin_conf
-
 - name: generate kubeadm token
   kubeadm_generate:
     kind: token
   register: token
-  when: not k8s_admin_conf.stat.exists
+  when: not cluster_node_configured
 
 - name: generate kubeadm certificate key
   kubeadm_generate:
     kind: certificate-key
   register: certificate_key
-  when: not k8s_admin_conf.stat.exists
+  when: not cluster_node_configured
 
 - name: set kubeadm token and certificate-key fact
   set_fact:
     kubeadm_join_token: "{{ token.generated }}"
     kubeadm_certificate_key: "{{ certificate_key.generated }}"
   run_once: true
-  when: not k8s_admin_conf.stat.exists
+  when: not cluster_node_configured
 
 - name: generate kubeadm configuration
   template:
     src: kubeadm-init.yml.j2
     dest: /etc/kubernetes/kubeadm-init.yml
-  when: not k8s_admin_conf.stat.exists
+  when: not cluster_node_configured
 
 - name: initialize cluster
   command:

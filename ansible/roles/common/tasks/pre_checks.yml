@@ -8,6 +8,15 @@
       - 'Type is: {{ common_packages | type_debug }}'
       - "Value is: {{ common_packages | default('undefined') }}"
 
+- name: 'validate variable : common_timezone'
+  assert:
+    that:
+      - common_timezone | type_debug == 'AnsibleUnicode'
+    fail_msg:
+      - "Variable 'common_timezone' should be of type AnsibleUnicode (string)"
+      - 'Type is: {{ common_timezone | type_debug }}'
+      - "Value is: {{ common_timezone | default('undefined') }}"
+
 - name: 'validate variable : common_rpi_cmd_file'
   assert:
     that:

@@ -4,15 +4,8 @@
 
 - name: include initialize tasks
   include_tasks: initialize.yml
-  when: groups['masters'][0] == inventory_hostname
+  when: inventory_hostname == cluster_main_master
 
-- debug:
-    var: kubeadm_join_token
-- debug:
-    var: kubeadm_certificate_key
-- debug:
-    var: cluster_ca_sha256
-
-- name: command
-  debug:
-    msg: "kubeadm join --discovery-token {{ kubeadm_join_token }} --certificate-key {{ kubeadm_certificate_key }} --control-plane {{ cluster_control_plane_endpoint }} --discovery-token-ca-cert-hash sha256:{{ cluster_ca_sha256 }}"
+- name: include join tasks
+  include_tasks: join.yml
+  when: inventory_hostname != cluster_main_master

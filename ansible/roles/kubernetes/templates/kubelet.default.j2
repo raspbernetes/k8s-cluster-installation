@@ -1,1 +1,1 @@
-KUBELET_EXTRA_ARGS=--cni-bin-dir=/usr/lib/cni --node-ip {{ hostvars[inventory_hostname]['ansible_host'] }}
+KUBELET_EXTRA_ARGS=--node-ip {{ hostvars[inventory_hostname]['ansible_host'] }}
