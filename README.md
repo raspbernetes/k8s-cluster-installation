@@ -76,7 +76,7 @@ Below is a matrix of the currently supported options.
 Assuming all previous steps and configuration are correct the last thing to do is to execute the playbook. The playbook that should be used is the `k8s-all.yml` playbook, this will handle all the master and worker node logic and sequencing.
 
 ```bash
-env ANSIBLE_CONFIG=ansible.cfg ansible-playbook \
+env ANSIBLE_CONFIG=ansible/ansible.cfg ansible-playbook \
     -i ansible/inventory \
     ansible/playbooks/k8s-all.yml
 ```
