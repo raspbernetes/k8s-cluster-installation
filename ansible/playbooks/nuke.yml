@@ -22,7 +22,7 @@
       until: kubeadm_reset is success
 
     - name: reset iptables
-      command:
+      command: # noqa 301
         cmd: "{{ item }}"
       loop:
         - iptables -P INPUT ACCEPT
@@ -32,4 +32,3 @@
         - iptables -t mangle -F
         - iptables -F
         - iptables -X
-      when: kubeadm_reset.changed

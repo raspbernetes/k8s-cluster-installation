@@ -8,3 +8,4 @@
   register: apt_install_iscsi
   retries: 5
   until: apt_install_iscsi is success
+  notify: restart iscsid

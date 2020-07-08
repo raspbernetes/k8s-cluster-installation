@@ -3,3 +3,4 @@
   pacman:
     name: open-iscsi
     update_cache: true
+  notify: restart iscsid

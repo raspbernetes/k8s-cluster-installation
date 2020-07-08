@@ -7,3 +7,51 @@
       - "Variable 'cloudflared_enabled' should be of type 'bool'"
       - 'Type is: {{ cloudflared_enabled | type_debug }}'
       - "Value is: {{ cloudflared_enabled | default('undefined') }}"
+
+- name: 'validate variable : cloudflared_kube_api_server_dns'
+  assert:
+    that:
+      - cloudflared_kube_api_server_dns | type_debug == 'AnsibleUnicode'
+      - cloudflared_kube_api_server_dns | length > 0
+    fail_msg:
+      - "Variable 'cloudflared_kube_api_server_dns' should be of type AnsibleUnicode (string)"
+      - 'Type is: {{ cloudflared_kube_api_server_dns | type_debug }}'
+      - "Value is: {{ cloudflared_kube_api_server_dns | default('undefined') }}"
+  when:
+    - cloudflared_enabled
+
+- name: 'validate variable : cloudflared_ingress_sans'
+  assert:
+    that:
+      - cloudflared_ingress_sans | type_debug == 'AnsibleUnicode'
+      - cloudflared_ingress_sans | length > 0
+    fail_msg:
+      - "Variable 'cloudflared_ingress_sans' should be of type AnsibleUnicode (string)"
+      - 'Type is: {{ cloudflared_ingress_sans | type_debug }}'
+      - "Value is: {{ cloudflared_ingress_sans | default('undefined') }}"
+  when:
+    - cloudflared_enabled
+
+- name: 'validate variable : cloudflared_ssh_port'
+  assert:
+    that:
+      - cloudflared_ingress_sans | type_debug == 'int'
+      - cloudflared_ingress_sans | length > 0
+    fail_msg:
+      - "Variable 'cloudflared_ssh_port' should be of type int"
+      - 'Type is: {{ cloudflared_ssh_port | type_debug }}'
+      - "Value is: {{ cloudflared_ssh_port | default('undefined') }}"
+  when:
+    - cloudflared_enabled
+
+- name: 'validate variable : cloudflared_version'
+  assert:
+    that:
+      - cloudflared_version | type_debug == 'AnsibleUnicode'
+      - cloudflared_version | length > 0
+    fail_msg:
+      - "Variable 'cloudflared_version' should be of type AnsibleUnicode (string)"
+      - 'Type is: {{ cloudflared_version | type_debug }}'
+      - "Value is: {{ cloudflared_version | default('undefined') }}"
+  when:
+    - cloudflared_enabled

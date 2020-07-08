@@ -30,13 +30,13 @@
     - kubeadm_certificate_key is not defined
 
 - name: upload certificates
-  command:
+  command: # noqa 301
     cmd: "kubeadm init phase upload-certs --upload-certs --certificate-key {{ kubeadm_certificate_key }}"
   run_once: true
   delegate_to: "{{ cluster_main_master }}"
 
 - name: create join token
-  command:
+  command: # noqa 301
     cmd: "kubeadm token create --ttl 1h --description 'created by ansible' {{ kubeadm_join_token }}"
   run_once: true
   delegate_to: "{{ cluster_main_master }}"
