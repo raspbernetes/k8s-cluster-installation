@@ -34,7 +34,7 @@ networking:
   {%  if cluster_service_subnet | ipaddr %}
   serviceSubnet: {{ cluster_service_subnet }}
   {% endif %}
-  {%  if cluster_pod_subnet | default(None) | ipaddr %}
+  {%  if cluster_pod_subnet | ipaddr %}
   podSubnet: {{ cluster_pod_subnet }}
   {% endif %}
 controlPlaneEndpoint: {{ cluster_control_plane_endpoint }}

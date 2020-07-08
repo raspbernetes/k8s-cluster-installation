@@ -1,0 +1,9 @@
+---
+- name: 'validate variable : cloudflared_enabled'
+  assert:
+    that:
+      - cloudflared_enabled | type_debug == 'bool'
+    fail_msg:
+      - "Variable 'cloudflared_enabled' should be of type 'bool'"
+      - 'Type is: {{ cloudflared_enabled | type_debug }}'
+      - "Value is: {{ cloudflared_enabled | default('undefined') }}"

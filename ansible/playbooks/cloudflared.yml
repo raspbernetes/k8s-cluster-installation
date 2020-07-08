@@ -1,5 +1,0 @@
----
-- hosts: masters
-  become: true
-  roles:
-    - cloudflared

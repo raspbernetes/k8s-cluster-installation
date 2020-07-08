@@ -1,9 +1,12 @@
 ---
 - name: preflight checks
   include_tasks: pre_checks.yml
+  run_once: true
 
 - name: include family specific tasks
   include_tasks: "{{ ansible_os_family | lower }}.yml"
+  when: openebs_enabled
 
 - name: include common tasks
   include_tasks: common.yml
+  when: openebs_enabled
