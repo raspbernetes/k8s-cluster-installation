@@ -1,6 +1,10 @@
 ---
 - name: preflight checks
   include_tasks: pre_checks.yml
+  run_once: true
+
+- name: cluster checks
+  include_tasks: cluster_checks.yml
 
 - name: include initialize tasks
   include_tasks: initialize.yml

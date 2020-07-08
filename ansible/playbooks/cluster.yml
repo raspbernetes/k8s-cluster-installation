@@ -1,0 +1,9 @@
+---
+- hosts:
+    - masters
+    - workers
+  become: true
+  roles:
+    - cluster
+    - cni
+    - openebs

@@ -1,0 +1,33 @@
+---
+- name: create cloudflared config directory
+  file:
+    path: /etc/cloudflared
+    state: directory
+    owner: root
+    group: root
+    mode: '0755'
+
+- name:  copy cloudflared config.conf
+  template:
+    src: config.yml.j2
+    dest: /etc/cloudflared/config.yml
+  notify:
+    - restart cloudflared
+
+- name: copy cloudflared cert
+  copy:
+    src: '{{ item }}'
+    dest: '/etc/cloudflared/cert.pem'
+    owner: root
+    group: root
+    mode: '0644'
+  with_items:
+    - cert.pem
+  notify:
+    - restart cloudflared
+
+- name: initialize cloudflared tunnel to api-server
+  command: cloudflared service install
+  when: cloudflared_binary.changed
+  notify:
+    - restart cloudflared

@@ -1,8 +1,4 @@
 ---
-# Configure user Ansible uses to ssh into the machine
-# Note: Should match the user configured via cloud-init
-ansible_user: pi
-
 # Configure Log2ram version and memory allocation
 log2ram_version: v1.4
 log2ram_size: 128M
@@ -28,8 +24,12 @@ cni: weave
 # Configure Kubernetes container runtime (CRI)
 # Options: "containerd" or "docker"
 # Default: "containerd"
-cri: containerd
+cri: docker
 
 # Role: common
-#common_rpi_overclock: true
-#common_rpi_poe_hat: true
+common_timezone: Europe/Amsterdam
+common_rpi_overclock: true
+common_rpi_poe_hat: true
+
+# Role: cluster
+cluster_control_plane_endpoint: api.kubernetes.lan:8443

@@ -1,0 +1,7 @@
+---
+- hosts: masters
+  become: true
+  roles:
+    - keepalived
+    - haproxy
+    - cloudflared
