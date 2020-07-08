@@ -36,4 +36,4 @@
       - 'Type is: {{ cluster_pod_subnet | type_debug }}'
       - "Value is: {{ cluster_pod_subnet | default('undefined') }}"
   when:
-    - cluster_pod_subnet != ""
+    - cluster_pod_subnet != "" # noqa 602

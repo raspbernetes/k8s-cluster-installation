@@ -23,3 +23,11 @@
       - cni_plugin in cni_supported_plugins
     fail_msg:
       - "Plugin '{{ cni_plugin }}' is not supported at this time."
+
+- name: 'validate pod subnet is used when using flannel'
+  assert:
+    that:
+      - cluster_pod_subnet | ipaddr
+    fail_msg:
+      - "Plugin 'flannel' requires pod subnet to be configured."
+  when: cni_plugin == 'flannel'

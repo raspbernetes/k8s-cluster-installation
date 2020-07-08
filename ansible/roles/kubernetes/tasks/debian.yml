@@ -20,9 +20,9 @@
 - name: install kubernetes packages (3/4)
   apt:
     name:
-      - kubelet={{ kubelet_version }}
-      - kubeadm={{ kubeadm_version }}
-      - kubectl={{ kubectl_version }}
+      - kubelet={{ kubernetes_kubelet_version }}
+      - kubeadm={{ kubernetes_kubeadm_version }}
+      - kubectl={{ kubernetes_kubectl_version }}
     state: present
     update_cache: yes
   register: apt_install_kube
