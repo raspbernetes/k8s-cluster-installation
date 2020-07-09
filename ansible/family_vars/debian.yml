@@ -10,4 +10,4 @@ common_packages:
   - vim
   - curl
   - net-tools
-  - python-pyopenssl # Needed for ansible 'openssl_certificate_info' module
+  - python3-openssl # Needed for ansible 'openssl_certificate_info' module

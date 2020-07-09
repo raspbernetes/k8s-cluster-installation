@@ -8,7 +8,9 @@
 
 - name: include initialize tasks
   include_tasks: initialize.yml
-  when: inventory_hostname == cluster_main_master
+  when:
+    - inventory_hostname == cluster_main_master
+    - not cluster_node_configured
 
 - name: include join tasks
   include_tasks: join.yml
