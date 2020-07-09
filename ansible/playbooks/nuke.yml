@@ -18,7 +18,7 @@
     - name: reset kubeadm
       command:
         cmd: kubeadm reset --force
-        removes: /etc/kubernetes/admin.conf
+        removes: /etc/kubernetes/kubelet.conf
       register: kubeadm_reset
       retries: 5
       until: kubeadm_reset is success
@@ -34,3 +34,8 @@
         - iptables -t mangle -F
         - iptables -F
         - iptables -X
+
+    - name: remove cni net.d folder
+      file:
+        path: /etc/cni/net.d
+        state: absent

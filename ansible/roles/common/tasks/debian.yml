@@ -36,7 +36,7 @@
   git:
     repo: https://github.com/azlux/log2ram.git
     dest: /opt/log2ram
-    version: '{{ log2ram_version }}'
+    version: '{{ common_log2ram_version }}'
 
 - name: changing perms of "/opt/log2ram/install.sh"
   file:

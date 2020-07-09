@@ -20,9 +20,9 @@
 - name: 'validate variable : cluster_control_plane_endpoint'
   assert:
     that:
-      - cluster_control_plane_endpoint | type_debug == 'AnsibleUnicode'
+      - (cluster_control_plane_endpoint | type_debug == 'AnsibleUnicode') or (cluster_control_plane_endpoint | type_debug == 'str')
     fail_msg:
-      - "Variable 'cluster_control_plane_endpoint' should be of type AnsibleUnicode (string)"
+      - "Variable 'cluster_control_plane_endpoint' should be of type AnsibleUnicode (string) or str"
       - 'Type is: {{ cluster_control_plane_endpoint | type_debug }}'
       - "Value is: {{ cluster_control_plane_endpoint | default('undefined') }}"
 
