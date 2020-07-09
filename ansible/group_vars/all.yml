@@ -1,5 +1,6 @@
 ---
 # Role: common
+#common_upgrade_packages: true
 #common_reboot_handler_enabled: true
 #common_timezone: UTC
 #common_rpi_overclock: false

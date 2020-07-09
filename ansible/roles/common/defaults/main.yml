@@ -1,5 +1,6 @@
 ---
 common_packages: []
+common_upgrade_packages: true # Set to false to not run package upgrades
 common_reboot_handler_enabled: true # Set to false to not reboot after changes
 common_timezone: UTC
 

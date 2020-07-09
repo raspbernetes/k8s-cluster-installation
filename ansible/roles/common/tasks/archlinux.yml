@@ -6,6 +6,7 @@
   register: pacman_upgrade
   retries: 5
   until: pacman_upgrade is success
+  when: common_upgrade_packages
 
 - name: install packages
   pacman:
