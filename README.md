@@ -37,30 +37,41 @@ Once the Raspberry Pi's are running and all the prerequisites have been complete
 
 Open the [inventory file](ansible/inventory) - each machine that will be joining the Kubernetes cluster must be defined as either a master or worker node. To leverage the highly available topology configuration you would ideally have 3 masters available as a minimum, otherwise 1 master node is fine, however, it won't be highly available.
 
-> Note: Ensure the `hostname` matches what the machine was given when flashed the SD card and `ansible_host` matches the IP allocated to the host on your preferred subnet.
+> Note: Ensure the `hostname` matches what the machine was given when flashed the SD card and `ansible_host` matches the IP allocated to the host on your preferred subnet. Also make sure `ansible_user` matches the username which can be used to SSH into the host.
 
 When the inventory has been configured with all the hosts that will be joining the Kubernetes cluster we can run the following command to verify SSH connectivity can be established.
 
 ```bash
-ansible all -m ping -i ansible/inventory -u pi
+env ANSIBLE_CONFIG=ansible/ansible.cfg ansible all -m ping
 ```
 
 A successful response should look something like the following:
 
 ```diff
-+ k8s-worker-01 | SUCCESS => {
-+    ...
-+    "changed": false,
-+    "ping": "pong"
-+    ...
-+}
++ rpi1 | SUCCESS => {
++     "ansible_facts": {
++         "discovered_interpreter_python": "/usr/bin/python"
++     },
++     "changed": false,
++     "ping": "pong"
++ }
+...
 ```
 
 > Note: If your output returns success for each ping then you can continue, otherwise there may be some misconfiguration of either the inventory file, or network connectivity issues.
 
-There are a variety of different configurable options in the Ansible automation. These options can be located in the [vars.yml](ansible/vars.yml) file. In this file you have the option to change the container runtime ("CRI") and the container network interface ("CNI") that is used within the cluster.
+There are a variety of different configurable options in the Ansible automation. These options can be located in the [group_vars](ansible/group_vars) folder. In this folder you have the files [all.yml](ansible/group_vars/all.yml), [masters.yml](ansible/group_vars/masters.yml) and [workers.yml](ansible/group_vars/workers.yml). These files contain the configurable variables of each role with there values being the default value. In order to use a different value than the default, uncomment the variable and change the value. The folder [family_vars](ansible/family_vars) contain OS family specific variables and values, e.g. which packages to install on which OS family.
+
+See the folder [example](ansible/example) for an example of a working var configuration.
 
 Below is a matrix of the currently supported options.
+
+**OS Family**
+
+| Name | Supported |
+| ---- | --------- |
+| Debian | Yes |
+| ArchLinux | Yes |
 
 **Container Runtime**
 
@@ -75,19 +86,18 @@ Below is a matrix of the currently supported options.
 | ---- | --------- |
 | Weave | Yes |
 | Flannel | Yes |
+| Calico | Yes |
 
-Assuming all previous steps and configuration are correct the last thing to do is to execute the playbook. The playbook that should be used is the `k8s-all.yml` playbook, this will handle all the master and worker node logic and sequencing.
+Assuming all previous steps and configuration are correct the last thing to do is to execute the playbook. The playbook that should be used is the `all.yml` playbook, this will handle all the master and worker node logic and sequencing.
 
 ```bash
-env ANSIBLE_CONFIG=ansible/ansible.cfg ansible-playbook \
-    -i ansible/inventory \
-    ansible/playbooks/k8s-all.yml
+env ANSIBLE_CONFIG=ansible/ansible.cfg ansible-playbook ansible/playbooks/all.yml
 ```
 
 IF there was no errors you should be able to execute the following command to check the status of the nodes in the cluster:
 
 ```bash
-k get nodes --kubeconfig ansible/playbooks/output/k8s-config.yaml
+kubectl get nodes --kubeconfig ansible/playbooks/output/k8s-config.yaml
 ```
 
 Output:
