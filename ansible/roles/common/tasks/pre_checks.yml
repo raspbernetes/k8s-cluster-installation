@@ -84,6 +84,15 @@
       - 'Type is: {{ common_reboot_handler_enabled | type_debug }}'
       - "Value is: {{ common_reboot_handler_enabled | default('undefined') }}"
 
+- name: 'validate variable : common_upgrade_packages'
+  assert:
+    that:
+      - common_upgrade_packages | type_debug == 'bool'
+    fail_msg:
+      - "Variable 'common_upgrade_packages' should be of type 'bool'"
+      - 'Type is: {{ common_upgrade_packages | type_debug }}'
+      - "Value is: {{ common_upgrade_packages | default('undefined') }}"
+
 - name: 'validate variable types'
   assert:
     that:

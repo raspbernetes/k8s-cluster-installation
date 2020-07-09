@@ -10,6 +10,7 @@
   register: apt_upgrade
   retries: 5
   until: apt_upgrade is success
+  when: common_upgrade_packages
 
 - name: install common packages
   apt:
