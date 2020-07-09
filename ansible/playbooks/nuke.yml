@@ -1,5 +1,7 @@
 ---
-- hosts: all
+- hosts:
+    - masters
+    - workers
   become: true
   gather_facts: false
   vars_prompt:
