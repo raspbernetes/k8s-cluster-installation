@@ -2,7 +2,7 @@
 - name: 'validate variable : keepalived_interface'
   assert:
     that:
-      - keepalived_interface | type_debug == 'AnsibleUnicode'
+      - (keepalived_interface | type_debug == 'AnsibleUnicode') or (keepalived_interface | type_debug == 'AnsibleUnsafeText')
       - keepalived_interface | length > 0
     fail_msg:
       - "Variable 'keepalived_interface' should be set and of type 'AnsibleUnicode' (string)"
