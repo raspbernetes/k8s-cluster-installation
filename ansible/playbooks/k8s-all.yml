@@ -1,0 +1,4 @@
+---
+- import_playbook: common.yml
+- import_playbook: master.yml
+- import_playbook: worker.yml

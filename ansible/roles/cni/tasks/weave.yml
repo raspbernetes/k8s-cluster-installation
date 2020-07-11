@@ -1,5 +1,4 @@
 ---
-- name: applying weave
-  command:
-    cmd: kubectl apply -f https://cloud.weave.works/k8s/net
-    creates: /etc/cni/net.d/10-weave.conflist
+- name: Applying Weave (1/1)
+  become: true
+  shell: kubectl apply -f "https://cloud.weave.works/k8s/net?k8s-version=$(kubectl version | base64 | tr -d '\n')"

@@ -1,0 +1,6 @@
+---
+- hosts: workers
+  become: true
+  roles:
+    - kubernetes
+    - workers

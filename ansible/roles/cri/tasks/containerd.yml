@@ -1,53 +1,46 @@
 # Instructions: https://kubernetes.io/docs/setup/production-environment/container-runtimes/#containerd
 ---
-- name: copy containerd config file
+- name: Copy containerd config file (1/9)
   copy:
-    src: containerd/containerd.conf
+    src: '{{ item }}'
     dest: '/etc/modules-load.d/containerd.conf'
     owner: root
     group: root
     mode: '0644'
+  with_items:
+    - containerd.conf
 
-- name: load overlay
+- name: Load overlay (2/9)
   modprobe:
     name: overlay
     state: present
 
-- name: load br_netfilter
+- name: Load br_netfilter (3/9)
   modprobe:
     name: br_netfilter
     state: present
 
-- name: 'debian : add an apt signing key for docker'
+- name: Add an apt signing key for Docker (4/9)
   apt_key:
     url: https://download.docker.com/linux/ubuntu/gpg
     state: present
-  when: ansible_os_family | lower == 'debian'
 
 # Hardcoding due to the 20.04 ubuntu dist not currently available.
-- name: 'debian : add apt repository for stable version'
+- name: Add apt repository for stable version (5/9)
   apt_repository:
     repo: deb [arch=arm64] https://download.docker.com/linux/ubuntu xenial stable
     state: present
-  when: ansible_os_family | lower == 'debian'
 
-- name: 'debian : install containerd package'
+- name: Install containerd package (6/9)
   apt:
-    name:
+    name: '{{ packages }}'
+    state: present
+    update_cache: yes
+  vars:
+    packages:
       - containerd.io
-    state: present
-    update_cache: yes
-  when: ansible_os_family | lower == 'debian'
 
-- name: 'archlinux : install containerd package'
-  pacman:
-    name:
-      - containerd
-    state: present
-    update_cache: yes
-  when: ansible_os_family | lower == 'archlinux'
-
-- name: create containerd config directory
+- name: Create containerd config directory (7/9)
   become: true
   file:
     path: /etc/containerd/
@@ -56,8 +49,10 @@
     group: root
     mode: '0755'
 
-- name: configure containerd
-  command:
-    cmd: containerd config default > /etc/containerd/config.toml
-    creates: /etc/containerd/config.toml
-  notify: restart containerd
+- name: Configure containerd (8/9)
+  shell: containerd config default > /etc/containerd/config.toml
+
+- name: Restart containered (9/9)
+  systemd:
+    name: containerd
+    state: restarted

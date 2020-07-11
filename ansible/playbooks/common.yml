@@ -2,10 +2,9 @@
 - hosts: all
   become: true
   pre_tasks:
-    - name: "Add OS variables"
-      include_vars: "../family_vars/{{ ansible_os_family | lower }}.yml"
+    - include_vars: "../family_vars/{{ ansible_os_family | lower }}.yml"
   roles:
     - common
+    - openebs
     - cri
-    - kubernetes
-#    - networking
+    - iptables

@@ -1,3 +1,0 @@
----
-keepalived_vip: ''
-keepalived_interface: "{{ ansible_default_ipv4['interface'] }}"

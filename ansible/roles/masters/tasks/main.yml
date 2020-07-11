@@ -1,0 +1,5 @@
+---
+- name: Pull Kubernetes Images
+  become: true
+  command: kubeadm config images pull
+  register: kubeadm_pull

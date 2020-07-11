@@ -1,7 +1,5 @@
 ---
-- name: preflight checks
-  include_tasks: pre_checks.yml
-  run_once: true
-
-- name: "setup {{ cri_plugin }} container runtime (cri)"
-  include_tasks: '{{ cri_plugin }}.yml'
+- name: 'Setup {{ cri }} container runtime (CRI)'
+  become: true
+  include: '{{ cri }}.yml'
+  register: '{{ cri }}'

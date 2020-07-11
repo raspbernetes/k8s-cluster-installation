@@ -1,6 +1,0 @@
----
-cloudflared_enabled: false
-cloudflared_kube_api_server_dns: ''
-cloudflared_ingress_sans: ''
-cloudflared_ssh_port: 22
-cloudflared_version: 2020.7.0

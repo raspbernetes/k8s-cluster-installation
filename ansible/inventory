@@ -1,7 +1,7 @@
 [masters]
-rpi1 hostname=master1.kubernetes.lan ansible_host=192.168.100.51 ansible_user=alarm
-rpi2 hostname=master2.kubernetes.lan ansible_host=192.168.100.52 ansible_user=alarm
-rpi3 hostname=master3.kubernetes.lan ansible_host=192.168.100.53 ansible_user=alarm
+k8s-master-01 hostname=k8s-master-01 ansible_host=192.168.1.121
+k8s-master-02 hostname=k8s-master-02 ansible_host=192.168.1.122
+k8s-master-03 hostname=k8s-master-03 ansible_host=192.168.1.123
 
 [workers]
-rpi4 hostname=worker1.kubernetes.lan ansible_host=192.168.100.54 ansible_user=alarm
+k8s-worker-01 hostname=k8s-worker-01 ansible_host=192.168.1.131

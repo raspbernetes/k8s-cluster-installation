@@ -1,5 +1,4 @@
 ---
-- name: applying flannel
-  command:
-    cmd: kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml
-    creates: /etc/cni/net.d/10-flannel.conflist
+- name: Applying Flannel (1/1)
+  become: true
+  command: kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml
