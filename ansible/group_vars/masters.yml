@@ -1,0 +1,22 @@
+---
+# Role: keepalived
+#keepalived_vip: ''
+#keepalived_interface: "{{ ansible_default_ipv4['interface'] }}"
+
+# Role: cluster
+#cluster_name: kubernetes
+#cluster_extra_sans:
+#  - "{{ keepalived_vip }}"
+#cluster_control_plane_endpoint: "{{ keepalived_vip }}:8443"
+#cluster_pod_subnet: ""
+
+# Role: cni
+#cni_plugin: calico
+
+# Role: cloudflared
+# Cloudflare options for exposing Kubernetes services via HTTPS/SSH
+#cloudflared_enabled: false
+#cloudflared_kube_api_server_dns: ''
+#cloudflared_ingress_sans: ''
+#cloudflared_ssh_port: 22
+#cloudflared_version: 2020.7.0

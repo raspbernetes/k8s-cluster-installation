@@ -1,24 +1,9 @@
 ---
-- name: Install HAproxy (1/3)
-  apt:
-    name:
-      - haproxy
-    install_recommends: false
-    update_cache: true
-    force_apt_get: true
-  register: apt_install_haproxy
-  retries: 5
-  until: apt_install_haproxy is success
+- name: preflight checks
+  include_tasks: pre_checks.yml
 
-- name: Generate HAProxy config (2/3)
-  template:
-    src: haproxy.cfg.j2
-    dest: /etc/haproxy/haproxy.cfg
-  register: haproxy_config
+- name: include install tasks
+  include_tasks: install.yml
 
-- name: Reload service HAProxy (3/3)
-  systemd:
-    name: haproxy
-    daemon_reload: yes
-    enabled: yes
-    state: restarted
+- name: include configure tasks
+  include_tasks: configure.yml

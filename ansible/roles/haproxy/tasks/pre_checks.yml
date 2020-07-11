@@ -1,0 +1,9 @@
+---
+- name: 'validate variable : keepalived_vip'
+  assert:
+    that:
+      - keepalived_vip | ipaddr
+    fail_msg:
+      - "Variable 'keepalived_vip' should be a valid ip address"
+      - 'Type is: {{ keepalived_vip | type_debug }}'
+      - "Value is: {{ keepalived_vip | default('undefined') }}"

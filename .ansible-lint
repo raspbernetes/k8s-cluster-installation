@@ -1,0 +1,5 @@
+parseable: true
+exclude_paths:
+- .github/
+skip_list:
+  - '204'

@@ -1,57 +1,12 @@
 ---
-# This role is experimental and still a work in progress...
-# TODO: Initial attempt will fail, currently requires a "cloudflared tunnel login" which prompts the user to visit the site
-# Currently this role assumes you've already performed the cloudflared login steps.
-- name: Install golang packages
-  apt:
-    name:
-      - 'golang-go'
-      - 'make'
-    state: present
-    update_cache: yes
-  register: apt_install_cloudflared_deps
-  retries: 5
-  until: apt_install_cloudflared_deps is success
+- name: preflight checks
+  include_tasks: pre_checks.yml
+  run_once: true
 
-- name: Clone cloudflared repository locally
-  git:
-    repo: https://github.com/xUnholy/cloudflared.git
-    dest: cloudflared
+- name: include install tasks
+  include_tasks: install.yml
+  when: cloudflared_enabled
 
-- name: Compile cloudflared binary
-  command: make cloudflared
-  args:
-    chdir: cloudflared
-    creates: cloudflared
-
-# TODO: Don't copy if it already exists? OR perhaps update only if newer version?
-- name: Copy cloudflared binary to /usr/local/bin
-  command: cp cloudflared /usr/local/bin
-  args:
-    chdir: cloudflared
-
-- name: Create cloudflared config directory
-  become: true
-  file:
-    path: /etc/cloudflared
-    state: directory
-    owner: root
-    group: root
-    mode: '0755'
-
-- name: Copy cloudflared config.conf
-  template:
-    src: config.yml.j2
-    dest: /etc/cloudflared/config.yml
-  register: cloudflared_config
-
-# Disabled due to requiring manual intervention to download the cert.pem on startup
-# - name: Initialize cloudflared tunnel to api-server
-#   command: cloudflared service install
-
-# - name: Enable cloudflared service
-#   systemd:
-#     name: cloudflared
-#     daemon_reload: yes
-#     enabled: yes
-#     state: restarted
+- name: include configure tasks
+  include_tasks: configure.yml
+  when: cloudflared_enabled

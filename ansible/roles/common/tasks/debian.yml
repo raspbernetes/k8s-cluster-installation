@@ -10,6 +10,7 @@
   register: apt_upgrade
   retries: 5
   until: apt_upgrade is success
+  when: common_upgrade_packages
 
 - name: install common packages
   apt:
@@ -35,7 +36,7 @@
   git:
     repo: https://github.com/azlux/log2ram.git
     dest: /opt/log2ram
-    version: '{{ log2ram_version }}'
+    version: '{{ common_log2ram_version }}'
 
 - name: changing perms of "/opt/log2ram/install.sh"
   file:
@@ -48,108 +49,9 @@
     chdir: '/opt/log2ram'
   register: log2ram
   changed_when: '"Reboot to activate log2ram" in log2ram.stdout'
-  notify: reboot host
+  notify: reboot hosts
 
 - name: copy log2ram.conf
   template:
     src: log2ram.conf.j2
     dest: /etc/log2ram.conf
-
-# Instructions: https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/install-kubeadm/#installing-kubeadm-kubelet-and-kubectl
-- name: add apt signing key for kubernetes (1/6)
-  apt_key:
-    url: https://packages.cloud.google.com/apt/doc/apt-key.gpg
-    state: present
-
-# Removed the following repo due to stability issues: https://apt.kubernetes.io/
-- name: adding apt repository for kubernetes (2/6)
-  apt_repository:
-    repo: deb http://packages.cloud.google.com/apt/ kubernetes-xenial main
-    state: present
-  register: kubernetes_repository
-  retries: 10
-  until: kubernetes_repository is success
-
-# To downgrade these packages use the following apt options:
-#   dpkg_options: force-downgrade
-#   force: yes
-- name: install kubernetes packages (3/6)
-  apt:
-    name: '{{ packages }}'
-    state: present
-    update_cache: yes
-  register: apt_install_kube
-  retries: 5
-  until: apt_install_kube is success
-  vars:
-    packages:
-      - kubelet={{ kubelet_version }}
-      - kubeadm={{ kubeadm_version }}
-      - kubectl={{ kubectl_version }}
-
-- name: add apt-mark hold to avoid version skew issues. (4/6)
-  dpkg_selections:
-    name: 'kubectl'
-    selection: hold
-
-- name: add apt-mark hold to avoid version skew issues. (5/6)
-  dpkg_selections:
-    name: 'kubelet'
-    selection: hold
-
-- name: add apt-mark hold to avoid version skew issues. (6/6)
-  dpkg_selections:
-    name: 'kubeadm'
-    selection: hold
-
-# Instructions: https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/install-kubeadm/#ensure-iptables-tooling-does-not-use-the-nftables-backend
-- name: install iptable packages
-  apt:
-    name:
-      - ebtables
-      - arptables
-    install_recommends: false
-    update_cache: true
-    force_apt_get: true
-  register: apt_install_iptabls
-  retries: 5
-  until: apt_install_iptabls is success
-
-- name: use arptables-legacy
-  alternatives:
-    name: arptables
-    path: /usr/sbin/arptables-legacy
-  failed_when: false
-
-- name: use ebtables-legacy
-  alternatives:
-    name: ebtables
-    path: /usr/sbin/ebtables-legacy
-  failed_when: false
-
-- name: use iptables-legacy
-  alternatives:
-    name: iptables
-    path: /usr/sbin/iptables-legacy
-  failed_when: false
-
-- name: use ip6tables-legacy
-  alternatives:
-    name: ip6tables
-    path: /usr/sbin/ip6tables-legacy
-  failed_when: false
-
-- name: create the nobtcmd.txt file if it does not exist
-  become: true
-  file:
-    path: /boot/firmware/nobtcmd.txt
-    state: touch
-
-- name: enable required cgroup features
-  lineinfile:
-    path: '{{ common_rpi_cmd_file }}'
-    state: present
-    backrefs: true
-    regexp: '^(.*fixrtc)$'
-    line: '\1 cgroup_enable=cpuset cgroup_memory=1 cgroup_enable=memory'
-  notify: reboot hosts

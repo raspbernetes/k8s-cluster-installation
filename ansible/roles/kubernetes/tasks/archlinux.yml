@@ -1,0 +1,35 @@
+---
+# TODO: Add support for installing specific versions
+- name: install k8s binaries via aur
+  aur:
+    name:
+      - kubelet-bin
+      - kubeadm-bin
+      - kubectl-bin
+      - crictl-bin
+    use: yay
+    state: present
+  become: no
+
+- name: lock k8s packages
+  lineinfile:
+    path: /etc/pacman.conf
+    regexp: "^IgnorePkg = {{ item }}"
+    line: "IgnorePkg = {{ item }} # Ignore added via ansible"
+    insertafter: "^#IgnorePkg"
+  loop:
+    - kubelet-bin
+    - kubeadm-bin
+    - kubectl-bin
+    - crictl-bin
+
+- name: install other k8s packages via pacman
+  pacman:
+    name:
+      - cni-plugins
+      - ethtool
+      - ebtables
+      - socat
+      - conntrack-tools
+      - lvm2
+    state: present

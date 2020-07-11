@@ -1,0 +1,9 @@
+---
+# Role: keepalived
+keepalived_vip: '192.168.100.50'
+
+# Role: cluster
+cluster_extra_sans:
+  - "{{ keepalived_vip }}"
+  - api.kubernetes.lan
+cluster_control_plane_endpoint: "api.kubernetes.lan:8443"

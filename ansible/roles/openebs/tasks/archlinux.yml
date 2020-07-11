@@ -1,0 +1,6 @@
+---
+- name: install openebs required packages
+  pacman:
+    name: open-iscsi
+    update_cache: true
+  notify: restart iscsid

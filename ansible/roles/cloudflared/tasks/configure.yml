@@ -1,0 +1,34 @@
+---
+- name: create cloudflared config directory
+  file:
+    path: /etc/cloudflared
+    state: directory
+    owner: root
+    group: root
+    mode: '0755'
+
+- name:  copy cloudflared config.conf
+  template:
+    src: config.yml.j2
+    dest: /etc/cloudflared/config.yml
+  notify:
+    - restart cloudflared
+
+- name: copy cloudflared cert
+  copy:
+    src: '{{ item }}'
+    dest: '/etc/cloudflared/cert.pem'
+    owner: root
+    group: root
+    mode: '0644'
+  with_items:
+    - cert.pem
+  notify:
+    - restart cloudflared
+
+# TODO: remove the when condition and add a 'creates' condition to the command. The creates condition should point towards the systemd unit file created by it.
+- name: initialize cloudflared tunnel to api-server
+  command: cloudflared service install # noqa 503
+  when: cloudflared_binary.changed
+  notify:
+    - restart cloudflared
