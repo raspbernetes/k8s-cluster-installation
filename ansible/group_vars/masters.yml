@@ -8,6 +8,12 @@
 #cluster_extra_sans:
 #  - "{{ keepalived_vip }}"
 #cluster_control_plane_endpoint: "{{ keepalived_vip }}:8443"
+#cluster_enable_admission_plugins: "NodeRestriction,EventRateLimit,AlwaysPullImages,ImagePolicyWebhook"
+#cluster_authorization_mode: "Node,RBAC"
+#cluster_audit_log_path: "/var/log/kubernetes/audit.log"
+#cluster_audit_log_maxage: 30
+#cluster_audit_log_maxbackup: 10
+#cluster_audit_log_maxsize: 100
 #cluster_pod_subnet: ""
 
 # Role: cni

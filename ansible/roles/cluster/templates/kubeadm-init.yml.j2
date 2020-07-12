@@ -11,10 +11,12 @@ bootstrapTokens:
       - signing
       - authentication
 certificateKey: {{ kubeadm_certificate_key }}
-
 ---
 apiVersion: kubeadm.k8s.io/v1beta2
 kind: ClusterConfiguration
+clusterName: {{ cluster_name }}
+certificatesDir: /etc/kubernetes/pki
+controlPlaneEndpoint: {{ cluster_control_plane_endpoint }}
 apiServer:
   {% if cluster_extra_sans | length > 0 %}
   certSANs:
@@ -22,13 +24,37 @@ apiServer:
     - {{ san }}
     {% endfor %}
   {% endif %}
+  extraArgs:
+    enable-admission-plugins: {{ cluster_enable_admission_plugins }}
+    authorization-mode: {{ cluster_authorization_mode }}
+    anonymous-auth: false
+    audit-log-path: {{ cluster_audit_log_path }}
+    audit-log-maxage: {{ cluster_audit_log_maxage }}
+    audit-log-maxbackup: {{ cluster_audit_log_maxbackup }}
+    audit-log-maxsize: {{ cluster_audit_log_maxsize }}
+    kubelet-https: true
+    insecure-port: 0
+    secure-port: 6443
+    profiling: false
+    request-timeout: 60
+    service-account-lookup: true
+    tls-cipher-suites: "TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305,TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384,TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305,TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384"
   timeoutForControlPlane: 4m0s
-certificatesDir: /etc/kubernetes/pki
-clusterName: {{ cluster_name }}
 etcd:
   local:
     dataDir: {{ cluster_etcd_datadir }}
+    extraArgs:
+      client-cert-auth: true
+      peer-client-cert-auth: true
+      peer-auto-tls: false
 imageRepository: {{ cluster_image_repository }}
+controllerManager:
+  extraArgs:
+    bind-address: 127.0.0.1
+    terminated-pod-gc-threshold: 50
+    profiling: false
+    use-service-account-credentials: true
+    feature-gates: "RotateKubeletServerCertificate"
 networking:
   dnsDomain: cluster.local
   {%  if cluster_service_subnet | ipaddr %}
@@ -37,4 +63,7 @@ networking:
   {%  if cluster_pod_subnet | ipaddr %}
   podSubnet: {{ cluster_pod_subnet }}
   {% endif %}
-controlPlaneEndpoint: {{ cluster_control_plane_endpoint }}
+scheduler:
+  extraArgs:
+    bind-address: 127.0.0.1
+    profiling: false
