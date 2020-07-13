@@ -1,4 +1,4 @@
-#jinja2:lstrip_blocks: "true"
+#jinja2:lstrip_blocks: True
 ---
 apiVersion: kubeadm.k8s.io/v1beta2
 kind: InitConfiguration
@@ -25,18 +25,17 @@ apiServer:
     {% endfor %}
   {% endif %}
   extraArgs:
-    enable-admission-plugins: {{ cluster_enable_admission_plugins }}
-    authorization-mode: {{ cluster_authorization_mode }}
-    anonymous-auth: "false"
     audit-log-path: "{{ cluster_audit_log_path }}"
     audit-log-maxage: "{{ cluster_audit_log_maxage }}"
     audit-log-maxbackup: "{{ cluster_audit_log_maxbackup }}"
     audit-log-maxsize: "{{ cluster_audit_log_maxsize }}"
-    kubelet-https: "true"
+    authorization-mode: {{ cluster_authorization_mode }}
+    enable-admission-plugins: {{ cluster_enable_admission_plugins }}
     insecure-port: "0"
-    secure-port: "6443"
+    kubelet-https: "true"
     profiling: "false"
     request-timeout: "1m0s"
+    secure-port: "6443"
     service-account-lookup: "true"
     tls-cipher-suites: "TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305,TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384,TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305,TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384"
   timeoutForControlPlane: "4m0s"
@@ -48,13 +47,6 @@ etcd:
       peer-client-cert-auth: "true"
       peer-auto-tls: "false"
 imageRepository: {{ cluster_image_repository }}
-controllerManager:
-  extraArgs:
-    bind-address: 127.0.0.1
-    terminated-pod-gc-threshold: "50"
-    profiling: "false"
-    use-service-account-credentials: "true"
-    feature-gates: "RotateKubeletServerCertificate=true"
 networking:
   dnsDomain: cluster.local
   {%  if cluster_service_subnet | ipaddr %}
@@ -63,6 +55,13 @@ networking:
   {%  if cluster_pod_subnet | ipaddr %}
   podSubnet: {{ cluster_pod_subnet }}
   {% endif %}
+controllerManager:
+  extraArgs:
+    bind-address: 127.0.0.1
+    terminated-pod-gc-threshold: "50"
+    profiling: "false"
+    use-service-account-credentials: "true"
+    feature-gates: "RotateKubeletServerCertificate=true"
 scheduler:
   extraArgs:
     bind-address: 127.0.0.1
