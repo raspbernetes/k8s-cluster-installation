@@ -17,6 +17,25 @@
       - 'Type is: {{ common_timezone | type_debug }}'
       - "Value is: {{ common_timezone | default('undefined') }}"
 
+- name: 'validate variable : common_usb_ssd_enabled'
+  assert:
+    that:
+      - common_usb_ssd_enabled | type_debug == 'bool'
+    fail_msg:
+      - "Variable 'common_usb_ssd_enabled' should be of type 'bool'"
+      - 'Type is: {{ common_usb_ssd_enabled | type_debug }}'
+      - "Value is: {{ common_usb_ssd_enabled | default('undefined') }}"
+
+- name: 'validate variable : common_usb_ssd_device_id'
+  assert:
+    that:
+      - common_usb_ssd_device_id | type_debug == 'AnsibleUnicode'
+    fail_msg:
+      - "Variable 'common_usb_ssd_device_id' should be of type AnsibleUnicode (string)"
+      - 'Type is: {{ common_usb_ssd_device_id | type_debug }}'
+      - "Value is: {{ common_usb_ssd_device_id | default('undefined') }}"
+
+
 - name: 'validate variable : common_rpi_cmd_file'
   assert:
     that:
