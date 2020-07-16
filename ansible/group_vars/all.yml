@@ -8,9 +8,6 @@
 #common_log2ram_version: v1.4
 #common_log2ram_size: 128M
 
-# Role: keepalived
-#keepalived_vip: ''
-
 # Role: kubernetes
 #kubernetes_kubectl_version: 1.18.2-00
 #kubernetes_kubelet_version: 1.18.2-00
