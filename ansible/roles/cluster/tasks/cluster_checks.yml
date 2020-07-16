@@ -15,3 +15,11 @@
     - not hostvars[cluster_main_master].cluster_node_configured
     - hostvars[item].cluster_node_configured
   loop: "{{ groups['masters'] }}"
+
+- name: set cluster control plane default
+  set_fact:
+    cluster_control_plane_endpoint: "{{ keepalived_vip }}:8443"
+  run_once: true
+  delegate_to: "{{ cluster_main_master }}"
+  when:
+    - cluster_control_plane_endpoint | len < 1
