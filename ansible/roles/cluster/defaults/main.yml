@@ -2,7 +2,7 @@
 cluster_name: kubernetes
 cluster_extra_sans:
   - "{{ keepalived_vip }}"
-cluster_control_plane_endpoint: "{{ keepalived_vip }}:8443"
+cluster_control_plane_endpoint: "" # defaults to '{{ keepalived_vip }}:8443' when left empty
 cluster_enable_admission_plugins: "NodeRestriction,AlwaysPullImages"
 cluster_authorization_mode: "Node,RBAC"
 cluster_audit_log_path: "/var/log/kubernetes/audit.log"
