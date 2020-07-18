@@ -16,4 +16,3 @@
 
 - name: common tasks
   include_tasks: common.yml
-  
