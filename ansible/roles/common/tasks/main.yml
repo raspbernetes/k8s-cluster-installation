@@ -13,6 +13,7 @@
 
 - name: raspberry pi config
   include_tasks: rpi_config.yml
+  when: ansible_architecture | regex_search('arm|aarch')
 
 - name: common tasks
   include_tasks: common.yml
