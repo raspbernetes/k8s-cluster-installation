@@ -8,6 +8,15 @@
       - 'Type is: {{ common_packages | type_debug }}'
       - "Value is: {{ common_packages | default('undefined') }}"
 
+- name: 'validate variable : log2ram_enabled'
+  assert:
+    that:
+      - log2ram_enabled | type_debug == 'bool'
+    fail_msg:
+      - "Variable 'log2ram_enabled' should be of type 'bool'"
+      - 'Type is: {{ log2ram_enabled | type_debug }}'
+      - "Value is: {{ log2ram_enabled | default('undefined') }}"
+
 - name: 'validate variable : common_timezone'
   assert:
     that:
