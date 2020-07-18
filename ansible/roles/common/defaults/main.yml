@@ -19,6 +19,6 @@ common_rpi_poe_fan_temp1: 50000 # Temperature in millicelcius
 common_rpi_poe_fan_temp2: 55000 # Temperature in millicelcius
 common_rpi_poe_fan_temp3: 60000 # Temperature in millicelcius
 
-log2ram_enabled: true # Set to false to skip installing log2ram
+common_log2ram_enabled: true # Set to false to skip installing log2ram
 common_log2ram_version: v1.4
 common_log2ram_size: 128M

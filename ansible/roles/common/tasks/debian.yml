@@ -27,4 +27,4 @@
 
 - name: install and configure log2ram
   include_tasks: log2ram.yml
-  when: log2ram_enabled
+  when: common_log2ram_enabled
