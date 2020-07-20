@@ -11,7 +11,7 @@
 - name: 'validate variable : common_log2ram_enabled'
   assert:
     that:
-      - log2ram_enabled | type_debug == 'bool'
+      - common_log2ram_enabled | type_debug == 'bool'
     fail_msg:
       - "Variable 'common_log2ram_enabled' should be of type 'bool'"
       - 'Type is: {{ common_log2ram_enabled | type_debug }}'
