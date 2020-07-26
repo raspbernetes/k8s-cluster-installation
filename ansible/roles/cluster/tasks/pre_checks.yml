@@ -37,3 +37,21 @@
       - "Value is: {{ cluster_pod_subnet | default('undefined') }}"
   when:
     - cluster_pod_subnet != "" # noqa 602
+
+- name: 'validate variable : cluster_etcd_heartbeat_interval'
+  assert:
+    that:
+      - cluster_etcd_heartbeat_interval | type_debug == 'int'
+    fail_msg:
+      - "Variable 'cluster_etcd_heartbeat_interval' should be of type 'int'"
+      - 'Type is: {{ cluster_etcd_heartbeat_interval | type_debug }}'
+      - "Value is: {{ cluster_etcd_heartbeat_interval | default('undefined') }}"
+
+- name: 'validate variable : cluster_etcd_election_timeout'
+  assert:
+    that:
+      - cluster_etcd_election_timeout | type_debug == 'int'
+    fail_msg:
+      - "Variable 'cluster_etcd_election_timeout' should be of type 'int'"
+      - 'Type is: {{ cluster_etcd_election_timeout | type_debug }}'
+      - "Value is: {{ cluster_etcd_election_timeout | default('undefined') }}"

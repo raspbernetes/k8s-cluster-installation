@@ -46,6 +46,8 @@ etcd:
       client-cert-auth: "true"
       peer-client-cert-auth: "true"
       peer-auto-tls: "false"
+      heartbeat-interval: "{{ cluster_etcd_heartbeat_interval }}"
+      election-timeout: "{{ cluster_etcd_election_timeout }}"
 imageRepository: {{ cluster_image_repository }}
 networking:
   dnsDomain: cluster.local
