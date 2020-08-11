@@ -4,6 +4,9 @@ common_upgrade_packages: true # Set to false to not run package upgrades
 common_reboot_handler_enabled: true # Set to false to not reboot after changes
 common_timezone: UTC
 
+common_usb_ssd_enabled: false # Set to true when having issues with the USB SSD disconnecting, currently ArchLinux only
+common_usb_ssd_device_id: "" # Device ID output from 'lsusb', prefixed with 0x, e.g.: '174c:55aa' -> '0x174c:0x55aa'
+
 common_rpi_cmd_file: /boot/firmware/cmdline.txt # For kernel arguments
 common_rpi_config_file: /boot/firmware/syscfg.txt # For RPi configuration
 
