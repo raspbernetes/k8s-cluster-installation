@@ -1,6 +1,5 @@
 hostname: '{{ cloudflared_kube_api_server_dns }}'
-url: 'tcp://{{ load_balancer_dns }}:{{ load_balancer_port }}'
-origin-server-name: '{{ cloudflared_ingress_sans }}'
-lb-pool: master-pool
+url: 'tcp://{{ keepalived_vip }}:8443'
+lb-pool: api-pool
 logfile: /var/log/cloudflared.log
 loglevel: info

@@ -45,4 +45,5 @@
     src: "{{ tempfolder.path }}/cloudflared"
     remote_src: yes
     dest: /usr/local/bin/cloudflared
+    mode: '0755'
   when: not cloudflared_binary.stat.exists
