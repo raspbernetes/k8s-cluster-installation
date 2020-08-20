@@ -102,6 +102,14 @@
     name: br_netfilter
     state: present
 
+- name: persist br_netfilter load through reboots
+  lineinfile:
+    path: '{{ os_modules_load_list }}'
+    state: present
+    regex: '^br_netfilter'
+    line: 'br_netfilter'
+  notify: reboot hosts
+
 - name: Update bridged IPv4 traffic to iptables' chains
   sysctl:
     name: net.bridge.bridge-nf-call-iptables

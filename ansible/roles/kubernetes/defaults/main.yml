@@ -2,3 +2,5 @@
 kubernetes_kubelet_version: 1.18.6-00
 kubernetes_kubeadm_version: 1.18.6-00
 kubernetes_kubectl_version: 1.18.6-00
+
+os_modules_load_list: /etc/modules
