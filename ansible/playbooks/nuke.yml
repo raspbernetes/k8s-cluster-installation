@@ -39,3 +39,13 @@
       file:
         path: /etc/cni/net.d
         state: absent
+
+    - name: remove apt-mark hold
+      dpkg_selections:
+        name: "{{ item }}"
+        selection: purge
+      loop:
+        - 'kubectl'
+        - 'kubelet'
+        - 'kubeadm'
+      when: ansible_os_family | lower == 'debian'
