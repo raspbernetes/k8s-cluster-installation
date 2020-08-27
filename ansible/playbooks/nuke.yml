@@ -48,3 +48,4 @@
         - 'kubectl'
         - 'kubelet'
         - 'kubeadm'
+      when: ansible_os_family | lower == 'debian'
