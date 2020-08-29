@@ -24,7 +24,7 @@
       - kubeadm={{ kubernetes_kubeadm_version }}
       - kubectl={{ kubernetes_kubectl_version }}
     state: present
-    force: true
+    force: yes
     update_cache: yes
   register: apt_install_kube
   retries: 5
