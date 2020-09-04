@@ -61,3 +61,10 @@
     cmd: containerd config default > /etc/containerd/config.toml
     creates: /etc/containerd/config.toml
   notify: restart containerd
+
+- name: start containerd
+  systemd:
+    name: containerd
+    daemon_reload: yes
+    state: started
+    enabled: yes
