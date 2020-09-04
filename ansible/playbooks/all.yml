@@ -1,4 +1,12 @@
 ---
+- hosts: 127.0.0.1
+  connection: local
+  gather_facts: True
+  tasks:
+    - name: ensuring python3
+      fail:
+        msg: "Only python3 is supported, you're running {{ ansible_facts['python_version'] }} locally"
+      when: ansible_facts['python']['version']['major'] != 3
 - import_playbook: common.yml
 - import_playbook: masters.yml
 - import_playbook: cluster.yml
