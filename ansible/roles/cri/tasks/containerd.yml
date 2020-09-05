@@ -27,7 +27,7 @@
 # Hardcoding due to the 20.04 ubuntu dist not currently available.
 - name: 'debian : add apt repository for stable version'
   apt_repository:
-    repo: deb [arch=arm64] https://download.docker.com/linux/ubuntu xenial stable
+    repo: deb https://download.docker.com/linux/ubuntu xenial stable
     state: present
   when: ansible_os_family | lower == 'debian'
 
@@ -61,3 +61,10 @@
     cmd: containerd config default > /etc/containerd/config.toml
     creates: /etc/containerd/config.toml
   notify: restart containerd
+
+- name: start containerd
+  systemd:
+    name: containerd
+    daemon_reload: yes
+    state: started
+    enabled: yes

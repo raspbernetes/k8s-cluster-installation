@@ -9,15 +9,3 @@
 
 - name: include common tasks
   include_tasks: common.yml
-
-#- name: Reset Kubernetes Instance (1/2)
-#  command:
-#    cmd: kubeadm reset -f --v=5
-#    removes: /var/lib/kubelet/config.yaml
-#  register: kubeadm_reset
-#
-#
-#- name: Cleanup /etc/cni/net.d file (2/2)
-#  file:
-#    path: /etc/cni/net.d
-#    state: absent
