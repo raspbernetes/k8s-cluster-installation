@@ -41,6 +41,12 @@ apiServer:
   timeoutForControlPlane: "4m0s"
 etcd:
   local:
+    {% if cluster_extra_sans | length > 0 %}
+    serverCertSANs:
+      {% for san in cluster_extra_sans %}
+      - {{ san }}
+      {% endfor %}
+    {% endif %}
     dataDir: {{ cluster_etcd_datadir }}
     extraArgs:
       client-cert-auth: "true"
