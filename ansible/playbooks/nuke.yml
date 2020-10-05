@@ -3,7 +3,7 @@
     - masters
     - workers
   become: true
-  gather_facts: false
+  gather_facts: true
   vars_prompt:
     name: "nuke_confirmation"
     prompt: "Are you sure you want to run this playbook? This will DESTROY your cluster. Answer with 'YES'"
