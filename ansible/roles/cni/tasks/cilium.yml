@@ -2,6 +2,7 @@
 - name: Install Helm v3
   shell: |
     curl https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 | bash
+  warn: false
 
 - name: Add Cilium Repo
   command:
@@ -36,6 +37,7 @@
   file:
     path: /root/manifests
     state: directory
+    mode: 0700
 
 - name: "Deploy manifests"
   become: true
