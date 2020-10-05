@@ -4,3 +4,4 @@ cni_supported_plugins:
   - calico
   - flannel
   - weave
+  - cilium

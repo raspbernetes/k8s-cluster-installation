@@ -31,3 +31,11 @@
     fail_msg:
       - "Plugin 'flannel' requires pod subnet to be configured."
   when: cni_plugin == 'flannel'
+
+- name: 'validate pod subnet is used when using cilium'
+  assert:
+    that:
+      - cluster_pod_subnet | ipaddr
+    fail_msg:
+      - "Plugin 'cilium' requires pod subnet to be configured."
+  when: cni_plugin == 'cilium'
