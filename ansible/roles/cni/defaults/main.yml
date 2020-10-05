@@ -4,3 +4,5 @@ bgp_peer_address: 192.168.0.1
 bgp_peer_asn: 64512
 cilium_helm_version: 1.8.3
 cilium_image_version: v1.8.3
+k8s_service_host: "{{ hostvars[groups['masters'][0]]['ansible_host'] }}"
+k8s_service_port: 6443
