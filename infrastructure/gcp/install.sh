@@ -5,9 +5,12 @@ set -euo pipefail
 # - Billing must be activated for the project
 # - Post install "terraform init" must be executed to configure against the remote state in GCS
 
-
+# TODO: Reuse variables for PROJECT_ID to avoid users having to set these in multile locations
 # TODO: Create an uninstall script to remove these resources that are not managed via Terraform
 # TODO: Make script idemopotent so it can be re-run without error
+# TODO: QUOTAS default for IN_USE_ADDRESSES is 8 and needs to be 9
+#   Error: error creating NodePool: googleapi: Error 403: Insufficient regional quota to satisfy request: resource "IN_USE_ADDRESSES": request requires '9.0' and is short '1.0'. project has a quota of '8.0' with '8.0' available. View and manage quotas at https://console.cloud.google.com/iam-admin/quotas?usage=USED&project=raspbernetes., forbidden
+
 export TF_VAR_PROJ_ID="${TF_VAR_PROJ_ID:-raspbernetes}"
 export TF_CREDS=~/.config/gcloud/${TF_VAR_PROJ_ID}-terraform-admin.json
 
@@ -39,7 +42,7 @@ gcloud services enable container.googleapis.com
 gsutil mb -p "${TF_VAR_PROJ_ID}" "gs://${TF_VAR_PROJ_ID}-terraform-state"
 
 # TODO: Make sure backend.tf is located under the infrastructure/ directory
-cat > backend.tf << EOF
+cat > _backend.tf << EOF
 terraform {
   backend "gcs" {
     bucket  = "${TF_VAR_PROJ_ID}-terraform-state"

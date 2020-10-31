@@ -5,12 +5,7 @@ variable "project_id" {
 
 variable "region" {
   description = "The GCP region that resources will be created in"
-  default     = "australia-southeast1"
-}
-
-variable "location" {
-  description = "The GCP location that resources will be created in"
-  default     = "australia-southeast1"
+  default     = "us-central1"
 }
 
 variable "cluster_name" {
@@ -29,6 +24,6 @@ variable "gke_password" {
 }
 
 variable "gke_num_nodes" {
-  default     = 3
+  default     = 1
   description = "number of gke nodes"
 }
