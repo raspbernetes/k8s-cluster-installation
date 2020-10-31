@@ -1,14 +1,10 @@
-#
+# Terraform Guide: GCP
 
-## Initialize Terraform workspace and provision GKE Cluster
+## Initialize Terraform and provision GKE Cluster
 
-Replace `terraform.tfvars` values with your `project_id` and `region`. Your
-`project_id` must match the project you've initialized gcloud with. To change your
-`gcloud` settings, run `gcloud init`. The region has been defaulted to `us-central1`;
-you can find a full list of gcloud regions [here](https://cloud.google.com/compute/docs/regions-zones).
+Replace `variables.tf` values with your `project_id` and `region`. Your `project_id` must match the project you've initialized gcloud with. To change your `gcloud` settings, run `gcloud init`. The region has been defaulted to `australia-southeast1`; you can find a full list of gcloud regions [here](https://cloud.google.com/compute/docs/regions-zones).
 
-After you've done this, initalize your Terraform workspace, which will download
-the provider and initialize it with the values provided in the `terraform.tfvars` file.
+After you've done this, initalize your Terraform workspace, which will download the provider and initialize it with the values provided in the `variables.tf` file.
 
 ```bash
 $ terraform init
@@ -40,8 +36,8 @@ Apply complete! Resources: 4 added, 0 changed, 0 destroyed.
 
 Outputs:
 
-kubernetes_cluster_name = dos-terraform-edu-gke
-region = us-central1
+kubernetes_cluster_name = raspbernetes-gke
+region = australia-southeast1
 ```
 
 ## Configure kubectl
@@ -49,7 +45,7 @@ region = us-central1
 Configure kubetcl, by running the following command:
 
 ```bash
-gcloud container clusters get-credentials dos-terraform-edu-gke --region us-central1
+gcloud container clusters get-credentials raspbernetes-gke --region us-central1
 ```
 
-The [Kubernetes Cluster Name](https://github.com/hashicorp/learn-terraform-provision-gke-cluster/blob/master/gke.tf#L63) and [Region](https://github.com/hashicorp/learn-terraform-provision-gke-cluster/blob/master/vpc.tf#L29) correspond to the resources spun up by Terraform.
+The [Kubernetes Cluster Name](variables.tf#L16) and [Region](variables.tf#L6) correspond to the resources spun up by Terraform.

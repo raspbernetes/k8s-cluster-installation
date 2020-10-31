@@ -14,8 +14,8 @@ variable "location" {
 }
 
 variable "cluster_name" {
-  description = "The GCP project name that resources will be created in"
-  default     = "default-cluster"
+  description = "The GKE cluster name"
+  default     = "raspbernetes-gke"
 }
 
 variable "gke_username" {

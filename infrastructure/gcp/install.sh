@@ -9,7 +9,6 @@ set -euo pipefail
 # TODO: Create an uninstall script to remove these resources that are not managed via Terraform
 # TODO: Make script idemopotent so it can be re-run without error
 export TF_VAR_PROJ_ID="${TF_VAR_PROJ_ID:-raspbernetes}"
-export TF_VAR_PROJ_ID=${TF_VAR_PROJ_ID}
 export TF_CREDS=~/.config/gcloud/${TF_VAR_PROJ_ID}-terraform-admin.json
 
 # Create the service account in the Terraform admin project and download the JSON credentials
@@ -22,7 +21,7 @@ gcloud iam service-accounts keys create "${TF_CREDS}" \
 # Grant the service account permission to view the Admin Project and manage Cloud Storage
 gcloud projects add-iam-policy-binding "${TF_VAR_PROJ_ID}" \
   --member "serviceAccount:terraform@${TF_VAR_PROJ_ID}.iam.gserviceaccount.com" \
-  --role roles/viewer
+  --role roles/owner
 
 gcloud projects add-iam-policy-binding "${TF_VAR_PROJ_ID}" \
   --member "serviceAccount:terraform@${TF_VAR_PROJ_ID}.iam.gserviceaccount.com" \
@@ -34,6 +33,7 @@ gcloud services enable cloudbilling.googleapis.com
 gcloud services enable iam.googleapis.com
 gcloud services enable compute.googleapis.com
 gcloud services enable serviceusage.googleapis.com
+gcloud services enable container.googleapis.com
 
 # Create the remote backend bucket in Cloud Storage and the backend.tf file for storage of the terraform.tfstate file
 gsutil mb -p "${TF_VAR_PROJ_ID}" "gs://${TF_VAR_PROJ_ID}-terraform-state"
