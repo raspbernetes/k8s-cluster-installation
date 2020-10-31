@@ -1,0 +1,30 @@
+name: terraform
+
+on:
+  workflow_dispatch:
+    inputs:
+      logLevel:
+        description: 'Log level'
+        required: true
+        default: 'warning'
+      tags:
+        description: 'Test scenario tags'
+
+env:
+  tf_actions_working_dir: infrastructure/gcp
+  terraform_version: 0.13.5
+
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ${{ env.tf_actions_working_dir }}
+    steps:
+    - name: checkout
+      id: checkout_code
+      uses: actions/checkout@v2
+
+    - run: |
+        echo "Log level: ${{ github.event.inputs.logLevel }}"
+        echo "Tags: ${{ github.event.inputs.tags }}"
