@@ -1,6 +1,11 @@
 #!/bin/bash
 set -euo pipefail
 
+# Notes:
+# - Billing must be activated for the project
+# - Post install "terraform init" must be executed to configure against the remote state in GCS
+
+
 # TODO: Create an uninstall script to remove these resources that are not managed via Terraform
 # TODO: Make script idemopotent so it can be re-run without error
 export TF_VAR_PROJ_ID="${TF_VAR_PROJ_ID:-raspbernetes}"
@@ -37,7 +42,7 @@ gsutil mb -p "${TF_VAR_PROJ_ID}" "gs://${TF_VAR_PROJ_ID}-terraform-state"
 cat > backend.tf << EOF
 terraform {
   backend "gcs" {
-    bucket  = "${TF_VAR_PROJ_ID}"
+    bucket  = "${TF_VAR_PROJ_ID}-terraform-state"
     prefix  = "terraform/state"
   }
 }
@@ -49,5 +54,4 @@ gsutil versioning set on "gs://${TF_VAR_PROJ_ID}-terraform-state"
 # Configure your environment for the Google Cloud Terraform provider
 export GOOGLE_APPLICATION_CREDENTIALS=${TF_CREDS}
 export GOOGLE_PROJECT=${TF_VAR_PROJ_ID}
-
 
