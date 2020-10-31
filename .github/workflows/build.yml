@@ -29,12 +29,3 @@ jobs:
           ANSIBLE_CONFIG: ansible/ansible.cfg
         with:
           targets: './ansible/playbooks/*.yml'
-
-      - name: tflint
-        uses: reviewdog/action-tflint@master
-        with:
-          github_token: ${{ secrets.github_token }}
-          working_directory: 'infrastructure/gcp'
-          reporter: github-pr-review
-          fail_on_error: 'true'
-          filter_mode: 'nofilter'

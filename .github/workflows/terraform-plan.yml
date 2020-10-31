@@ -37,6 +37,14 @@ jobs:
       run: terraform fmt -check
       continue-on-error: false
 
+    - name: Terraform Lint
+      uses: reviewdog/action-tflint@master
+      with:
+        github_token: ${{ secrets.github_token }}
+        reporter: github-pr-review
+        fail_on_error: 'true'
+        filter_mode: 'nofilter'
+
     - name: Terraform Init
       id: init
       run: terraform init
