@@ -34,7 +34,8 @@
     --set global.k8sServicePort={{ k8s_service_port }} \
     --set config.bpfMasquerade="false" \
     --namespace kube-system
-  creates: /etc/cni/net.d/05-cilium.conf
+  args:
+    creates: /etc/cni/net.d/05-cilium.conf
 
 - name: Create Manifests Directory
   file:
