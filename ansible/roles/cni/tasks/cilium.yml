@@ -8,10 +8,11 @@
 - name: Add Cilium Repo
   command:
     cmd: helm repo add cilium https://helm.cilium.io/
+    creates: /usr/local/bin/helm
 
 - name: Deploy Cilium
   shell: |
-    helm upgrade -i cilium cilium/cilium --version {{ cilium_helm_version }} \
+    set -o pipefail && helm upgrade -i cilium cilium/cilium --version {{ cilium_helm_version }} \
     --set global.registry="docker.io/cilium" \
     --set global.tag="{{ cilium_image_version }}" \
     --set global.tunnel="disabled" \
@@ -33,6 +34,7 @@
     --set global.k8sServicePort={{ k8s_service_port }} \
     --set config.bpfMasquerade="false" \
     --namespace kube-system
+  creates: /etc/cni/net.d/05-cilium.conf
 
 - name: Create Manifests Directory
   file:
