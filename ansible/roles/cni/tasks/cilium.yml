@@ -1,7 +1,7 @@
 ---
 - name: Install Helm v3
   shell: |
-    curl https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 | bash
+    set -o pipefail && curl https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 | bash
   args:
     warn: false
 
