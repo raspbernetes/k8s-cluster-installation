@@ -13,3 +13,4 @@
   command:
     cmd: kubeadm join --config /etc/kubernetes/kubeadm-join.yml
     creates: /etc/kubernetes/kubelet.conf
+    mode: 0644
