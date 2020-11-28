@@ -12,9 +12,9 @@
 
 - name: Deploy Cilium
   shell: |
-    set -o pipefail && helm upgrade -i cilium cilium/cilium --version {{ cilium_helm_version }} \
+    set -o pipefail && helm upgrade -i cilium cilium/cilium --version {{ cni_cilium_helm_version }} \
     --set global.registry="docker.io/cilium" \
-    --set global.tag="{{ cilium_image_version }}" \
+    --set global.tag="{{ cni_cilium_image_version }}" \
     --set global.tunnel="disabled" \
     --set global.externalIPs.enabled="true" \
     --set global.ipam.operator.clusterPoolIPv4PodCIDR="{{ cluster_pod_subnet }}" \
