@@ -5,4 +5,4 @@ cni_bgp_peer_asn: 64512
 cni_cilium_helm_version: 1.9.0
 cni_cilium_image_version: v1.9.0
 k8s_service_host: "{{ hostvars[groups['masters'][0]]['ansible_host'] }}"
-k8s_service_port: 6443
+k8s_service_port: 8443

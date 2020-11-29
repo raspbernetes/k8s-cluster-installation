@@ -5,45 +5,34 @@
   args:
     warn: false
 
-- name: Add Cilium Repo
+- name: Add Cilium Helm Repo
   command:
     cmd: helm repo add cilium https://helm.cilium.io/
     creates: /usr/local/bin/helm
 
+- name: Generate cilium helm values
+  template:
+    src: values.yaml.j2
+    dest: /root/values.yaml
+    mode: 0644
+
 - name: Deploy Cilium
   shell: |
-    set -o pipefail && helm upgrade -i cilium cilium/cilium --version {{ cni_cilium_helm_version }} \
-    --set global.registry="docker.io/cilium" \
-    --set global.tag="{{ cni_cilium_image_version }}" \
-    --set global.tunnel="disabled" \
-    --set global.externalIPs.enabled="true" \
-    --set global.ipam.operator.clusterPoolIPv4PodCIDR="{{ cluster_pod_subnet }}" \
-    --set global.ipam.operator.clusterPoolIPv4MaskSize="24" \
-    --set global.endpointRoutes.enabled="true" \
-    --set global.hostServices.enabled="true" \
-    --set global.autoDirectNodeRoutes="true" \
-    --set global.nodePort.enabled="true" \
-    --set global.nodePort.mode="dsr" \
-    --set global.masquerade="false" \
-    --set global.hubble.enabled="true" \
-    --set global.hubble.ui.enabled="true" \
-    --set global.hubble.relay.enabled="true" \
-    --set global.hubble.metrics.enabled="{dns,drop,tcp,flow,port-distribution,icmp,http}" \
-    --set global.kubeProxyReplacement=strict \
-    --set global.k8sServiceHost={{ k8s_service_host }} \
-    --set global.k8sServicePort={{ k8s_service_port }} \
-    --set config.bpfMasquerade="false" \
+    set -o pipefail && helm upgrade -i cilium cilium/cilium \
+    --values=/root/values.yaml \
+    --version {{ cni_cilium_helm_version }} \
     --namespace kube-system
   args:
     creates: /etc/cni/net.d/05-cilium.conf
 
+# TODO: Only deploy kube-router if enabled
 - name: Create Manifests Directory
   file:
     path: /root/manifests
     state: directory
     mode: 0700
 
-- name: "Deploy manifests"
+- name: "Generate kube-router manifests"
   become: true
   template:
     src: "{{ item }}"
@@ -52,7 +41,7 @@
   with_items:
   - "generic-kuberouter-only-advertise-routes.yaml.j2"
 
-- name: Applying manifests
+- name: Apply kube-router manifests
   command:
     cmd: "kubectl apply -f /root/manifests/{{ item }}"
   with_items:
