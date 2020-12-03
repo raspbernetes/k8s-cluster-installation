@@ -37,9 +37,9 @@
     state: directory
     mode: 0755
 
-- name: copy docker daemon config
-  copy:
-    src: docker/daemon.json
+- name: template docker daemon config
+  template:
+    src: docker/daemon.json.j2
     dest: '/etc/docker/daemon.json'
     owner: root
     group: root

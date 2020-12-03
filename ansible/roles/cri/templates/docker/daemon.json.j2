@@ -6,5 +6,9 @@
     "log-opts": {
         "max-size": "100m"
     },
+    {{ if docker-cache_enabled == true and cache_registry_fqdn | length > 0 }}
+    "registry-mirrors": ["https://{{ cache_registry_fqdn }}"],
+    {{ endif }}
     "storage-driver": "overlay2"
+
 }
