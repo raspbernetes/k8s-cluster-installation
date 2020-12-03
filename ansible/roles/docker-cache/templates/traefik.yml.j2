@@ -1,0 +1,53 @@
+#!/etc/traefik/traefik.yml
+entryPoints:
+  web:
+    address: :80
+  web-secure:
+    address: :443
+  metrics:
+    address: :9101
+certificatesResolvers:
+  staging:
+    acme:
+      email: {{ cache_le_tls_email }}
+      storage: /certs/staging.json
+      dnsChallenge:
+        # used during the challenge
+        provider: route53
+        resolvers:
+        {{ for ip in cache_aws_resolver_ips }}
+          - "{{ item }}:53"
+        {{ endfor }}
+      caServer: https://acme-staging-v02.api.letsencrypt.org/directory
+  prod:
+    acme:
+      email: {{ cache_le_tls_email }}
+      storage: /certs/prod.json
+      dnsChallenge:
+        # used during the challenge
+        provider: route53
+        resolvers:
+        {{ for ip in cache_aws_resolver_ips }}
+          - "{{ item }}:53"
+        {{ endfor }}
+      caServer: https://acme-v02.api.letsencrypt.org/directory
+providers:
+  docker:
+    endpoint: unix://var/run/docker.sock
+    exposedByDefault: false
+    watch: true
+  file:
+    directory: /config/
+    watch: true
+api:
+  dashboard: true
+  insecure: false
+  debug: false
+log:
+  filepath: "/var/log/traefik.log"
+metrics:
+  prometheus:
+    entryPoint: metrics
+    addEntryPointsLabels: true
+    addServicesLabels: true
+accessLog: {}

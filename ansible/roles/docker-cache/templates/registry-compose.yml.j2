@@ -1,0 +1,29 @@
+---
+version: "3.7"
+services:
+  registry:
+    image: registry:2.7.1
+    labels:
+      - traefik.enable=true
+      - traefik.docker.network=traefik_traefik-proxy
+        # insecure router (redirect to https)
+      - traefik.http.routers.{{ role_name }}.rule=Host(`{{ cache_registry_fqdn }}`)
+      - traefik.http.routers.{{ role_name }}.middlewares=httpsRedirect
+        # secure router
+      - traefik.http.routers.{{ role_name }}-secure.tls=true
+      - traefik.http.routers.{{ role_name }}-secure.tls.certresolver={{ cache_le_acme_environment }}
+      - traefik.http.routers.{{ role_name }}-secure.rule=Host(`{{ cache_registry_fqdn }}`)
+      - traefik.http.services.{{ role_name }}-secure.loadbalancer.server.port=5000
+    environment:
+      - REGISTRY_PROXY_REMOTEURL="https://registry-1.docker.io"
+      - REGISTRY_PROXY_USERNAME={{ DOCKER_LOGIN_USER }}
+      - REGISTRY_PROXY_PASSWORD={{ DOCKER_LOGIN_PASSWORD }}
+    volumes:
+      - /mnt/registry:/var/lib/registry
+      - ./config.yml:/etc/docker/registry/config.yml
+    networks:
+      - traefik-proxy
+networks:
+  traefik-proxy:
+    external:
+      name: traefik_traefik-proxy

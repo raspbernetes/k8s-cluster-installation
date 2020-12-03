@@ -1,0 +1,22 @@
+---
+  - name: registry up
+    docker_compose:
+      project_src: /opt/compose/registry
+      state: present
+
+  - name: restart registry
+    docker_compose:
+      project_src: /opt/compose/registry/docker-compose.yml
+      state: present
+      restarted: yes
+
+  - name: traefik up
+    docker_compose:
+      project_src: /opt/compose/traefik/docker-compose.yml
+      state: present
+
+  - name: restart traefik
+    docker_compose:
+      project_src: /opt/compose/traefik
+      state: present
+      restarted: yes

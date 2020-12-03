@@ -1,0 +1,20 @@
+---
+- name: make required directories
+  file:
+    path: "/opt/compose/registry"
+    state: directory
+
+- name: template registry compose file
+  template:
+    src: registry-compose.yml.j2
+    dest: "/opt/compose/registry/docker-compose.yml"
+  notify: registry up
+
+- name: template registry config file
+  template:
+    src: registry.yml.j2
+    dest: "/opt/compose/registry/config.yml"
+  notify: restart registry
+
+- name: flush handlers
+  meta: flush_handlers

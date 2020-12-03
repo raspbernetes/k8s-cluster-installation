@@ -1,0 +1,9 @@
+---
+- name: 'validate variable : docker-cache_enabled'
+  assert:
+    that:
+      - docker-cache_enabled | type_debug == 'bool'
+    fail_msg:
+      - "Variable 'docker-cache_enabled' should be of type 'bool'"
+      - 'Type is: {{ docker-cache_enabled | type_debug }}'
+      - "Value is: {{ docker-cache_enabled | default('undefined') }}"

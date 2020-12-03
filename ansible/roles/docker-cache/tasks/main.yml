@@ -1,0 +1,8 @@
+---
+- name: preflight checks
+  include_tasks: pre_checks.yml
+  run_once: true
+
+- name: include family specific tasks
+  include_tasks: "{{ ansible_os_family | lower }}.yml"
+  when: docker-cache_enabled

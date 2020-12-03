@@ -1,0 +1,17 @@
+---
+- name: install required packages
+  apt:
+    name: '{{ cache_packages }}'
+    install_recommends: false
+    update_cache: yes
+    cache_valid_time: 3600
+    force_apt_get: true
+    autoclean: yes
+    autoremove: yes
+  register: apt_install_cache
+  retries: 5
+  until: apt_install_cache is success
+
+- include_tasks: traefik.yml
+
+- include_tasks: registry.yml
