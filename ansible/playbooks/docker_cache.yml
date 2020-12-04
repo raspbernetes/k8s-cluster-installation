@@ -1,15 +1,15 @@
 ---
-- hosts: docker-cache
+- hosts: docker_cache
   become: true
   pre_tasks:
     - name: "Add OS variables"
       include_vars: "../family_vars/{{ ansible_os_family | lower }}.yml"
   tasks:
-    - name: "Run cri role before including docker-cache vars"
+    - name: "Run cri role before including docker_cache vars"
       import_role:
         name: cri
     - name: "Add group variables"
-      include_vars: "../group_vars/docker-cache.yml"
-    - name: "Run docker-cache role"
+      include_vars: "../group_vars/docker_cache.yml"
+    - name: "Run docker_cache role"
       import_role:
-        name: docker-cache
+        name: docker_cache

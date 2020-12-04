@@ -7,7 +7,7 @@
       fail:
         msg: "Only python3 is supported, you're running {{ ansible_facts['python_version'] }} locally"
       when: ansible_facts['python']['version']['major'] != 3
-- import_playbook: docker-cache.yml
+- import_playbook: docker_cache.yml
 - import_playbook: common.yml
 - import_playbook: masters.yml
 - import_playbook: cluster.yml

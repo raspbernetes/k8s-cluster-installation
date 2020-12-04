@@ -1,5 +1,5 @@
 ---
-- name: install docker-cache required packages
+- name: install docker_cache required packages
   apt:
     name: '{{ cache_packages }}'
     install_recommends: false
