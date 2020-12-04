@@ -37,6 +37,11 @@
     state: directory
     mode: 0755
 
+- name: Show docker daemon.json file
+  debug:
+    msg: "{{ lookup('template', '../templates/docker/daemon.json.j2') }}"
+  when: ansible_check_mode
+
 - name: template docker daemon config
   template:
     src: docker/daemon.json.j2
