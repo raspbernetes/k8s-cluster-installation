@@ -1,9 +1,36 @@
 ---
-- name: 'validate variable : docker-cache_enabled'
+- name: check os_family support
   assert:
     that:
-      - docker-cache_enabled | type_debug == 'bool'
+      - ansible_os_family | lower in cache_supported_os_families
     fail_msg:
-      - "Variable 'docker-cache_enabled' should be of type 'bool'"
-      - 'Type is: {{ docker-cache_enabled | type_debug }}'
-      - "Value is: {{ docker-cache_enabled | default('undefined') }}"
+      - "os_family '{{ ansible_os_family }}' is not supported at this time"
+
+- name: 'validate variable : docker_cache_enable'
+  assert:
+    that:
+      - docker_cache_enable | type_debug == 'bool'
+    fail_msg:
+      - "Variable 'docker_cache_enable' should be of type 'bool'"
+      - 'Type is: {{ docker_cache_enable | type_debug }}'
+      - "Value is: {{ docker_cache_enable | default('undefined') }}"
+
+- name: 'validate variable : cache_traefik_enable'
+  assert:
+    that:
+      - cache_traefik_enable | type_debug == 'bool'
+    fail_msg:
+      - "Variable 'cache_traefik_enable' should be of type 'bool'"
+      - 'Type is: {{ cache_traefik_enable | type_debug }}'
+      - "Value is: {{ cache_traefik_enable | default('undefined') }}"
+  when: docker_cache_enable
+
+- name: 'validate variable : cache_tls_enable'
+  assert:
+    that:
+      - cache_tls_enable | type_debug == 'bool'
+    fail_msg:
+      - "Variable 'cache_tls_enable' should be of type 'bool'"
+      - 'Type is: {{ cache_tls_enable | type_debug }}'
+      - "Value is: {{ cache_tls_enable | default('undefined') }}"
+  when: docker_cache_enable

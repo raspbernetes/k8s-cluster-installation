@@ -22,14 +22,14 @@
     fail_msg:
       - "cri_plugin '{{ cri_plugin }}' is not supported at this time"
 
-- name: 'validate variable : docker-cache_enabled'
+- name: 'validate variable : docker_cache_enable'
   assert:
     that:
-      - docker-cache_enabled | type_debug == 'bool'
+      - docker_cache_enabled | type_debug == 'bool'
     fail_msg:
-      - "Variable 'docker-cache_enabled' should be of type 'bool'"
-      - 'Type is: {{ docker-cache_enabled | type_debug }}'
-      - "Value is: {{ docker-cache_enabled | default('undefined') }}"
+      - "Variable 'docker_cache_enable' should be of type 'bool'"
+      - 'Type is: {{ docker_cache_enabled | type_debug }}'
+      - "Value is: {{ docker_cache_enable | default('undefined') }}"
 
 - name: 'validate variable : cache_registry_fqdn'
   assert:
@@ -39,4 +39,4 @@
       - "Variable 'cache_registry_fqdn' should be of type AnsibleUnicode (string)"
       - 'Type is: {{ cache_registry_fqdn | type_debug }}'
       - "Value is: {{ cache_registry_fqdn | default('undefined') }}"
-  when: docker-cache_enabled
+  when: docker_cache_enabled

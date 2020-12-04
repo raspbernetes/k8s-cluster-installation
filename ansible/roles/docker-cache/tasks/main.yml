@@ -5,4 +5,12 @@
 
 - name: include family specific tasks
   include_tasks: "{{ ansible_os_family | lower }}.yml"
-  when: docker-cache_enabled
+  when: docker_cache_enable
+
+- name: include traefik deployment
+  include_tasks: traefik.yml
+  when: cache_traefik_enable
+
+- name: include registry tasks
+  include_tasks: registry.yml
+  when: docker_cache_enable
