@@ -3,7 +3,3 @@
   pacman:
     name: docker-compose
     update_cache: true
-
-- include_tasks: traefik.yml
-
-- include_tasks: registry.yml

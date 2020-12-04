@@ -11,7 +11,3 @@
   register: apt_install_cache
   retries: 5
   until: apt_install_cache is success
-
-- include_tasks: traefik.yml
-
-- include_tasks: registry.yml
