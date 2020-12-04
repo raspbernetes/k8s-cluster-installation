@@ -6,9 +6,16 @@
     "log-opts": {
         "max-size": "100m"
     },
-    {{ if docker-cache_enabled == true and cache_registry_fqdn | length > 0 }}
+{% if docker_cache_enable == true and cache_registry_fqdn | length > 0 %}
+    {% if cache_traefik_enable == true and cache_tls_enable == true %}
     "registry-mirrors": ["https://{{ cache_registry_fqdn }}"],
-    {{ endif }}
+    {% elif cache_traefik_enable == false and cache_tls_enable == true %}
+    "registry-mirrors": ["https://{{ cache_registry_fqdn }}:5000"],
+    {% elif cache_traefik_enable == false and cache_tls_enable == false %}
+    "registry-mirrors": ["{{ cache_registry_fqdn }}:5000"],
+    "insecure-registries": ["{{ cache_registry_fqdn }}:5000"],
+    {% endif %}
+{% endif %}
     "storage-driver": "overlay2"
 
 }

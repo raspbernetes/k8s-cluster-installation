@@ -1,4 +1,4 @@
-version: "3.3"
+version: "3.7"
 services:
   app:
     image: traefik:v2.3
@@ -12,17 +12,17 @@ services:
       # This middleware is reused by other containers. Don't change it unless you know what you're doing.
       - traefik.http.middlewares.httpsRedirect.redirectscheme.scheme=https
       # insecure router (redirect to https)
-      - traefik.http.routers.api.rule=Host(`{{ cache_traefik_fqdn }}`)
+      - traefik.http.routers.api.rule=Host(`{{ cache_traefik_dashboard_fqdn }}`)
       - traefik.http.routers.api.middlewares=httpsRedirect
       # secure router
-      - traefik.http.routers.api-secure.rule=Host(`{{ cache_traefik_fqdn }}`)
+      - traefik.http.routers.api-secure.rule=Host(`{{ cache_traefik_dashboard_fqdn }}`)
       - traefik.http.routers.api-secure.service=api@internal
       - traefik.http.routers.api-secure.tls=true
-      - traefik.http.routers.api-secure.tls.certresolver={{ cache_le_acme_environment }}
+      - traefik.http.routers.api-secure.tls.certresolver={{ cache_traefik_le_acme_environment }}
     environment:
-      - AWS_ACCESS_KEY_ID={{ AWS_ACCESS_KEY_ID }}
-      - AWS_SECRET_ACCESS_KEY={{ AWS_SECRET_ACCESS_KEY }}
-      - AWS_REGION={{ cache_aws_region }}
+      - AWS_ACCESS_KEY_ID={{ cache_traefik_aws_access_key_id }}
+      - AWS_SECRET_ACCESS_KEY={{ cache_traefik_aws_secret_access_key }}
+      - AWS_REGION={{ cache_traefik_aws_region }}
     ports:
       - "80:80"
       - "443:443"
@@ -46,7 +46,3 @@ services:
       - com.centurylinklabs.watchtower.enable=true
 networks:
   traefik-proxy:
-    ipam:
-      driver: default
-      config:
-        - subnet: "10.101.192.64/26"

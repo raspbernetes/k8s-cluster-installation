@@ -11,6 +11,11 @@ http:
   addr: :5000
   headers:
     X-Content-Type-Options: [nosniff]
+{% if cache_traefik_enable == false and cache_tls_enable == true %}
+  tls:
+    certificate: /opt/compose/registry/certs/cert.crt
+    key: /opt/compose/registry/certs/private.key
+{% endif %}
 health:
   storagedriver:
     enabled: true
