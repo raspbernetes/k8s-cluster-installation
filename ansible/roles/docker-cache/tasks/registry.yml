@@ -1,16 +1,40 @@
 ---
-- name: make required directories
+- name: Make required directories
   file:
     path: "/opt/compose/registry"
     state: directory
 
-- name: template registry compose file
+- name: Show registry compose file
+  debug:
+    msg: "{{ lookup('template', '../templates/registry-compose.yml.j2') }}"
+  when: ansible_check_mode
+
+- name: Show registry config file
+  debug:
+    msg: "{{ lookup('template', '../templates/registry.yml.j2') }}"
+  when: ansible_check_mode
+
+- name: Create cert directory
+  file:
+    path: "/opt/compose/registry/certs"
+    state: directory
+  when: not cache_traefik_enable and cache_tls_enable
+
+- name: Copy over TLS cert and key
+  copy:
+    src: "{{ item }}"
+    dest: "/opt/compose/registry/certs/"
+    mode: 0644
+  loop: [ cert.crt, private.key ]
+  when: not cache_traefik_enable and cache_tls_enable
+
+- name: Template registry compose file
   template:
     src: registry-compose.yml.j2
     dest: "/opt/compose/registry/docker-compose.yml"
   notify: registry up
 
-- name: template registry config file
+- name: Template registry config file
   template:
     src: registry.yml.j2
     dest: "/opt/compose/registry/config.yml"
