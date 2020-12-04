@@ -1,5 +1,5 @@
 ---
-- name: install openebs required packages
+- name: install docker-cache required packages
   pacman:
-    name: docker-compose
+    name: '{{ cache_packages }}'
     update_cache: true
