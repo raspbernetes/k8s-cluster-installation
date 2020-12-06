@@ -11,7 +11,7 @@ discovery:
     caCertHashes:
       - sha256:{{ cluster_ca_sha256 }}
   timeout: 5m0s
-{% if hostvars[inventory_hostname].group_names[0] == 'masters' %}
+{% if inventory_hostname in groups['masters'] %}
 controlPlane:
   certificateKey: {{ kubeadm_certificate_key }}
 {% endif %}
