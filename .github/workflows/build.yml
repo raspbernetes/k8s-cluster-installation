@@ -12,7 +12,7 @@ jobs:
       - name: Shellcheck
         uses: reviewdog/action-shellcheck@v1
         with:
-          reporter: github-check
+          reporter: github-pr-review
           path: '.'
           pattern: '*.sh'
           exclude: './.git/*'

@@ -1,16 +1,16 @@
 ---
-##
-# Role: keepalived
-##
+####
+# Role - keepalived
+####
 # keepalived_vip: ''
 # keepalived_interface: "{{ ansible_default_ipv4['interface'] }}"
 
-##
-# Role: cluster
-##
+####
+# Role - cluster
+####
 # cluster_name: kubernetes
 # cluster_extra_sans:
-#   - "{{ keepalived_vip }}"
+#  - "{{ keepalived_vip }}"
 # cluster_control_plane_endpoint: "{{ keepalived_vip }}:8443"
 # cluster_enable_admission_plugins: "NodeRestriction,AlwaysPullImages"
 # cluster_authorization_mode: "Node,RBAC"
@@ -23,19 +23,19 @@
 # cluster_etcd_election_timeout: "1000"
 # cluster_kube_proxy: enabled
 
-##
-# Role: cni
-##
+####
+# Role - cni
+####
 # cni_plugin: calico
 # cni_bgp_peer_address: 192.168.0.1
 # cni_bgp_peer_asn: 64512
-# cni_cilium_helm_version: 1.9.0
-# cni_cilium_image_version: v1.9.0
+# cni_cilium_helm_version: 1.9.1
+# cni_cilium_image_version: v1.9.1
 
-##
-# Role: cloudflared
+####
+# Role - cloudflared
 # Cloudflare options for exposing Kubernetes services via HTTPS/SSH
-##
+####
 # cloudflared_enabled: false
 # cloudflared_kube_api_server_dns: ''
 # cloudflared_version: 2020.8.0

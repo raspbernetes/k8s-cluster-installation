@@ -1,7 +1,7 @@
 ---
-##
-# Role: common
-##
+####
+# Role - common
+####
 # common_upgrade_packages: true
 # common_reboot_handler_enabled: true
 # common_timezone: UTC
@@ -12,19 +12,19 @@
 # common_log2ram_version: v1.4
 # common_log2ram_size: 128M
 
-##
-# Role: kubernetes
-##
+####
+# Role - kubernetes
+####
 # kubernetes_kubectl_version: 1.19.4-00
 # kubernetes_kubelet_version: 1.19.4-00
 # kubernetes_kubeadm_version: 1.19.4-00
 
-##
-# Role: cri
-##
+####
+# Role - cri
+####
 # cri_plugin: docker
 
-##
-# Role: openebs
-##
+####
+# Role - storage
+####
 # openebs_enabled: true
