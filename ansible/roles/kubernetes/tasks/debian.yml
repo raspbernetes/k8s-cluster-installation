@@ -39,43 +39,6 @@
     - 'kubelet'
     - 'kubeadm'
 
-# Instructions: https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/install-kubeadm/#ensure-iptables-tooling-does-not-use-the-nftables-backend
-- name: install iptable packages
-  apt:
-    name:
-      - ebtables
-      - arptables
-    install_recommends: false
-    update_cache: true
-    force_apt_get: true
-  register: apt_install_iptabls
-  retries: 5
-  until: apt_install_iptabls is success
-
-- name: use arptables-legacy
-  alternatives:
-    name: arptables
-    path: /usr/sbin/arptables-legacy
-  failed_when: false
-
-- name: use ebtables-legacy
-  alternatives:
-    name: ebtables
-    path: /usr/sbin/ebtables-legacy
-  failed_when: false
-
-- name: use iptables-legacy
-  alternatives:
-    name: iptables
-    path: /usr/sbin/iptables-legacy
-  failed_when: false
-
-- name: use ip6tables-legacy
-  alternatives:
-    name: ip6tables
-    path: /usr/sbin/ip6tables-legacy
-  failed_when: false
-
 # Adding required Kubernetes cgroups
 - name: create the nobtcmd.txt file if it does not exist
   become: true
@@ -96,7 +59,7 @@
 
 # Set /proc/sys/net/bridge/bridge-nf-call-iptables to 1 by running
 # sysctl net.bridge.bridge-nf-call-iptables=1 to pass bridged IPv4 traffic to iptables’ chains.
-# This is a requirement for some CNI plugins to work.
+# This is a requirement for some CNI plugins to work, these persist across reboots.
 # https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/install-kubeadm/#letting-iptables-see-bridged-traffic
 - name: Update bridged IPv4 traffic to iptables' chains
   sysctl:
@@ -108,13 +71,6 @@
 - name: Update bridged IPv4 traffic to ip6tables' chains
   sysctl:
     name: net.bridge.bridge-nf-call-ip6tables
-    value: '1'
-    state: present
-    sysctl_file: /etc/sysctl.d/99-kubernetes-cri.conf
-
-- name: Update bridged IPv4 traffic to arptables' chains
-  sysctl:
-    name: net.bridge.bridge-nf-call-arptables
     value: '1'
     state: present
     sysctl_file: /etc/sysctl.d/99-kubernetes-cri.conf
