@@ -1,4 +1,3 @@
 ---
 cri_plugin: docker
-docker_cache_enabled: false
-cache_registry_fqdn: ""
+docker_cache_enable: false
