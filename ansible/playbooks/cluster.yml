@@ -9,4 +9,4 @@
   roles:
     - cluster
     - cni
-    - openebs
+    - storage

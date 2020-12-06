@@ -1,5 +1,5 @@
 ---
-# Role: common
+# Role - common
 common_packages:
   - rxvt-unicode-terminfo
   - fakeroot

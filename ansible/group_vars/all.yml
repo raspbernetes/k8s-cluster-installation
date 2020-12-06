@@ -1,22 +1,30 @@
 ---
-# Role: common
-#common_upgrade_packages: true
-#common_reboot_handler_enabled: true
-#common_timezone: UTC
-#common_usb_ssd_enabled: false
-#common_usb_ssd_device_id: ""
-#common_rpi_overclock: false
-#common_rpi_poe_hat: false
-#common_log2ram_version: v1.4
-#common_log2ram_size: 128M
+####
+# Role - common
+####
+# common_upgrade_packages: true
+# common_reboot_handler_enabled: true
+# common_timezone: UTC
+# common_usb_ssd_enabled: false
+# common_usb_ssd_device_id: ""
+# common_rpi_overclock: false
+# common_rpi_poe_hat: false
+# common_log2ram_version: v1.4
+# common_log2ram_size: 128M
 
-# Role: kubernetes
-#kubernetes_kubectl_version: 1.19.0-00
-#kubernetes_kubelet_version: 1.19.0-00
-#kubernetes_kubeadm_version: 1.19.0-00
+####
+# Role - kubernetes
+####
+# kubernetes_kubectl_version: 1.19.4-00
+# kubernetes_kubelet_version: 1.19.4-00
+# kubernetes_kubeadm_version: 1.19.4-00
 
-# Role: cri
-#cri_plugin: docker
+####
+# Role - cri
+####
+# cri_plugin: docker
 
-# Role: openebs
-#openebs_enabled: true
+####
+# Role - storage
+####
+# openebs_enabled: true
