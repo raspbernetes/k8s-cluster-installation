@@ -1,5 +1,5 @@
 ---
-# Role: common
+# Role - common
 common_packages:
   - apt-transport-https
   - software-properties-common

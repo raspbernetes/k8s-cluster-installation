@@ -1,8 +1,8 @@
 ---
-# Role: keepalived
+# Role - keepalived
 keepalived_vip: '192.168.100.50'
 
-# Role: cluster
+# Role - cluster
 cluster_extra_sans:
   - "{{ keepalived_vip }}"
   - api.kubernetes.lan
