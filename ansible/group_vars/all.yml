@@ -27,5 +27,7 @@
 # Role: openebs
 #openebs_enabled: true
 
+####
 # Role: docker_cache
-#docker_cache_enabled: true
+####
+# docker_cache_enable: false
