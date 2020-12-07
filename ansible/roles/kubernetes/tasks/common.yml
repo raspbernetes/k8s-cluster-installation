@@ -3,6 +3,7 @@
   file:
     path: /etc/kubernetes/manifests
     state: directory
+    mode: 0755
 
 - name: ensure systemd kubelet directory
   file:
