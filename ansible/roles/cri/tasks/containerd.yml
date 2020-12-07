@@ -83,6 +83,7 @@
     group: root
     mode: '0755'
 
+# TODO: https://kubernetes.io/docs/setup/production-environment/container-runtimes/#containerd-systemd
 - name: configure containerd
   command:
     cmd: containerd config default > /etc/containerd/config.toml

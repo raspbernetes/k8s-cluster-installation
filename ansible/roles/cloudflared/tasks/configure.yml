@@ -27,8 +27,9 @@
     - restart cloudflared
 
 # TODO: remove the when condition and add a 'creates' condition to the command. The creates condition should point towards the systemd unit file created by it.
+# --legacy flag is required https://github.com/cloudflare/cloudflared/issues/251
 - name: initialize cloudflared tunnel to api-server
-  command: cloudflared service install # noqa 503
+  command: cloudflared service install --legacy # noqa 503
   when: cloudflared_binary.changed
   notify:
     - restart cloudflared
