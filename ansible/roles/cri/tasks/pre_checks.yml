@@ -39,4 +39,4 @@
       - "Variable 'cache_registry_fqdn' should be of type AnsibleUnicode (string)"
       - 'Type is: {{ cache_registry_fqdn | type_debug }}'
       - "Value is: {{ cache_registry_fqdn | default('undefined') }}"
-  when: docker_cache_enabled
+  when: docker_cache_enable
