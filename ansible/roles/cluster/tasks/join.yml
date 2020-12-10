@@ -7,6 +7,7 @@
   template:
     src: kubeadm-join.yml.j2
     dest: /etc/kubernetes/kubeadm-join.yml
+    mode: 0644
   when: not cluster_node_configured
 
 - name: join node to cluster

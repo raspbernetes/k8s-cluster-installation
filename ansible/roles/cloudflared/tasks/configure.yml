@@ -11,6 +11,7 @@
   template:
     src: config.yml.j2
     dest: /etc/cloudflared/config.yml
+    mode: '0644'
   notify:
     - restart cloudflared
 
