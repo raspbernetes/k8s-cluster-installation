@@ -45,6 +45,7 @@
   file:
     path: /boot/firmware/nobtcmd.txt
     state: touch
+    mode: 0644
   when: ansible_architecture | regex_search('arm|aarch')
 
 - name: enable required cgroup features

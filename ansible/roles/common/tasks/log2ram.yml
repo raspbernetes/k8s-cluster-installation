@@ -29,3 +29,4 @@
   template:
     src: log2ram.conf.j2
     dest: /etc/log2ram.conf
+    mode: 0644
