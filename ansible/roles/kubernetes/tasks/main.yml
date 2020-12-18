@@ -1,4 +1,8 @@
 ---
+- name: preflight checks
+  include_tasks: pre_checks.yml
+  run_once: true
+
 - name: include debian family specific tasks
   include_tasks: debian.yml
   when: ansible_os_family | lower == 'debian'
@@ -9,3 +13,16 @@
 
 - name: include common tasks
   include_tasks: common.yml
+
+- name: cluster checks
+  include_tasks: cluster_checks.yml
+
+- name: include initialize tasks
+  include_tasks: initialize.yml
+  when:
+    - inventory_hostname == cluster_main_master
+    - not cluster_node_configured
+
+- name: include join tasks
+  include_tasks: join.yml
+  when: inventory_hostname != cluster_main_master
