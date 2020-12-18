@@ -24,7 +24,7 @@
   template:
     src: kubeadm-init.yml.j2
     dest: /etc/kubernetes/kubeadm-init.yml
-    mode: '0644'
+    mode: 0644
 
 - name: initialize cluster
   command:
