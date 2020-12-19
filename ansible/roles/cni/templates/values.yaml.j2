@@ -14,7 +14,7 @@ externalIPs:
 # endpointRoutes enables use of per endpoint routes instead of routing vis
 # the cilium_host interface
 endpointRoutes:
-  enabled: false
+  enabled: {{ cni_cilium_endpoint_routes }}
 
 # hostServices is the configuration for ClusterIP service handling in host namespace
 hostServices:
@@ -47,7 +47,7 @@ hubble:
     enabled: true
     image:
       repository: docker.io/cilium/hubble-relay-dev
-      tag: v1.9.0
+      tag: v1.9.1
   ui:
     enabled: true
     frontend:
@@ -56,12 +56,12 @@ hubble:
         tag: v0.7.3
     backend:
       image:
-        repository: docker.io/mcfio/hubble-ui-backend-dev
-        tag: v0.7.3
+        repository: docker.io/raspbernetes/hubble-ui-backend
+        tag: v0.7.4
     proxy:
       image:
         repository: docker.io/envoyproxy/envoy
-        tag: v1.16.1
+        tag: v1.14.5
 
 ipam:
   operator:
@@ -89,8 +89,8 @@ prometheus:
 
 operator:
   image:
-    repository: cilium/operator-dev
-    tag: v1.9.0
+    repository: docker.io/cilium/operator-dev
+    tag: v1.9.1
   # Enables metrics for cilium-operator.
   prometheus:
     enabled: true
@@ -103,7 +103,7 @@ k8sServicePort: {{ k8s_service_port }} # 8443
 
 # nativeRoutingCIDR allows to explicitly specify the CIDR for native routing. This
 # value corresponds to the configured cluster-cidr.
-nativeRoutingCIDR: 192.168.1.0/24
+nativeRoutingCIDR: {{ k8s_native_cluster_cidr }}
 
 # tunnel is the encapsulation configuration for communication between nodes
 tunnel: disabled
