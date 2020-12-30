@@ -14,7 +14,7 @@ externalIPs:
 # endpointRoutes enables use of per endpoint routes instead of routing vis
 # the cilium_host interface
 endpointRoutes:
-  enabled: "{{ cni_cilium_endpoint_routes }}"
+  enabled: {{ cni_cilium_endpoint_routes }}
 
 # hostServices is the configuration for ClusterIP service handling in host namespace
 hostServices:
