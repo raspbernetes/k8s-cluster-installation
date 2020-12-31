@@ -1,10 +1,20 @@
 image:
   repository: docker.io/cilium/cilium-dev
-  tag: "{{ cni_cilium_image_version }}" # v1.9.0
+  tag: "{{ cni_cilium_image_version }}" # v1.9.1
 
 # autoDirectNodeRoutes enables installation of PodCIDR routes between worker
 # nodes if worker nodes share a common L2 network segment.
 autoDirectNodeRoutes: true
+
+bpf:
+  # -- Enable native IP masquerade support in eBPF
+  masquerade: true
+
+  # -- Configure whether direct routing mode should route traffic via
+  # host stack (true) or directly and more efficiently out of BPF (false) if
+  # the kernel supports it. The latter has the implication that it will also
+  # bypass netfilter in the host namespace.
+  hostRouting: false
 
 # externalIPs is the configuration for ExternalIPs service handling
 externalIPs:
@@ -25,10 +35,6 @@ hostServices:
 nodePort:
   # enabled enables NodePort functionality
   enabled: true
-
-# masquerade enables masquerading of traffic leaving the node for
-# destinations outside of the cluster.
-masquerade: true
 
 hubble:
   enabled: true
@@ -105,8 +111,12 @@ k8sServicePort: {{ k8s_service_port }} # 8443
 # value corresponds to the configured cluster-cidr.
 nativeRoutingCIDR: {{ k8s_native_cluster_cidr }}
 
-# tunnel is the encapsulation configuration for communication between nodes
-tunnel: disabled
+# -- Configure the encapsulation configuration for communication between nodes.
+# Possible values:
+#   - disabled
+#   - vxlan (default)
+#   - geneve
+tunnel: "vxlan"
 
 # loadBalancer is the general configuration for service load balancing
 loadBalancer:
