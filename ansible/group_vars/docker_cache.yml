@@ -1,0 +1,33 @@
+# # enable deploying docker pull through cache
+# docker_cache_enable: false
+# # enable Traefik proxy on your registry host
+# cache_traefik_enable: false
+# # enable tls encryption of http traffic on registry
+# cache_tls_enable: false
+# # the FQDN that your registry should be reachable at locally
+# # this can also be an IP address so long as cache_tls_enable is false
+# cache_registry_fqdn: registry.example.com
+# # the FQDN that your traefik dashboard will be available at
+# cache_traefik_dashboard_fqdn: traefik.example.com
+# # Requisite packages for docker cache
+# # cache_packages:
+# #   - docker-compose
+# # Dockerhub user name
+# cache_docker_login_user: docker_username
+# # Dockerhub login access token generated at https://hub.docker.com/settings/security
+# cache_docker_access_token: docker_access_token
+# # Host path to mount into docker cache
+# cache_docker_host_path: /mnt/registry
+# # Email to associate with Lets Encrypt cert
+# cache_traefik_le_tls_email: email@example.com
+# # Lets Encrypt ACME api to use; either 'prod' or 'staging'
+# cache_traefik_le_acme_environment: staging
+# # AWS access key for use with Lets Encrypt DNS01 challenge (Route 53)
+# cache_traefik_aws_access_key_id: my_key_id
+# cache_traefik_aws_secret_access_key: my_secret_access_key
+# # AWS Region in which your Route 53 records exist
+# cache_traefik_aws_region: us-east-1
+# # AWS nameservers to verify domain ownership
+# cache_traefik_aws_resolver_ips:
+#  - "205.251.194.46"
+#  - "205.251.197.222"

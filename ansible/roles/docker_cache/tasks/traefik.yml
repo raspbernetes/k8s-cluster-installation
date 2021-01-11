@@ -1,0 +1,39 @@
+---
+- name: make required directories
+  file:
+    path: "/opt/compose/traefik/{{ item }}"
+    state: directory
+  loop:
+    - "config"
+    - "certs"
+
+- name: show traefik compose file
+  debug:
+    msg: "{{ lookup('template', '../templates/traefik-compose.yml.j2') }}"
+  when: ansible_check_mode
+
+- name: show traefik config file
+  debug:
+    msg: "{{ lookup('template', '../templates/traefik.yml.j2') }}"
+  when: ansible_check_mode
+
+- name: template traefik compose file
+  template:
+    src: traefik-compose.yml.j2
+    dest: "/opt/compose/traefik/docker-compose.yml"
+  notify: traefik up
+
+- name: template traefik config file
+  template:
+    src: traefik.yml.j2
+    dest: "/opt/compose/traefik/traefik.yml"
+  notify: restart traefik
+
+- name: Ensure log file exists
+  copy:
+    content: ""
+    dest: "/opt/compose/traefik/log"
+    force: no
+
+- name: flush handlers
+  meta: flush_handlers

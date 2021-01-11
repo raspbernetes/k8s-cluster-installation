@@ -1,0 +1,6 @@
+---
+docker_cache_enable: false
+cache_traefik_enable: false
+cache_tls_enable: false
+cache_packages:
+  - docker-compose

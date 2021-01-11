@@ -1,0 +1,27 @@
+version: 0.1
+log:
+  fields:
+    service: registry
+storage:
+  cache:
+    blobdescriptor: inmemory
+  filesystem:
+    rootdirectory: /var/lib/registry
+http:
+  addr: :5000
+  headers:
+    X-Content-Type-Options: [nosniff]
+{% if cache_traefik_enable == false and cache_tls_enable == true %}
+  tls:
+    certificate: /opt/compose/registry/certs/cert.crt
+    key: /opt/compose/registry/certs/private.key
+{% endif %}
+health:
+  storagedriver:
+    enabled: true
+    interval: 10s
+    threshold: 3
+proxy:
+  remoteurl: https://registry-1.docker.io
+  username: {{ cache_docker_login_user }}
+  password: {{ cache_docker_access_token }}

@@ -1,0 +1,33 @@
+---
+version: "3.7"
+services:
+  registry:
+    image: registry:2.7.1
+    volumes:
+      - {{ cache_docker_host_path }}:/var/lib/registry
+      - ./config.yml:/etc/docker/registry/config.yml
+{% if cache_traefik_enable == false and cache_tls_enable == true %}
+      - ./certs:/etc/docker/registry/certs
+{% endif %}
+{% if cache_traefik_enable == false %}
+    ports:
+      - "5000:5000"
+{% elif cache_traefik_enable == true %}
+    labels:
+      - traefik.enable=true
+      - traefik.docker.network=traefik_traefik-proxy
+        # insecure router (redirect to https)
+      - traefik.http.routers.registry.rule=Host(`{{ cache_registry_fqdn }}`)
+      - traefik.http.routers.registry.middlewares=httpsRedirect
+        # secure router
+      - traefik.http.routers.registry-secure.tls=true
+      - traefik.http.routers.registry-secure.tls.certresolver={{ cache_traefik_le_acme_environment }}
+      - traefik.http.routers.registry-secure.rule=Host(`{{ cache_registry_fqdn }}`)
+      - traefik.http.services.registry-secure.loadbalancer.server.port=5000
+    networks:
+      - traefik-proxy
+networks:
+  traefik-proxy:
+    external:
+      name: traefik_traefik-proxy
+{% endif %}
