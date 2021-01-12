@@ -46,25 +46,32 @@
     state: present
     sysctl_file: /etc/sysctl.d/99-kubernetes-cri.conf
 
-- name: 'debian : add an apt signing key for docker'
-  apt_key:
-    url: https://download.docker.com/linux/ubuntu/gpg
-    state: present
-  when: ansible_os_family | lower == 'debian'
+# This is for compatibility with Ubuntu versions prior than 18.04 LTS, considering removing this
+# The docker repository also does not install an up to date version of containerd
+- name: Install containerd from Docker repository
+  when: ansible_distribution == 'Ubuntu' and ansible_distribution_major_version < '18'
+  block:
+  - name: 'ubuntu : add docker containerd repository GPG key'
+    apt_key:
+      url: https://download.docker.com/linux/ubuntu/gpg
+  - name: Add Docker containerd apt repository
+    apt_repository:
+      repo: "deb https://download.docker.com/linux/ubuntu {{ ansible_lsb.codename }} stable"
+      state: present
+  - name: 'ubuntu : install docker containerd container runtime'
+    apt:
+      name:
+        - containerd.io
+      state: present
+      update_cache: yes
 
-- name: 'debian : add apt repository for stable version'
-  apt_repository:
-    repo: deb https://download.docker.com/linux/ubuntu {{ ansible_lsb.codename }} stable
-    state: present
-  when: ansible_os_family | lower == 'debian'
-
-- name: 'debian : install containerd package'
+- name: 'ubuntu : install containerd container runtime'
   apt:
     name:
-      - containerd.io
+      - containerd
     state: present
     update_cache: yes
-  when: ansible_os_family | lower == 'debian'
+  when: ansible_distribution == 'Ubuntu' and ansible_distribution_major_version > '16'
 
 - name: 'archlinux : install containerd package'
   pacman:
