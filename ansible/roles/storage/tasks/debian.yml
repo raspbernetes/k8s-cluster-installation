@@ -11,7 +11,7 @@
   until: apt_install_iscsi is success
   notify: restart iscsid
 
-- name: copy iscsi_tcp config file
+- name: modprobe iscsi modules on reboot
   copy:
     src: openebs/iscsi_tcp.conf
     dest: '/etc/modules-load.d/openebs-iscsi.conf'
