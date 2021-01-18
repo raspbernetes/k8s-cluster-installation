@@ -1,6 +1,20 @@
 ---
+# https://github.com/openebs/cstor-operators/blob/master/docs/quick.md#prerequisites
 - name: install openebs required packages
   pacman:
     name: open-iscsi
     update_cache: true
   notify: restart iscsid
+
+- name: modprobe iscsi modules on reboot
+  copy:
+    src: openebs/iscsi_openebs.conf
+    dest: '/etc/modules-load.d/openebs-iscsi.conf'
+    owner: root
+    group: root
+    mode: '0644'
+
+- name: load iscsi_tcp
+  modprobe:
+    name: iscsi_tcp
+    state: present
