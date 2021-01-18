@@ -14,7 +14,7 @@
 - name: copy iscsi_tcp config file
   copy:
     src: openebs/iscsi_tcp.conf
-    dest: '/etc/modules-load.d/iscsi_tcp.conf'
+    dest: '/etc/modules-load.d/openebs-iscsi_tcp.conf'
     owner: root
     group: root
     mode: '0644'
