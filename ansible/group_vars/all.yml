@@ -24,8 +24,10 @@
 ####
 # cri_plugin: docker
 
-# Role: openebs
-#openebs_enabled: true
+####
+# Role: Storage
+####
+#openebs_enabled: false
 
 ####
 # Role: docker_cache
