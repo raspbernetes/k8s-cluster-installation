@@ -1,7 +1,12 @@
 ---
 - name: Converge
   hosts: all
+  become: true
   tasks:
+    - name: Install git
+      apt:
+        name: git
+        update_cache: yes
     - name: "Include common"
       include_role:
         name: "common"
