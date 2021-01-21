@@ -11,6 +11,7 @@ platforms:
       - /tmp
     volumes:
       - /sys/fs/cgroup:/sys/fs/cgroup:ro
+    command: "/usr/sbin/init"
     capabilities:
       - SYS_ADMIN
     pre_build_image: true
@@ -23,6 +24,7 @@ platforms:
       - /tmp
     volumes:
       - /sys/fs/cgroup:/sys/fs/cgroup:ro
+    command: "/usr/sbin/init"
     capabilities:
       - SYS_ADMIN
     pre_build_image: true
