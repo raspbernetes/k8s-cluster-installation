@@ -10,3 +10,5 @@
     - name: "Include common"
       include_role:
         name: "common"
+  vars:
+    common_reboot_handler_enabled: false
