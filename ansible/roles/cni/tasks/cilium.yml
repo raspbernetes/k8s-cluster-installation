@@ -15,7 +15,7 @@
       name: cilium
       chart_ref: cilium/cilium
       release_namespace: kube-system
-      chart_version: {{ cni_cilium_helm_version }}
+      chart_version: "{{ cni_cilium_helm_version }}"
       values: "{{ lookup('template', 'values.yaml.j2') | from_yaml }}"
 
   - name: Apply kube-router manifests
