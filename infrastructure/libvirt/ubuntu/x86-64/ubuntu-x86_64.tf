@@ -49,7 +49,7 @@ variable "hostname_format" {
 resource "libvirt_volume" "ubuntu" {
   name   = "ubuntu-${format(var.hostname_format, count.index + 1)}.qcow2"
   pool   = "default"
-  source = "https://cloud-images.ubuntu.com/releases/focal/release/ubuntu-20.04-server-cloudimg-amd64-disk-kvm.img"
+  source = "https://cloud-images.ubuntu.com/releases/focal/release-20210105/ubuntu-20.04-server-cloudimg-amd64-disk-kvm.img"
   format = "qcow2"
   count  = var.hosts
 }
