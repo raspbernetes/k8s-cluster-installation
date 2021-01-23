@@ -1,26 +1,23 @@
 ---
-- hosts: localhost
-  gather_facts: false
-  connection: local
+- name: Add Cilium Helm Repo
+  community.kubernetes.helm_repository:
+    name: cilium
+    repo_url: "https://helm.cilium.io/"
+  delegate_to: "localhost"
 
-  tasks:
+- name: Deploy Cilium
+  community.kubernetes.helm:
+    name: cilium
+    chart_ref: cilium/cilium
+    release_namespace: kube-system
+    chart_version: "{{ cni_cilium_helm_version }}"
+    values: "{{ lookup('template', 'values.yaml.j2') | from_yaml }}"
+  delegate_to: "localhost"
 
-  - name: Add Cilium Helm Repo
-    community.kubernetes.helm_repository:
-      name: cilium
-      repo_url: "https://helm.cilium.io/"
-
-  - name: Deploy Cilium
-    community.kubernetes.helm:
-      name: cilium
-      chart_ref: cilium/cilium
-      release_namespace: kube-system
-      chart_version: "{{ cni_cilium_helm_version }}"
-      values: "{{ lookup('template', 'values.yaml.j2') | from_yaml }}"
-
-  - name: Apply kube-router manifests
-    community.kubernetes.k8s:
-      state: present
-      template: 'generic-kuberouter-only-advertise-routes.yaml.j2'
-    when:
+- name: Apply kube-router manifests
+  community.kubernetes.k8s:
+    state: present
+    template: 'generic-kuberouter-only-advertise-routes.yaml.j2'
+  when:
     - cluster_kube_proxy == "disabled"
+  delegate_to: "localhost"
