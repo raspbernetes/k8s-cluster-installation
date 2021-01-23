@@ -1,0 +1,4 @@
+---
+collections:
+  - name: community.kubernetes
+    source: https://galaxy.ansible.com

@@ -1,0 +1,3 @@
+plugin: community.kubernetes.k8s
+connections:
+  - kubeconfig: /output/k8s-config.yaml
