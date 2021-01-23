@@ -2,6 +2,7 @@
 - name: Converge
   hosts: all
   become: true
+  become_user: root
   tasks:
     - name: Install git
       apt:
