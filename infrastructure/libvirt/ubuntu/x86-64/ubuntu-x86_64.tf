@@ -99,6 +99,7 @@ resource "libvirt_domain" "node" {
 
   network_interface {
     network_name   = "default"
+    hostname       = format(var.hostname_format, count.index + 1)
     mac            = "52:54:00:00:00:a${count.index + 1}"
     wait_for_lease = true
   }
