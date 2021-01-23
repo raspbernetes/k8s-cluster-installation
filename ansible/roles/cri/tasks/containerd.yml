@@ -49,29 +49,27 @@
 # This is for compatibility with Ubuntu versions prior than 18.04 LTS, considering removing this
 # The docker repository also does not install an up to date version of containerd
 - name: Install containerd from Docker repository
-  when: ansible_distribution == 'Ubuntu' and ansible_distribution_major_version < '18'
+  when: ansible_os_family|lower == 'debian'
   block:
-  - name: 'ubuntu : add docker containerd repository GPG key'
+  - name: 'add docker containerd repository GPG key'
     apt_key:
       url: https://download.docker.com/linux/ubuntu/gpg
-  - name: Add Docker containerd apt repository
+  - name: 'Add Docker containerd apt repository'
     apt_repository:
       repo: "deb https://download.docker.com/linux/ubuntu {{ ansible_lsb.codename }} stable"
       state: present
-  - name: 'ubuntu : install docker containerd container runtime'
+    when: ansible_distribution|lower == 'ubuntu'
+  - name: 'Add Docker containerd apt repository'
+    apt_repository:
+      repo: "deb https://download.docker.com/linux/debian {{ ansible_lsb.codename }} stable"
+      state: present
+    when: ansible_distribution|lower == 'debian'
+  - name: 'install docker containerd container runtime'
     apt:
       name:
         - containerd.io
       state: present
       update_cache: yes
-
-- name: 'ubuntu : install containerd container runtime'
-  apt:
-    name:
-      - containerd
-    state: present
-    update_cache: yes
-  when: ansible_distribution == 'Ubuntu' and ansible_distribution_major_version > '16'
 
 - name: 'archlinux : install containerd package'
   pacman:
