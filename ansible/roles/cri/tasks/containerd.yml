@@ -38,9 +38,9 @@
     path: '{{ containerd_config_dir }}/config.toml'
     state: 'absent'
 
-- name: 'containerd | ensure configuration file exists and install default configuration'
+- name: 'containerd | ensure default configuration'
   ansible.builtin.shell: |
-    containerd config default > {{ containerd_config_dir }}.toml
+    containerd config default > {{ containerd_config_dir }}/config.toml
   args:
     creates: '{{ containerd_config_dir }}/config.toml'
   notify: restart cri
