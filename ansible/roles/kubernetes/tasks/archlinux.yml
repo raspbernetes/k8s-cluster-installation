@@ -32,4 +32,5 @@
       - socat
       - conntrack-tools
       - lvm2
+      - helm
     state: present
