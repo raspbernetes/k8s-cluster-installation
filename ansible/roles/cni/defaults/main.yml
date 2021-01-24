@@ -4,8 +4,8 @@ cni_bgp_peer_address: 192.168.0.1
 cni_bgp_peer_asn: 64512
 cni_cilium_helm_version: 1.9.3
 cni_cilium_image_version: v1.9.3
-k8s_service_host: "{{ cluster_control_plane_endpoint | urlsplit('hostname') }}"
-k8s_service_port: "{{ cluster_control_plane_endpoint | urlsplit('port') }}"
+k8s_service_host: '{{ cluster_control_plane_endpoint | regex_search("[a-z0-9\-._~%]+") }}'
+k8s_service_port: '{{ cluster_control_plane_endpoint | regex_search("(?<=:)(?P<port>[0-9]+)$") }}'
 kube_router_image: docker.io/cloudnativelabs/kube-router
 cluster_pod_subnet: 10.0.0.0/8
 cni_cilium_endpoint_routes: "false"
