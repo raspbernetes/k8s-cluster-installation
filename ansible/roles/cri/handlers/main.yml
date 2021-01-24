@@ -1,14 +1,13 @@
 ---
-- name: restart docker
+- name: 'restarting container runtime ({{ cri_plugin }})'
   systemd:
-    name: docker
+    name: '{{ cri_plugin }}'
     daemon_reload: yes
     state: restarted
     enabled: yes
+  listen: 'restart cri'
 
-- name: restart containerd
+- name: restart systemd-sysctl
   systemd:
-    name: containerd
-    daemon_reload: yes
+    name: systemd-sysctl
     state: restarted
-    enabled: yes
