@@ -1,2 +1,2 @@
 collections:
-  - community.kubernetes
+  - kubernetes.core

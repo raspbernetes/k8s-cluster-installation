@@ -1,11 +1,13 @@
 ---
 
 - name: Add Cilium Helm Repo
+  delegate_to: localhost
   community.kubernetes.helm_repository:
     name: cilium
     repo_url: "https://helm.cilium.io/"
 
 - name: Deploy Cilium
+  delegate_to: localhost
   community.kubernetes.helm:
     name: cilium
     chart_ref: cilium/cilium
@@ -14,6 +16,7 @@
     values: "{{ lookup('template', 'values.yaml.j2') | from_yaml }}"
 
 - name: Apply kube-router manifests
+  delegate_to: localhost
   community.kubernetes.k8s:
     state: present
     template: 'generic-kuberouter-only-advertise-routes.yaml.j2'

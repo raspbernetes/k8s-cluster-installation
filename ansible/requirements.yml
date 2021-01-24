@@ -1,4 +1,4 @@
 ---
 collections:
-  - name: community.kubernetes
+  - name: kubernetes.core
     source: https://galaxy.ansible.com

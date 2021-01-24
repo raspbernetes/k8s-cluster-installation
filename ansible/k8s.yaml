@@ -1,3 +1,0 @@
-plugin: community.kubernetes.k8s
-connections:
-  - kubeconfig: playbooks/output/k8s-config.yaml
