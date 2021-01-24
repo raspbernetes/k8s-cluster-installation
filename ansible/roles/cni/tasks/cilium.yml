@@ -1,4 +1,21 @@
 ---
+
+- name: Debug 1
+  ansible.builtin.debug:
+    var: cluster_control_plane_endpoint
+- name: Debug 2
+  ansible.builtin.debug:
+    var: cluster_control_plane_endpoint | urlsplit('hostname')
+- name: Debug 3
+  ansible.builtin.debug:
+    var: cluster_control_plane_endpoint | urlsplit('port')
+
+- name: Generate cilium helm values
+  template:
+    src: values.yaml.j2
+    dest: /root/values.yaml
+    mode: 0644
+
 - name: Add Cilium Helm Repo
   community.kubernetes.helm_repository:
     name: cilium
