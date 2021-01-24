@@ -21,6 +21,9 @@ externalIPs:
   # enabled enables ExternalIPs functionality
   enabled: true
 
+containerRuntime:
+  - {{ cri_plugin }}
+
 # endpointRoutes enables use of per endpoint routes instead of routing vis
 # the cilium_host interface
 endpointRoutes:
@@ -63,16 +66,16 @@ hubble:
     backend:
       image:
         repository: docker.io/raspbernetes/hubble-ui-backend
-        tag: v0.7.4
+        tag: v0.7.5
     proxy:
       image:
         repository: docker.io/envoyproxy/envoy
-        tag: v1.16.2
+        tag: "{{ cni_cilium_enovy_proxy_image_version }}"
 
 ipam:
   operator:
     # default: "10.0.0.0/8", however, using existing podCIDR
-    clusterPoolIPv4PodCIDR: "{{ cluster_pod_subnet }}" # 172.16.0.0/16
+    clusterPoolIPv4PodCIDR: "{{ cluster_pod_subnet }}"
     clusterPoolIPv4MaskSize: 24
 
 # kubeProxyReplacement enables kube-proxy replacement in Cilium BPF datapath
@@ -129,4 +132,4 @@ loadBalancer:
 
 # disableEnvoyVersionCheck removes the check for Envoy, which can be useful on
 # AArch64 as the images do not currently ship a version of Envoy.
-disableEnvoyVersionCheck: true
+disableEnvoyVersionCheck: false
