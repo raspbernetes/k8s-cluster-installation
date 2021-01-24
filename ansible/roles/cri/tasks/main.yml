@@ -20,7 +20,7 @@
     dest: '/etc/modules-load.d/kubernetes-br_netfilter.conf'
     content: 'br_netfilter'
 
-- name: 'ensure sysctl options are configured for kube-proxy'
+- name: 'ensure sysctl options are configured for container runtime'
   ansible.posix.sysctl:
     name: '{{ item }}'
     value: '1'

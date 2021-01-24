@@ -27,9 +27,9 @@
     that:
       - docker_cache_enable | type_debug == 'bool'
     fail_msg:
-      - "Variable 'docker_cache_enable' should be of type 'bool'"
-      - 'Type is: {{ docker_cache_enable | type_debug }}'
-      - "Value is: {{ docker_cache_enable | default('undefined') }}"
+      - "Variable 'cri_docker_cache_enable' should be of type 'bool'"
+      - 'Type is: {{ cri_docker_cache_enable | type_debug }}'
+      - "Value is: {{ cri_docker_cache_enable | default('undefined') }}"
 
 - name: 'validate variable : cache_registry_fqdn'
   assert:

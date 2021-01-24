@@ -4,10 +4,10 @@
   block:
   - name: 'containerd | ensure docker.io apt repository public key is installed'
     ansible.builtin.apt_key:
-      url: '{{ containerd_repo_gpgkey }}'
+      url: '{{ cri_containerd_repo_gpgkey }}'
   - name: 'containerd | ensure docker.io apt repository is enabled'
     ansible.builtin.apt_repository:
-      repo: 'deb {{ containerd_repo_base_url }} {{ ansible_lsb.codename }} stable'
+      repo: 'deb {{ cri_containerd_repo_base_url }} {{ ansible_distribution_release }} stable'
       state: 'present'
   # this is to prevent apt upgrade from breaking kubernetes
   - name: 'containerd | pin package version to prevent os upgrade clubbing'
@@ -19,30 +19,37 @@
   - name: 'containerd | install package from apt repository'
     ansible.builtin.apt:
       name:
-        - '{{ containerd_package_name[containerd_version | string] }}'
+        - '{{ cri_containerd_package_name[cri_containerd_version | string] }}'
       state: 'present'
       update_cache: true
       cache_valid_time: 3600
 
-- name: 'containerd | ensure "{{ containerd_config_dir }}" config directory'
+- name: 'containerd | ensure "{{ cri_containerd_config_dir }}" config directory'
   ansible.builtin.file:
-    path: '{{ containerd_config_dir }}'
+    path: '{{ cri_containerd_config_dir }}'
     state: 'directory'
     mode: 0755
     owner: 'root'
     group: 'root'
 
-# Hacky - need to create a better way to handle existing files
-- name: 'containerd | move aside any existing config.toml'
-  ansible.builtin.file:
-    path: '{{ containerd_config_dir }}/config.toml'
-    state: 'absent'
+# This is an idempotent check to ensure that the default configuration is present
+- name: 'containerd | check existing config.toml file'
+  ansible.builtin.stat:
+    path: '{{ cri_containerd_config_dir }}/config.toml'
+  register: 'containerd_config_file'
+
+- name: 'containerd | generate configuration file'
+  ansible.builtin.shell: |
+    containerd config default
+  register: 'containerd_default_config_file'
+  changed_when: false
+  when: 'containerd_config_file.stat.exists'
 
 - name: 'containerd | ensure default configuration'
-  ansible.builtin.shell: |
-    containerd config default > {{ containerd_config_dir }}/config.toml
-  args:
-    creates: '{{ containerd_config_dir }}/config.toml'
+  ansible.builtin.copy:
+    dest: '{{ cri_containerd_config_dir }}/config.toml'
+    content: '{{ containerd_default_config_file.stdout }}'
+  when: containerd_default_config_file.stdout|md5 != containerd_config_file.stat.checksum
   notify: restart cri
 
 - include_tasks: 'crictl.yml'

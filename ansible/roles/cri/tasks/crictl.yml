@@ -1,7 +1,7 @@
 ---
 - name: 'crictl | download crictl binary from kubernetes-sig release repository'
   ansible.builtin.get_url:
-    url: '{{ crictl_download_url }}'
+    url: '{{ cri_crictl_download_url }}'
     dest: '/tmp/crictl.tar.gz'
     mode: 0440
 

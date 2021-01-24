@@ -9,6 +9,7 @@
     loop:
     - gpg-agent
     - bash-completion
+    - procps
   - name: 'Include cri'
     include_role:
       name: 'cri'
