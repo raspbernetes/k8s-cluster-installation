@@ -41,6 +41,3 @@
   command: /usr/bin/timedatectl set-ntp true
   when: "'NTP=no' in timedatectl_result.stdout"
 
-- name: Assign inventory name to unconfigured hostnames
-  hostname:
-    name: "{{ inventory_hostname }}"
