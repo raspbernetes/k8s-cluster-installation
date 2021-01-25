@@ -1,2 +1,3 @@
 collections:
   - kubernetes.core
+  - ansible.posix

@@ -1,5 +1,5 @@
 image:
-  repository: docker.io/cilium/cilium-dev
+  repository: "{{ cni_cilium_image_repository }}"
   tag: "{{ cni_cilium_image_version }}"
 
 # autoDirectNodeRoutes enables installation of PodCIDR routes between worker

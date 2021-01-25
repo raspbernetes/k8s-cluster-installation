@@ -25,6 +25,11 @@
   retries: 5
   until: apt_install_common is success
 
+- name: install common Kubernetes ansible module
+  pip:
+    name:
+      - openshift
+
 - name: install and configure log2ram
   include_tasks: log2ram.yml
   when: common_log2ram_enabled
