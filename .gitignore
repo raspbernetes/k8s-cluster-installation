@@ -49,4 +49,4 @@ argo
 ansible/roles/cloudflared/files/*
 
 # Ignore edits to example cloudinit to prevent senstive information leaks.
-infrastructure/libvirt/ubuntu/x86-64/cloud_init.cfg
+#infrastructure/libvirt/ubuntu/x86-64/cloud_init.cfg
