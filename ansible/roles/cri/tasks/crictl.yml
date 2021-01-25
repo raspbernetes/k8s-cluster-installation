@@ -1,0 +1,40 @@
+---
+- name: 'crictl | download crictl binary from kubernetes-sig release repository'
+  ansible.builtin.get_url:
+    url: '{{ cri_crictl_download_url }}'
+    dest: '/tmp/crictl.tar.gz'
+    mode: 0440
+
+- name: 'crictl | unarchive crictl binary'
+  ansible.builtin.unarchive:
+    src: '/tmp/crictl.tar.gz'
+    dest: '/usr/local/bin'
+    remote_src: true
+
+- name: 'crictl | ensure crictl config file is up to date'
+  ansible.builtin.template:
+    src: 'crictl.yaml.j2'
+    dest: '/etc/crictl.yaml'
+
+- name: 'crictl | set crictl shell completion'
+  ansible.builtin.command: |
+    /usr/local/bin/crictl completion
+  changed_when: false
+  register: 'cri_completion'
+  check_mode: false
+
+- name: 'crictl | ensure bash completion directory exists'
+  ansible.builtin.file:
+    path: '/etc/bash_completion.d'
+    state: 'directory'
+    mode: 0755
+    owner: 'root'
+    group: 'root'
+
+- name: 'crictl | populate crictl completion'
+  ansible.builtin.copy:
+    dest: '/etc/bash_completion.d/crictl'
+    content: '{{ cri_completion.stdout }}'
+    mode: 0644
+    owner: 'root'
+    group: 'root'

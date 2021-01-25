@@ -1,7 +1,39 @@
 ---
-- name: preflight checks
-  include_tasks: pre_checks.yml
+- name: 'preflight checks'
+  include_tasks: 'pre_checks.yml'
   run_once: true
 
-- name: "setup {{ cri_plugin }} container runtime (cri)"
+- name: 'setup {{ cri_plugin }} as kubernetes container runtime (cri)'
   include_tasks: '{{ cri_plugin }}.yml'
+
+# Ensure the br_netfilter module is loaded and iptables can see bridged traffic
+# https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/install-kubeadm/#letting-iptables-see-bridged-traffic
+- name: 'ensure required modules are loaded'
+  community.general.modprobe:
+    name: '{{ item }}'
+    state: 'present'
+  loop:
+  - 'overlay'
+  - 'br_netfilter'
+  tags:
+  - notest
+
+- name: 'ensure required modules load at system startup'
+  ansible.builtin.copy:
+    dest: '/etc/modules-load.d/kubernetes-modules.conf'
+    content: |
+      overlay
+      br_netfilter
+
+- name: 'ensure sysctl options are configured for container runtime'
+  ansible.posix.sysctl:
+    name: '{{ item }}'
+    value: '1'
+    state: 'present'
+    sysctl_file: '/etc/sysctl.d/99-kubernetes-sysctl.conf'
+    reload: false
+  loop:
+  - net.bridge.bridge-nf-call-iptables
+  - net.bridge.bridge-nf-call-ip6tables
+  - net.ipv4.ip_forward
+  notify: restart systemd-sysctl

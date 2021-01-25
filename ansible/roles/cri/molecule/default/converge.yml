@@ -1,0 +1,15 @@
+---
+- name: Converge
+  hosts: all
+  tasks:
+  - name: 'ensure necessary packages are installed'
+    apt:
+      name: '{{ item }}'
+      update_cache: yes
+    loop:
+    - gpg-agent
+    - bash-completion
+    - procps
+  - name: 'Include cri'
+    include_role:
+      name: 'cri'
