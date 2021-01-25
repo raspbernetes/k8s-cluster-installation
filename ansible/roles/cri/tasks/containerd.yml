@@ -1,104 +1,63 @@
-# Instructions: https://kubernetes.io/docs/setup/production-environment/container-runtimes/#containerd
 ---
-- name: copy containerd config file
-  copy:
-    src: containerd/containerd.conf
-    dest: '/etc/modules-load.d/containerd.conf'
-    owner: root
-    group: root
-    mode: '0644'
+- name: 'APT Installation'
+  when: ansible_os_family|lower == 'debian'
+  block:
+  - name: 'containerd | ensure docker.io apt repository public key is installed'
+    ansible.builtin.apt_key:
+      url: '{{ cri_containerd_repo_gpgkey }}'
+  - name: 'containerd | ensure docker.io apt repository is enabled'
+    ansible.builtin.apt_repository:
+      repo: 'deb {{ cri_containerd_repo_base_url }} {{ ansible_distribution_release }} stable'
+      state: 'present'
+  # this is to prevent apt upgrade from breaking kubernetes
+  - name: 'containerd | pin package version to prevent os upgrade clubbing'
+    ansible.builtin.template:
+      src: 'apt-preferences.d/containerd.j2'
+      dest: '/etc/apt/preferences.d/containerd'
+      owner: 'root'
+      mode: 0644
+  - name: 'containerd | install package from apt repository'
+    ansible.builtin.apt:
+      name:
+        - '{{ cri_containerd_package_name[cri_containerd_version | string] }}'
+      state: 'present'
+      update_cache: true
+      cache_valid_time: 3600
 
-- name: load overlay
-  modprobe:
-    name: overlay
-    state: present
-
-- name: load br_netfilter
-  modprobe:
-    name: br_netfilter
-    state: present
-
-# Set /proc/sys/net/bridge/bridge-nf-call-iptables to 1 by running
-# sysctl net.bridge.bridge-nf-call-iptables=1 to pass bridged IPv4 traffic to iptables’ chains.
-# This is a requirement for some CNI plugins to work.
-# https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/install-kubeadm/#letting-iptables-see-bridged-traffic
-# Setup required sysctl params, these persist across reboots.
-- name: Update bridged IPv4 traffic to iptables' chains
-  sysctl:
-    name: net.bridge.bridge-nf-call-iptables
-    value: '1'
-    state: present
-    sysctl_file: /etc/sysctl.d/99-kubernetes-cri.conf
-
-- name: Update bridged IPv4 traffic to ip6tables' chains
-  sysctl:
-    name: net.bridge.bridge-nf-call-ip6tables
-    value: '1'
-    state: present
-    sysctl_file: /etc/sysctl.d/99-kubernetes-cri.conf
-
-- name: Update bridged IPv4 traffic to arptables' chains
-  sysctl:
-    name: net.bridge.bridge-nf-call-arptables
-    value: '1'
-    state: present
-    sysctl_file: /etc/sysctl.d/99-kubernetes-cri.conf
-
-# Required for containerd CRI prerequisites
-# https://kubernetes.io/docs/setup/production-environment/container-runtimes/#prerequisites-1
-- name: Update bridged IPv4 traffic forwarding
-  sysctl:
-    name: net.ipv4.ip_forward
-    value: '1'
-    state: present
-    sysctl_file: /etc/sysctl.d/99-kubernetes-cri.conf
-
-- name: 'debian : add an apt signing key for docker'
-  apt_key:
-    url: https://download.docker.com/linux/ubuntu/gpg
-    state: present
-  when: ansible_os_family | lower == 'debian'
-
-- name: 'debian : add apt repository for stable version'
-  apt_repository:
-    repo: deb https://download.docker.com/linux/ubuntu {{ ansible_lsb.codename }} stable
-    state: present
-  when: ansible_os_family | lower == 'debian'
-
-- name: 'debian : install containerd package'
-  apt:
-    name:
-      - containerd.io
-    state: present
-    update_cache: yes
-  when: ansible_os_family | lower == 'debian'
-
-- name: 'archlinux : install containerd package'
+# Archlinux installation of containerd package
+- name: 'containerd | install containerd package'
   pacman:
-    name:
-      - containerd
+    name: containerd
     state: present
     update_cache: yes
   when: ansible_os_family | lower == 'archlinux'
 
-- name: create containerd config directory
-  become: true
-  file:
-    path: /etc/containerd/
-    state: directory
-    owner: root
-    group: root
-    mode: '0755'
+- name: 'containerd | ensure "{{ cri_containerd_config_dir }}" config directory'
+  ansible.builtin.file:
+    path: '{{ cri_containerd_config_dir }}'
+    state: 'directory'
+    mode: 0755
+    owner: 'root'
+    group: 'root'
 
-- name: configure containerd
-  command:
-    cmd: containerd config default > /etc/containerd/config.toml
-    creates: /etc/containerd/config.toml
-  notify: restart containerd
+# This is an idempotent check to ensure that the default configuration is present
+- name: 'containerd | check existing config.toml file'
+  ansible.builtin.stat:
+    path: '{{ cri_containerd_config_dir }}/config.toml'
+  register: 'containerd_config_file'
 
-- name: start containerd
-  systemd:
-    name: containerd
-    daemon_reload: yes
-    state: started
-    enabled: yes
+- name: 'containerd | generate configuration file'
+  ansible.builtin.command: |
+    containerd config default
+  register: 'containerd_default_config_file'
+  changed_when: false
+  when: 'containerd_config_file.stat.exists'
+
+- name: 'containerd | ensure default configuration'
+  ansible.builtin.copy:
+    dest: '{{ cri_containerd_config_dir }}/config.toml'
+    content: '{{ containerd_default_config_file.stdout }}'
+  when: containerd_default_config_file.stdout|md5 != containerd_config_file.stat.checksum
+  notify: restart cri
+
+- include_tasks: 'crictl.yml'

@@ -1,0 +1,5 @@
+---
+- name: install docker_cache required packages
+  pacman:
+    name: '{{ cache_packages }}'
+    update_cache: true

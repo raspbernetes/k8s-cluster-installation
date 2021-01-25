@@ -1,0 +1,18 @@
+{
+  "extends": [
+    "config:base",
+    ":gitSignOff"
+  ],
+  "enabled": true,
+  "timezone": "Australia/Melbourne",
+  "dependencyDashboard": true,
+  "dependencyDashboardTitle": "Renovate Dashboard",
+  "suppressNotifications": [
+    "prIgnoreNotification"
+  ],
+  "rebaseWhen": "conflicted",
+  "assignees": [
+    "@xUnholy"
+  ],
+  "reviewersFromCodeOwners": true
+}
