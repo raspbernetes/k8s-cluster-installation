@@ -1,0 +1,20 @@
+---
+dependency:
+  name: galaxy
+driver:
+  name: docker
+platforms:
+- name: instance
+  image: geerlingguy/docker-${MOLECULE_DISTRO:-ubuntu2004}-ansible
+  volumes:
+  - /sys/fs/cgroup:/sys/fs/cgroup:ro
+  command: ${MOLECULE_DOCKER_COMMAND:-""}
+  capabilities:
+  - SYS_ADMIN
+  pre_build_image: true
+provisioner:
+  name: ansible
+verifier:
+  name: ansible
+  lint:
+    name: ansible-lint
