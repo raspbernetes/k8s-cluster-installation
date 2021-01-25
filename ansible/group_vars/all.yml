@@ -15,19 +15,19 @@
 ####
 # Role - kubernetes
 ####
-# kubernetes_kubectl_version: 1.19.4-00
-# kubernetes_kubelet_version: 1.19.4-00
-# kubernetes_kubeadm_version: 1.19.4-00
+# kubernetes_kubectl_version: 1.20.2-00
+# kubernetes_kubelet_version: 1.20.2-00
+# kubernetes_kubeadm_version: 1.20.2-00
 
 ####
 # Role - cri
 ####
-# cri_plugin: docker
+# cri_plugin: containerd
 
 ####
 # Role: Storage
 ####
-#openebs_enabled: false
+# openebs_enabled: false
 
 ####
 # Role: docker_cache

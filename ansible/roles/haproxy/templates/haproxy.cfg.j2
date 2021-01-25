@@ -12,6 +12,7 @@ frontend front-api-proxy
 
 backend kube-api
     mode tcp
+    option tcplog
     option tcp-check
     timeout connect 10s
     timeout server 4h
