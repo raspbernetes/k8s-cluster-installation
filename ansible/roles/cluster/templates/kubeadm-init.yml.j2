@@ -70,9 +70,6 @@ controllerManager:
     profiling: "false"
     use-service-account-credentials: "true"
     feature-gates: "RotateKubeletServerCertificate=true"
-    {% if cni_plugin == "cilium" %}
-    allocate-node-cidrs: "true"
-    {% endif %}
 scheduler:
   extraArgs:
     bind-address: 127.0.0.1
