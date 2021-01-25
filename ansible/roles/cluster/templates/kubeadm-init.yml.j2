@@ -71,7 +71,7 @@ controllerManager:
     use-service-account-credentials: "true"
     feature-gates: "RotateKubeletServerCertificate=true"
     {% if cni_plugin == "cilium" %}
-    --allocate-node-cidrs
+    allocate-node-cidrs: "true"
     {% endif %}
 scheduler:
   extraArgs:
