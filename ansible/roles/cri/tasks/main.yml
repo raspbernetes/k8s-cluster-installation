@@ -8,7 +8,7 @@
 
 # Ensure the br_netfilter module is loaded and iptables can see bridged traffic
 # https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/install-kubeadm/#letting-iptables-see-bridged-traffic
-- name: 'ensure br_netfilter module is loaded'
+- name: 'ensure required modules are loaded'
   community.general.modprobe:
     name: '{{ item }}'
     state: 'present'
@@ -18,9 +18,9 @@
   tags:
   - notest
 
-- name: 'enable br_netfilter module loads at system startup'
+- name: 'ensure required modules load at system startup'
   ansible.builtin.copy:
-    dest: '/etc/modules-load.d/kubernetes-br_netfilter.conf'
+    dest: '/etc/modules-load.d/kubernetes-modules.conf'
     content: |
       overlay
       br_netfilter
