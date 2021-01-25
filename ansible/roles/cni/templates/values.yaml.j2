@@ -8,13 +8,17 @@ autoDirectNodeRoutes: true
 
 bpf:
   # -- Enable native IP masquerade support in eBPF
-  masquerade: true
+  masquerade: {{ cni_cilium_bpf_masquerade }}
 
   # -- Configure whether direct routing mode should route traffic via
   # host stack (true) or directly and more efficiently out of BPF (false) if
   # the kernel supports it. The latter has the implication that it will also
   # bypass netfilter in the host namespace.
-  hostRouting: false
+  hostRouting: {{ cni_cilium_bpf_hostrouting }}
+
+  # -- Configure the eBPF-based TPROXY to reduce reliance on iptables rules
+  # for implementing Layer 7 policy.
+  tproxy: {{ cni_cilium_bpf_tproxy }}
 
 # externalIPs is the configuration for ExternalIPs service handling
 externalIPs:
@@ -76,7 +80,11 @@ ipam:
     clusterPoolIPv4MaskSize: 24
 
 # kubeProxyReplacement enables kube-proxy replacement in Cilium BPF datapath
-kubeProxyReplacement: strict
+{% if cluster_kube_proxy == "disabled" %}
+kubeProxyReplacement: "strct"
+{% elif cluster_kube_proxy == "enabled" %}
+kubeProxyReplacement: "probe"
+{% endif %}
 
 # kubeProxyReplacement healthz server bind address
 # To enable set the value to '0.0.0.0:10256' for all ipv4
@@ -96,7 +104,7 @@ prometheus:
 operator:
   image:
     repository: docker.io/cilium/operator-dev
-    tag: v1.9.1
+    tag: "{{ cni_cilium_image_version }}"
   # Enables metrics for cilium-operator.
   prometheus:
     enabled: true
@@ -116,7 +124,11 @@ nativeRoutingCIDR: {{ k8s_native_cluster_cidr }}
 #   - disabled
 #   - vxlan (default)
 #   - geneve
+{% if cluster_kube_proxy == "disabled" %}
 tunnel: "disabled"
+{% elif cluster_kube_proxy == "enabled" %}
+tunnel: "vxlan"
+{% endif %}
 
 # loadBalancer is the general configuration for service load balancing
 loadBalancer:
@@ -125,7 +137,7 @@ loadBalancer:
   algorithm: maglev
   # mode is the operation mode of load balancing for remote backends
   # e.g. snat, dsr, hybrid
-  mode: dsr
+  mode: snat
 
 # disableEnvoyVersionCheck removes the check for Envoy, which can be useful on
 # AArch64 as the images do not currently ship a version of Envoy.
