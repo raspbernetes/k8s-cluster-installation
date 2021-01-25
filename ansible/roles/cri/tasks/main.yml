@@ -10,15 +10,20 @@
 # https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/install-kubeadm/#letting-iptables-see-bridged-traffic
 - name: 'ensure br_netfilter module is loaded'
   community.general.modprobe:
-    name: 'br_netfilter'
+    name: '{{ item }}'
     state: 'present'
+  loop:
+  - 'overlay'
+  - 'br_netfilter'
   tags:
   - notest
 
 - name: 'enable br_netfilter module loads at system startup'
   ansible.builtin.copy:
     dest: '/etc/modules-load.d/kubernetes-br_netfilter.conf'
-    content: 'br_netfilter'
+    content: |
+      overlay
+      br_netfilter
 
 - name: 'ensure sysctl options are configured for container runtime'
   ansible.posix.sysctl:
@@ -32,34 +37,3 @@
   - net.bridge.bridge-nf-call-ip6tables
   - net.ipv4.ip_forward
   notify: restart systemd-sysctl
-
-# - name: 'archlinux : install containerd package'
-#   pacman:
-#     name:
-#       - containerd
-#     state: present
-#     update_cache: yes
-#   when: ansible_os_family | lower == 'archlinux'
-
-# - name: create containerd config directory
-#   become: true
-#   file:
-#     path: /etc/containerd/
-#     state: directory
-#     owner: root
-#     group: root
-#     mode: '0755'
-
-# # TODO: https://kubernetes.io/docs/setup/production-environment/container-runtimes/#containerd-systemd
-# - name: configure containerd
-#   ansible.builtin.shell:
-#     cmd: containerd config default > /etc/containerd/config.toml
-#     creates: /etc/containerd/config.toml
-#   notify: restart containerd
-
-# - name: start containerd
-#   systemd:
-#     name: containerd
-#     daemon_reload: yes
-#     state: started
-#     enabled: yes

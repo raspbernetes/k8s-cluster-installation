@@ -24,6 +24,14 @@
       update_cache: true
       cache_valid_time: 3600
 
+# Archlinux installation of containerd package
+- name: 'containerd | install containerd package'
+  pacman:
+    name: containerd
+    state: present
+    update_cache: yes
+  when: ansible_os_family | lower == 'archlinux'
+
 - name: 'containerd | ensure "{{ cri_containerd_config_dir }}" config directory'
   ansible.builtin.file:
     path: '{{ cri_containerd_config_dir }}'
