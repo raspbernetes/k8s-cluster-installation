@@ -1,0 +1,31 @@
+---
+# When nuking a cluster, it may be beneficial to remove the CRI - these tasks will remove any CRI components
+
+# Uninstall ContainerD from Ubuntu/Debian platforms
+- name: 'uninstall containerd on debian based platforms'
+  block:
+  - name: 'containerd | stop containerd runtime'
+    systemd:
+      name: 'containerd'
+      state: stopped
+      enabled: false
+  - name: 'containerd | uninstall containerd package'
+    ansible.builtin.package:
+      name: containerd.io
+      state: 'absent'
+  - name: 'containerd | remove containerd apt pin'
+    ansible.builtin.file:
+      path: '/etc/apt/preferences.d/containerd'
+      state: 'absent'
+  - name: 'containerd | ensure containerd configuration directory has been removed'
+    ansible.builtin.file:
+      path: '{{ cri_containerd_config_dir }}'
+      state: 'absent'
+  when: ansible_os_family|lower == 'debian'
+
+# Archlinux uninstallation of containerd package
+- name: 'containerd | install containerd package'
+  pacman:
+    name: 'containerd'
+    state: 'absent'
+  when: ansible_os_family|lower == 'archlinux'
