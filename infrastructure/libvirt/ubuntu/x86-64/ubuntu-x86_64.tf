@@ -108,5 +108,5 @@ resource "libvirt_domain" "node" {
 
 # -[Output]-------------------------------------------------------------
 output "ipv4" {
-  value = libvirt_domain.coreos-machine.*.network_interface.0.addresses
+  value = libvirt_domain.node.*.network_interface.0.addresses
 }
