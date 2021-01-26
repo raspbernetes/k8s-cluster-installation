@@ -10,6 +10,10 @@
     default: "NO"
     private: no
   any_errors_fatal: yes
+  vars:
+    uninstall: true
+  roles:
+    - { role: 'cri' }
   tasks:
     - name: check confirmation
       fail: msg="playbook run confirmation failed"
