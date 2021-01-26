@@ -24,7 +24,7 @@
   when: ansible_os_family|lower == 'debian'
 
 # Archlinux uninstallation of containerd package
-- name: 'containerd | install containerd package'
+- name: 'containerd | uninstall containerd package'
   pacman:
     name: 'containerd'
     state: 'absent'
