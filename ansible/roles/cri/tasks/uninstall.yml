@@ -17,7 +17,7 @@
   delay: 5
   when:
   - crictl.stat.exists
-  - cri_plugin in ['containerd']
+  - cri_plugin == 'containerd'
   ignore_errors: true
 
 - name: 'uninstall | remove all cri containers'
@@ -29,7 +29,32 @@
   delay: 5
   when:
   - crictl.stat.exists
-  - cri_plugin in ['containerd']
+  - cri_plugin == 'containerd'
+
+- name: 'uninstall | stop all containerd pods'
+  ansible.builtin.shell: |
+    set -o pipefail && /usr/local/bin/crictl ps -q | xargs -r /usr/local/bin/crictl -t 10s stopp
+  args:
+    executable: '/bin/bash'
+  register: stop_all_pods
+  retries: 5
+  until: stop_all_pods.rc == 0
+  delay: 5
+  when:
+  - crictl.stat.exists
+  - cri_plugin == 'containerd'
+  ignore_errors: true
+
+- name: 'uninstall | remove all containerd pods'
+  ansible.builtin.command: |
+    /usr/local/bin/crictl rmp -a -f
+  register: remove_all_pods
+  retries: 5
+  until: remove_all_pods.rc == 0
+  delay: 5
+  when:
+  - crictl.stat.exists
+  - cri_plugin == 'containerd'
 
 # Uninstall ContainerD from Ubuntu/Debian platforms
 - name: 'uninstall containerd on debian based platforms'
