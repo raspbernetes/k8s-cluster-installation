@@ -1,0 +1,86 @@
+---
+# When nuking a cluster, it may be beneficial to remove the CRI - these tasks will remove any CRI components
+
+- name: 'uninstall | check if crictl is present'
+  ansible.builtin.stat:
+    path: '/usr/local/bin/crictl'
+  register: crictl
+
+- name: 'uninstall | stop all cri containers'
+  ansible.builtin.shell: |
+    set -o pipefail && /usr/local/bin/crictl ps -q | xargs -r /usr/local/bin/crictl -t 10s stop
+  args:
+    executable: '/bin/bash'
+  register: stop_all_containers
+  retries: 5
+  until: stop_all_containers.rc == 0
+  delay: 5
+  when:
+  - crictl.stat.exists
+  - cri_plugin == 'containerd'
+  ignore_errors: true
+
+- name: 'uninstall | remove all cri containers'
+  ansible.builtin.command: |
+    /usr/local/bin/crictl rm -a -f
+  register: remove_all_containers
+  retries: 5
+  until: remove_all_containers.rc == 0
+  delay: 5
+  when:
+  - crictl.stat.exists
+  - cri_plugin == 'containerd'
+
+- name: 'uninstall | stop all containerd pods'
+  ansible.builtin.shell: |
+    set -o pipefail && /usr/local/bin/crictl ps -q | xargs -r /usr/local/bin/crictl -t 10s stopp
+  args:
+    executable: '/bin/bash'
+  register: stop_all_pods
+  retries: 5
+  until: stop_all_pods.rc == 0
+  delay: 5
+  when:
+  - crictl.stat.exists
+  - cri_plugin == 'containerd'
+  ignore_errors: true
+
+- name: 'uninstall | remove all containerd pods'
+  ansible.builtin.command: |
+    /usr/local/bin/crictl rmp -a -f
+  register: remove_all_pods
+  retries: 5
+  until: remove_all_pods.rc == 0
+  delay: 5
+  when:
+  - crictl.stat.exists
+  - cri_plugin == 'containerd'
+
+# Uninstall ContainerD from Ubuntu/Debian platforms
+- name: 'uninstall containerd on debian based platforms'
+  block:
+  - name: 'uninstall | stop containerd runtime'
+    ansible.builtin.systemd:
+      name: 'containerd'
+      state: stopped
+      enabled: false
+  - name: 'uninstall | uninstall containerd package'
+    ansible.builtin.package:
+      name: containerd.io
+      state: 'absent'
+  - name: 'uninstall | remove containerd apt pin'
+    ansible.builtin.file:
+      path: '/etc/apt/preferences.d/containerd'
+      state: 'absent'
+  - name: 'uninstall | ensure containerd configuration directory has been removed'
+    ansible.builtin.file:
+      path: '{{ cri_containerd_config_dir }}'
+      state: 'absent'
+  when: ansible_os_family|lower == 'debian'
+
+# Archlinux uninstallation of containerd package
+- name: 'uninstall | remove containerd package'
+  pacman:
+    name: 'containerd'
+    state: 'absent'
+  when: ansible_os_family|lower == 'archlinux'

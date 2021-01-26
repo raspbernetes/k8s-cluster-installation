@@ -5,6 +5,11 @@
 
 - name: 'setup {{ cri_plugin }} as kubernetes container runtime (cri)'
   include_tasks: '{{ cri_plugin }}.yml'
+  when: uninstall is not defined
+
+- name: 'uninstall container runtimes'
+  include_tasks: 'uninstall.yml'
+  when: uninstall is defined and uninstall
 
 # Ensure the br_netfilter module is loaded and iptables can see bridged traffic
 # https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/install-kubeadm/#letting-iptables-see-bridged-traffic
