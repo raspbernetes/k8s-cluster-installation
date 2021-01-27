@@ -22,7 +22,7 @@
 ####
 # Role - cri
 ####
-# cri_plugin: docker
+# cri_plugin: containerd
 
 ####
 # Role: Storage
