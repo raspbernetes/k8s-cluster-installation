@@ -14,4 +14,4 @@ cluster_pod_subnet: ""
 cluster_etcd_heartbeat_interval: 100
 cluster_etcd_election_timeout: 1000
 # Default will install kube-proxy although some CNI plugins will recommend it be disabled
-cluster_kube_proxy: enabled
+cluster_kube_proxy_enabled: true

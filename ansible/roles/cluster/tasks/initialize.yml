@@ -31,14 +31,14 @@
     cmd: kubeadm init --config /etc/kubernetes/kubeadm-init.yml --upload-certs
     creates: /etc/kubernetes/admin.conf
   when:
-    - cluster_kube_proxy == "enabled"
+    - cluster_kube_proxy_enabled
 
 - name: initialize cluster (without kube-proxy)
   command:
     cmd: kubeadm init --skip-phases=addon/kube-proxy --config /etc/kubernetes/kubeadm-init.yml --upload-certs
     creates: /etc/kubernetes/admin.conf
   when:
-    - cluster_kube_proxy == "disabled"
+    - cluster_kube_proxy_enabled == false
 
 - name: get sha256 of ca certificate
   openssl_certificate_info:

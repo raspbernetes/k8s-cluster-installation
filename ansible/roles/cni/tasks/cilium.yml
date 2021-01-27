@@ -43,4 +43,4 @@
     state: present
     template: 'generic-kuberouter-only-advertise-routes.yaml.j2'
   when:
-    - cluster_kube_proxy == "disabled"
+    - cni_kube_router_enabled

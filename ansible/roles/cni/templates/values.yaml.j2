@@ -40,6 +40,8 @@ nodePort:
   # enabled enables NodePort functionality
   enabled: true
 
+{% if cni_cilium_hubble_enabled %}
+
 hubble:
   enabled: true
   # Enables the provided list of Hubble metrics.
@@ -73,6 +75,8 @@ hubble:
         repository: docker.io/envoyproxy/envoy
         tag: "{{ cni_cilium_enovy_proxy_image_version }}"
 
+{% endif %}
+
 ipam:
   operator:
     # default: "10.0.0.0/8", however, using existing podCIDR
@@ -80,9 +84,9 @@ ipam:
     clusterPoolIPv4MaskSize: 24
 
 # kubeProxyReplacement enables kube-proxy replacement in Cilium BPF datapath
-{% if cluster_kube_proxy == "disabled" %}
-kubeProxyReplacement: "strct"
-{% elif cluster_kube_proxy == "enabled" %}
+{% if cluster_kube_proxy_enabled == false %}
+kubeProxyReplacement: "strict"
+{% elif cluster_kube_proxy_enabled %}
 kubeProxyReplacement: "probe"
 {% endif %}
 
@@ -119,16 +123,16 @@ k8sServicePort: {{ k8s_service_port }} # 8443
 # value corresponds to the configured cluster-cidr.
 nativeRoutingCIDR: {{ k8s_native_cluster_cidr }}
 
+
+containerRuntime:
+  integration: {{ cri_plugin }}
+
 # -- Configure the encapsulation configuration for communication between nodes.
 # Possible values:
 #   - disabled
 #   - vxlan (default)
 #   - geneve
-{% if cluster_kube_proxy == "disabled" %}
 tunnel: "disabled"
-{% elif cluster_kube_proxy == "enabled" %}
-tunnel: "vxlan"
-{% endif %}
 
 # loadBalancer is the general configuration for service load balancing
 loadBalancer:
