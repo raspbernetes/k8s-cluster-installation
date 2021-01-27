@@ -1,23 +1,16 @@
 ---
 
-#- name: Configure rp_filter lxc to fix systemd bug (1/2)
-#  sysctl:
-#    name: net.ipv4.conf.lxc*.rp_filter
-#    value: '0'
-#    state: present
-#    sysctl_file: /etc/sysctl.d/98-override_cilium_rp_filter.conf
-#    ignoreerrors: yes
-#    reload: no
-#    register: rp_filter_lxc
-
-#- name: set rp_filter sysctl to fix systemd bug (2/2)
-#  sysctl:
-#    name: net.ipv4.conf.cilium_*.rp_filter
-#    value: '0'
-#    state: present
-#    sysctl_file: /etc/sysctl.d/98-override_cilium_rp_filter.conf
-#    ignoreerrors: yes
-#    reload: no
+# See https://github.com/cilium/cilium/issues/10645
+- name: set net.ipv4.conf.*.rp_filter to 0 for systemd 245 workaround
+  ansible.posix.sysctl:
+    name: '{{ item }}'
+    value: '0'
+    sysctl_file: /etc/sysctl.d/98-override_cilium_rp_filter.conf
+    reload: false
+  loop:
+    - net.ipv4.conf.all.rp_filter
+    - net.ipv4.conf.default.rp_filter
+  notify: restart systemd-sysctl
 
 - name: mount sys-fs-bpf
   ansible.posix.mount:

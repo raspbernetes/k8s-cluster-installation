@@ -4,5 +4,5 @@ collections:
     source: https://galaxy.ansible.com
   - name: ansible.posix
     source: https://galaxy.ansible.com
-  - name: community.general.modprobe
+  - name: community.general
     source: https://galaxy.ansible.com
