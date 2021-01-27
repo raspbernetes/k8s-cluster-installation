@@ -1,5 +1,24 @@
 ---
 
+#- name: Configure rp_filter lxc to fix systemd bug (1/2)
+#  sysctl:
+#    name: net.ipv4.conf.lxc*.rp_filter
+#    value: '0'
+#    state: present
+#    sysctl_file: /etc/sysctl.d/98-override_cilium_rp_filter.conf
+#    ignoreerrors: yes
+#    reload: no
+#    register: rp_filter_lxc
+
+#- name: set rp_filter sysctl to fix systemd bug (2/2)
+#  sysctl:
+#    name: net.ipv4.conf.cilium_*.rp_filter
+#    value: '0'
+#    state: present
+#    sysctl_file: /etc/sysctl.d/98-override_cilium_rp_filter.conf
+#    ignoreerrors: yes
+#    reload: no
+
 - name: mount sys-fs-bpf
   ansible.posix.mount:
     path: /sys/fs/bpf
