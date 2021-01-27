@@ -4,7 +4,7 @@
   ansible.posix.mount:
     path: /sys/fs/bpf
     src: bpffs
-    opts: rw,nosuid,nodev,noexec,relatime,mode=700
+    opts: defaults
     state: mounted
     fstype: bpf
 
