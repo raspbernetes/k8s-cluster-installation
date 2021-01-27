@@ -13,7 +13,7 @@
 
 - name: 'uninstall | stop all cri containers'
   ansible.builtin.shell: |
-    set -o pipefail && /usr/local/bin/crictl ps -q | xargs -r /usr/local/bin/crictl -t 10s stop
+    set -o pipefail && /usr/local/bin/crictl ps -q | xargs -r /usr/local/bin/crictl -t 60s stop
   args:
     executable: '/bin/bash'
   register: stop_all_containers
@@ -40,7 +40,7 @@
 
 - name: 'uninstall | stop all containerd pods'
   ansible.builtin.shell: |
-    set -o pipefail && /usr/local/bin/crictl pods -q | xargs -r /usr/local/bin/crictl -t 10s stopp
+    set -o pipefail && /usr/local/bin/crictl pods -q | xargs -r /usr/local/bin/crictl -t 60s stopp
   args:
     executable: '/bin/bash'
   register: stop_all_pods
