@@ -74,7 +74,7 @@ resource "libvirt_network" "ubuntu_network" {
 resource "libvirt_volume" "os_image_ubuntu" {
   name   = "os_image_ubuntu"
   pool   = "default"
-  source = "https://cloud-images.ubuntu.com/releases/focal/release/ubuntu-20.04-server-cloudimg-amd64-disk-kvm.img"
+  source = "https://cloud-images.ubuntu.com/focal/current/focal-server-cloudimg-amd64.img"
 }
 
 resource "libvirt_volume" "ubuntu" {
