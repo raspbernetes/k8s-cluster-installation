@@ -58,7 +58,7 @@ resource "libvirt_volume" "ubuntu" {
   pool           = "default"
   base_volume_id = libvirt_volume.os_image_ubuntu.id
   format         = "qcow2"
-  size           = 5361393152
+  size           = 25361393152
   count          = var.hosts
 }
 
