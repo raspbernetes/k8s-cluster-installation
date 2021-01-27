@@ -49,7 +49,7 @@
     owner: root
     group: root
     mode: 0644
-  notify: restart docker
+  notify: restart cri
 
 - name: ensure systemd docker.d directory
   file:
@@ -62,4 +62,4 @@
     dest: /etc/systemd/system/docker.service.d/override.conf
     mode: 0755
     src: docker/override.conf
-  notify: restart docker
+  notify: restart cri
