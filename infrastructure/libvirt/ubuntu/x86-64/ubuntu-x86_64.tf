@@ -44,8 +44,32 @@ variable "hostname_format" {
   default = "node-%02d"
 }
 
+variable "dns_domain" {
+  description = "DNS domain name"
+  default     = "ubuntu.local"
+
+}
+
+variable "network_cidr" {
+  description = "Network CIDR"
+  default     = "192.168.150.0/24"
+}
+
+
 # ---
 
+
+resource "libvirt_network" "ubuntu_network" {
+  name   = "ubuntu-network"
+  mode   = "nat"
+  domain = var.dns_domain
+
+  dns {
+    enabled = true
+  }
+
+  addresses = [var.network_cidr]
+}
 
 resource "libvirt_volume" "os_image_ubuntu" {
   name   = "os_image_ubuntu"
@@ -98,7 +122,7 @@ resource "libvirt_domain" "node" {
 
 
   network_interface {
-    network_name   = "default"
+    network_name   = "ubuntu-network"
     hostname       = format(var.hostname_format, count.index + 1)
     mac            = "52:54:00:00:00:a${count.index + 1}"
     wait_for_lease = true
