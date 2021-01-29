@@ -5,9 +5,9 @@
   become: true
   gather_facts: true
   vars_prompt:
-    name: "nuke_confirmation"
+    name: 'nuke_confirmation'
     prompt: "Are you sure you want to run this playbook? This will DESTROY your cluster. Answer with 'YES'"
-    default: "NO"
+    default: 'NO'
     private: no
   any_errors_fatal: yes
   order: reverse_inventory
@@ -30,7 +30,7 @@
       args:
         executable: '/bin/bash'
       when:
-      - cni_plugin == 'calico'
+        - cni_plugin == 'calico'
       ignore_errors: true
 
     - name: 'uninstall | check if crictl is present'
@@ -53,9 +53,9 @@
       until: stop_all_containers.rc == 0
       delay: 5
       when:
-      - crictl.stat.exists
-      - containerd_sock.stat.exists
-      - cri_plugin == 'containerd'
+        - crictl.stat.exists
+        - containerd_sock.stat.exists
+        - cri_plugin == 'containerd'
       ignore_errors: true
 
     - name: 'uninstall | remove all cri containers'
@@ -66,9 +66,10 @@
       until: remove_all_containers.rc == 0
       delay: 5
       when:
-      - crictl.stat.exists
-      - containerd_sock.stat.exists
-      - cri_plugin == 'containerd'
+        - crictl.stat.exists
+        - containerd_sock.stat.exists
+        - cri_plugin == 'containerd'
+      ignore_errors: true
 
     - name: 'uninstall | stop all containerd pods'
       ansible.builtin.shell: |
@@ -80,9 +81,9 @@
       until: stop_all_pods.rc == 0
       delay: 5
       when:
-      - crictl.stat.exists
-      - containerd_sock.stat.exists
-      - cri_plugin == 'containerd'
+        - crictl.stat.exists
+        - containerd_sock.stat.exists
+        - cri_plugin == 'containerd'
       ignore_errors: true
 
     - name: 'uninstall | remove all containerd pods'
@@ -93,34 +94,35 @@
       until: remove_all_pods.rc == 0
       delay: 5
       when:
-      - crictl.stat.exists
-      - containerd_sock.stat.exists
-      - cri_plugin == 'containerd'
+        - crictl.stat.exists
+        - containerd_sock.stat.exists
+        - cri_plugin == 'containerd'
+      ignore_errors: true
 
     # Uninstall ContainerD from Ubuntu/Debian platforms
     - name: 'uninstall containerd on debian based platforms'
       block:
-      - name: 'uninstall | stop containerd runtime'
-        ansible.builtin.systemd:
-          name: 'containerd'
-          state: stopped
-          enabled: false
-        when: containerd_sock.stat.exists
-      - name: 'uninstall | uninstall containerd package'
-        ansible.builtin.package:
-          name: containerd.io
-          state: 'absent'
-      - name: 'uninstall | remove containerd apt pin'
-        ansible.builtin.file:
-          path: '/etc/apt/preferences.d/containerd'
-          state: 'absent'
-      - name: 'uninstall | ensure containerd configuration directory has been removed'
-        ansible.builtin.file:
-          path: '/etc/containerd'
-          state: 'absent'
+        - name: 'uninstall | stop containerd runtime'
+          ansible.builtin.systemd:
+            name: 'containerd'
+            state: stopped
+            enabled: false
+          when: containerd_sock.stat.exists
+        - name: 'uninstall | uninstall containerd package'
+          ansible.builtin.package:
+            name: containerd.io
+            state: 'absent'
+        - name: 'uninstall | remove containerd apt pin'
+          ansible.builtin.file:
+            path: '/etc/apt/preferences.d/containerd'
+            state: 'absent'
+        - name: 'uninstall | ensure containerd configuration directory has been removed'
+          ansible.builtin.file:
+            path: '/etc/containerd'
+            state: 'absent'
       when:
-      - ansible_os_family|lower == 'debian'
-      - cri_plugin == 'containerd'
+        - ansible_os_family|lower == 'debian'
+        - cri_plugin == 'containerd'
 
     # Archlinux uninstallation of containerd package
     - name: 'uninstall | remove containerd package'
@@ -128,12 +130,12 @@
         name: 'containerd'
         state: 'absent'
       when:
-      - ansible_os_family|lower == 'archlinux'
-      - cri_plugin == 'containerd'
+        - ansible_os_family|lower == 'archlinux'
+        - cri_plugin == 'containerd'
 
     - name: reset iptables and ipvs
       command: # noqa 301
-        cmd: "{{ item }}"
+        cmd: '{{ item }}'
       loop:
         - iptables -P INPUT ACCEPT
         - iptables -P FORWARD ACCEPT
@@ -151,7 +153,7 @@
 
     - name: remove apt-mark hold
       dpkg_selections:
-        name: "{{ item }}"
+        name: '{{ item }}'
         selection: purge
       loop:
         - 'kubectl'
