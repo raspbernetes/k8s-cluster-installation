@@ -9,6 +9,7 @@
 # common_usb_ssd_device_id: ""
 # common_rpi_overclock: false
 # common_rpi_poe_hat: false
+# common_log2ram_enabled: false
 # common_log2ram_version: v1.4
 # common_log2ram_size: 128M
 
