@@ -11,5 +11,3 @@ repos:
   rev: v1.25.0
   hooks:
   - id: yamllint
-    files: \.(yaml|yml)$
-    types: [file, yaml]
