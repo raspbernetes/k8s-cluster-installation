@@ -41,3 +41,4 @@
 - name: enable ntp
   command: /usr/bin/timedatectl set-ntp true
   when: "'NTP=no' in timedatectl_result.stdout"
+

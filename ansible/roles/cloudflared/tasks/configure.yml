@@ -7,7 +7,7 @@
     group: root
     mode: '0755'
 
-- name:  copy cloudflared config.conf
+- name: copy cloudflared config.conf
   template:
     src: config.yml.j2
     dest: /etc/cloudflared/config.yml

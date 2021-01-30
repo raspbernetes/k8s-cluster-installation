@@ -18,5 +18,6 @@ common_packages:
   - net-tools
   - sysstat
   - python-pyopenssl # Needed for ansible 'openssl_certificate_info' module
+  - python-pip # Needed for ansible openshift module
 common_rpi_cmd_file: /boot/cmdline.txt
 common_rpi_config_file: /boot/config.txt

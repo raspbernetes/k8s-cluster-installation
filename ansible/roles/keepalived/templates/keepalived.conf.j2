@@ -1,5 +1,5 @@
 vrrp_instance VI_1 {
-    state  {{ 'MASTER' if hostvars[groups['masters'][0]] else 'BACKUP' }}
+    state {{ 'MASTER' if hostvars[groups['masters'][0]] else 'BACKUP' }}
     interface {{ keepalived_interface }}
     virtual_router_id 1
     priority {{ '150' if hostvars[groups['masters'][0]] else '100' }}

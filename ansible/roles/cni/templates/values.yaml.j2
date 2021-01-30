@@ -1,0 +1,148 @@
+image:
+  repository: "{{ cni_cilium_image_repository }}"
+  tag: "{{ cni_cilium_image_version }}"
+
+# autoDirectNodeRoutes enables installation of PodCIDR routes between worker
+# nodes if worker nodes share a common L2 network segment.
+autoDirectNodeRoutes: true
+
+bpf:
+  # -- Enable native IP masquerade support in eBPF
+  masquerade: {{ cni_cilium_bpf_masquerade }}
+
+  # -- Configure whether direct routing mode should route traffic via
+  # host stack (true) or directly and more efficiently out of BPF (false) if
+  # the kernel supports it. The latter has the implication that it will also
+  # bypass netfilter in the host namespace.
+  hostRouting: {{ cni_cilium_bpf_hostrouting }}
+
+  # -- Configure the eBPF-based TPROXY to reduce reliance on iptables rules
+  # for implementing Layer 7 policy.
+  tproxy: {{ cni_cilium_bpf_tproxy }}
+
+# externalIPs is the configuration for ExternalIPs service handling
+externalIPs:
+  # enabled enables ExternalIPs functionality
+  enabled: true
+
+# endpointRoutes enables use of per endpoint routes instead of routing vis
+# the cilium_host interface
+endpointRoutes:
+  enabled: {{ cni_cilium_endpoint_routes }}
+
+# hostServices is the configuration for ClusterIP service handling in host namespace
+hostServices:
+  # enabled enables host reachable functionality
+  enabled: true
+
+# nodePort is the configuration for NodePort service handling
+nodePort:
+  # enabled enables NodePort functionality
+  enabled: true
+
+{% if cni_cilium_hubble_enabled %}
+
+hubble:
+  enabled: true
+  # Enables the provided list of Hubble metrics.
+  metrics:
+    enabled:
+      - dns:query;ignoreAAAA
+      - drop
+      - tcp
+      - flow
+      - port-distribution
+      - icmp
+      - http
+  listenAddress: ':4244'
+  relay:
+    enabled: true
+    image:
+      repository: docker.io/cilium/hubble-relay-dev
+      tag: v1.9.1
+  ui:
+    enabled: true
+    frontend:
+      image:
+        repository: docker.io/mcfio/hubble-ui-dev
+        tag: v0.7.3
+    backend:
+      image:
+        repository: docker.io/raspbernetes/hubble-ui-backend
+        tag: v0.7.5
+    proxy:
+      image:
+        repository: docker.io/envoyproxy/envoy
+        tag: "{{ cni_cilium_enovy_proxy_image_version }}"
+
+{% endif %}
+
+ipam:
+  operator:
+    # default: "10.0.0.0/8", however, using existing podCIDR
+    clusterPoolIPv4PodCIDR: "{{ cluster_pod_subnet }}"
+    clusterPoolIPv4MaskSize: 24
+
+# kubeProxyReplacement enables kube-proxy replacement in Cilium BPF datapath
+{% if cluster_kube_proxy_enabled == false %}
+kubeProxyReplacement: "strict"
+{% elif cluster_kube_proxy_enabled %}
+kubeProxyReplacement: "probe"
+{% endif %}
+
+# kubeProxyReplacement healthz server bind address
+# To enable set the value to '0.0.0.0:10256' for all ipv4
+# addresses and this '[::]:10256' for all ipv6 addresses.
+# By default it is disabled.
+kubeProxyReplacementHealthzBindAddr: '0.0.0.0:10256'
+
+# prometheus enables serving metrics on the configured port at /metrics
+# Enables metrics for cilium-agent.
+prometheus:
+  enabled: true
+  port: 9090
+  # This requires the prometheus CRDs to be available (see https://github.com/prometheus-operator/prometheus-operator/blob/master/example/prometheus-operator-crd/monitoring.coreos.com_servicemonitors.yaml)
+  serviceMonitor:
+    enabled: false
+
+operator:
+  image:
+    repository: docker.io/cilium/operator-dev
+    tag: "{{ cni_cilium_image_version }}"
+  # Enables metrics for cilium-operator.
+  prometheus:
+    enabled: true
+    serviceMonitor:
+      enabled: false
+
+# kubeConfigPath: ~/.kube/config
+k8sServiceHost: {{ k8s_service_host }} # 192.168.1.200
+k8sServicePort: {{ k8s_service_port }} # 8443
+
+# nativeRoutingCIDR allows to explicitly specify the CIDR for native routing. This
+# value corresponds to the configured cluster-cidr.
+nativeRoutingCIDR: {{ k8s_native_cluster_cidr }}
+
+
+containerRuntime:
+  integration: {{ cri_plugin }}
+
+# -- Configure the encapsulation configuration for communication between nodes.
+# Possible values:
+#   - disabled
+#   - vxlan (default)
+#   - geneve
+tunnel: "disabled"
+
+# loadBalancer is the general configuration for service load balancing
+loadBalancer:
+  # algorithm is the name of the load balancing algorithm for backend
+  # selection e.g. random or maglev
+  algorithm: maglev
+  # mode is the operation mode of load balancing for remote backends
+  # e.g. snat, dsr, hybrid
+  mode: snat
+
+# disableEnvoyVersionCheck removes the check for Envoy, which can be useful on
+# AArch64 as the images do not currently ship a version of Envoy.
+disableEnvoyVersionCheck: true
