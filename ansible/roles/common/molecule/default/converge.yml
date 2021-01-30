@@ -7,10 +7,9 @@
     - name: Install git
       apt:
         name: git
-        update_cache: yes
+        update_cache: true
     - name: "Include common"
       include_role:
         name: "common"
   vars:
     common_reboot_handler_enabled: false
-

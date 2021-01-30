@@ -18,7 +18,7 @@
   - name: 'containerd | install package from apt repository'
     ansible.builtin.apt:
       name:
-        - '{{ cri_containerd_package_name[cri_containerd_version | string] }}'
+      - '{{ cri_containerd_package_name[cri_containerd_version | string] }}'
       state: 'present'
       update_cache: true
       cache_valid_time: 3600

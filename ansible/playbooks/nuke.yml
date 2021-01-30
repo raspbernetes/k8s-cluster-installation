@@ -8,8 +8,8 @@
     name: 'nuke_confirmation'
     prompt: "Are you sure you want to run this playbook? This will DESTROY your cluster. Answer with 'YES'"
     default: 'NO'
-    private: no
-  any_errors_fatal: yes
+    private: false
+  any_errors_fatal: true
   order: reverse_inventory
   tasks:
     - name: check confirmation

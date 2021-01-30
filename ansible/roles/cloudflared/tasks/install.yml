@@ -13,7 +13,7 @@
       - 'golang-go'
       - 'make'
     state: present
-    update_cache: yes
+    update_cache: true
   register: apt_install_cloudflared_deps
   retries: 5
   until: apt_install_cloudflared_deps is success
@@ -24,7 +24,7 @@
     state: directory
     suffix: cloudflared
   register: tempfolder
-  become: no
+  become: false
   when: not cloudflared_binary.stat.exists
 
 - name: clone cloudflared repository locally
@@ -43,7 +43,7 @@
 - name: copy cloudflared binary to /usr/local/bin
   copy:
     src: "{{ tempfolder.path }}/cloudflared"
-    remote_src: yes
+    remote_src: true
     dest: /usr/local/bin/cloudflared
     mode: '0755'
   when: not cloudflared_binary.stat.exists

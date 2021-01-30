@@ -24,8 +24,8 @@
       - kubeadm={{ kubernetes_kubeadm_version }}
       - kubectl={{ kubernetes_kubectl_version }}
     state: present
-    force: yes
-    update_cache: yes
+    force: true
+    update_cache: true
   register: apt_install_kube
   retries: 5
   until: apt_install_kube is success
@@ -56,8 +56,8 @@
   apt:
     name: helm
     state: present
-    force: yes
-    update_cache: yes
+    force: true
+    update_cache: true
   register: apt_install_helm
   retries: 5
   until: apt_install_helm is success

@@ -2,6 +2,6 @@
 - name: restart cloudflared
   systemd:
     name: cloudflared
-    daemon_reload: yes
-    enabled: yes
+    daemon_reload: true
+    enabled: true
     state: restarted
