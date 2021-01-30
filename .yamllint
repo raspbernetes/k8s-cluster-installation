@@ -3,6 +3,7 @@ extends: default
 
 ignore: |
   .github/
+  setup/
 
 yaml-files:
 - '*.yaml'
