@@ -22,7 +22,6 @@
 # cluster_kube_proxy_enabled: true
 # cluster_etcd_heartbeat_interval: 100
 # cluster_etcd_election_timeout: 1000
-# cluster_kube_proxy_enabled: true
 
 ####
 # Role - cni
