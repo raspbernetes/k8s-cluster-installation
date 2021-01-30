@@ -46,8 +46,9 @@
     path: '{{ cri_containerd_config_dir }}/config.toml'
   register: 'containerd_config_file'
 
+# Fix-up on later ansible versions https://github.com/ansible/ansible/pull/71824
 - name: 'containerd | generate configuration file'
-  ansible.builtin.command: |
+  command: |
     containerd config default
   register: 'containerd_default_config_file'
   changed_when: false

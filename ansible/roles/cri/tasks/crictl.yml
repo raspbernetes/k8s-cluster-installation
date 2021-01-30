@@ -16,8 +16,9 @@
     src: 'crictl.yaml.j2'
     dest: '/etc/crictl.yaml'
 
+# Fix-up on later ansible versions https://github.com/ansible/ansible/pull/71824
 - name: 'crictl | set crictl shell completion'
-  ansible.builtin.command: |
+  command: |
     /usr/local/bin/crictl completion
   changed_when: false
   register: 'cri_completion'

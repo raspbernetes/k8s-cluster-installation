@@ -1,0 +1,8 @@
+---
+collections:
+  - name: kubernetes.core
+    source: https://galaxy.ansible.com
+  - name: ansible.posix
+    source: https://galaxy.ansible.com
+  - name: community.general
+    source: https://galaxy.ansible.com
