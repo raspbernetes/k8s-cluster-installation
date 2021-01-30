@@ -1,4 +1,5 @@
 ---
+
 - name: disable swap since kubernetes can't work with swap enabled (1/2)
   command: swapoff -a
   when: ansible_swaptotal_mb > 0

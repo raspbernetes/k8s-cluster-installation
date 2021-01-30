@@ -1,0 +1,41 @@
+---
+dependency:
+  name: galaxy
+driver:
+  name: docker
+platforms:
+  - name: master-01
+    image: geerlingguy/docker-ubuntu2004-ansible
+    tmpfs:
+      - /run
+      - /tmp
+    volumes:
+      - /sys/fs/cgroup:/sys/fs/cgroup:ro
+    command: "/usr/sbin/init"
+    capabilities:
+      - SYS_ADMIN
+    pre_build_image: true
+    groups:
+      - masters
+  - name: worker-01
+    image: geerlingguy/docker-ubuntu2004-ansible
+    tmpfs:
+      - /run
+      - /tmp
+    volumes:
+      - /sys/fs/cgroup:/sys/fs/cgroup:ro
+    command: "/usr/sbin/init"
+    capabilities:
+      - SYS_ADMIN
+    pre_build_image: true
+    groups:
+      - workers
+provisioner:
+  name: ansible
+  inventory:
+    host_vars:
+      master-01:
+        keepalived_vip: 'localhost'
+      worker-01:
+verifier:
+  name: ansible

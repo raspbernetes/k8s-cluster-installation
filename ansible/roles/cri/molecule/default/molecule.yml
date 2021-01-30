@@ -1,8 +1,9 @@
 ---
-dependency:
-  name: galaxy
 driver:
   name: docker
+lint: |
+  set -e
+  yamllint -c .yamllint .
 platforms:
 - name: instance
   image: geerlingguy/docker-${MOLECULE_DISTRO:-ubuntu2004}-ansible
@@ -14,7 +15,7 @@ platforms:
   pre_build_image: true
 provisioner:
   name: ansible
-verifier:
-  name: ansible
   lint:
     name: ansible-lint
+verifier:
+  name: testinfra

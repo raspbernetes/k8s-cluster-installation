@@ -1,6 +1,5 @@
 ---
-- name: 'APT Installation'
-  when: ansible_os_family|lower == 'debian'
+- name: 'install containerd on debian based platforms'
   block:
   - name: 'containerd | ensure docker.io apt repository public key is installed'
     ansible.builtin.apt_key:
@@ -23,16 +22,17 @@
       state: 'present'
       update_cache: true
       cache_valid_time: 3600
+  when: ansible_os_family|lower == 'debian'
 
 # Archlinux installation of containerd package
 - name: 'containerd | install containerd package'
   pacman:
-    name: containerd
-    state: present
-    update_cache: yes
+    name: 'containerd'
+    state: 'present'
+    update_cache: true
   when: ansible_os_family | lower == 'archlinux'
 
-- name: 'containerd | ensure "{{ cri_containerd_config_dir }}" config directory'
+- name: 'containerd | ensure config directory exists and has proper ownerships'
   ansible.builtin.file:
     path: '{{ cri_containerd_config_dir }}'
     state: 'directory'
@@ -40,25 +40,18 @@
     owner: 'root'
     group: 'root'
 
-# This is an idempotent check to ensure that the default configuration is present
-- name: 'containerd | check existing config.toml file'
-  ansible.builtin.stat:
-    path: '{{ cri_containerd_config_dir }}/config.toml'
-  register: 'containerd_config_file'
-
-# Fix-up on later ansible versions https://github.com/ansible/ansible/pull/71824
-- name: 'containerd | generate configuration file'
-  command: |
+- name: 'containerd | generate default configuration file'
+  ansible.builtin.command: |
     containerd config default
-  register: 'containerd_default_config_file'
+  register: containerd_default_config_file
   changed_when: false
-  when: 'containerd_config_file.stat.exists'
+  when: cri_containerd_default_config
 
 - name: 'containerd | ensure default configuration'
   ansible.builtin.copy:
     dest: '{{ cri_containerd_config_dir }}/config.toml'
     content: '{{ containerd_default_config_file.stdout }}'
-  when: containerd_default_config_file.stdout|md5 != containerd_config_file.stat.checksum
   notify: restart cri
+  when: cri_containerd_default_config
 
 - include_tasks: 'crictl.yml'

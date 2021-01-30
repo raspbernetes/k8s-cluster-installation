@@ -5,6 +5,7 @@
     state: present
     regexp: '^gpu_mem'
     line: 'gpu_mem={{ common_rpi_gpu_memory }}'
+  when: common_rpi_overclock
   notify: reboot hosts
 
 - name: 'overclock : set over_volatage (1/2)'
@@ -29,12 +30,12 @@
   lineinfile:
     path: '{{ common_rpi_config_file }}'
     state: present
-    regexp: "^dtparam={{ item.name }}"
-    line: "dtparam={{ item.name }}={{ item.value }}"
+    regexp: '^dtparam={{ item.name }}'
+    line: 'dtparam={{ item.name }}={{ item.value }}'
   when: common_rpi_poe_hat
   loop:
-    - { name: 'poe_fan_temp0', value: "{{ common_rpi_poe_fan_temp0 }}"}
-    - { name: 'poe_fan_temp1', value: "{{ common_rpi_poe_fan_temp1 }}"}
-    - { name: 'poe_fan_temp2', value: "{{ common_rpi_poe_fan_temp2 }}"}
-    - { name: 'poe_fan_temp3', value: "{{ common_rpi_poe_fan_temp3 }}"}
+    - { name: 'poe_fan_temp0', value: '{{ common_rpi_poe_fan_temp0 }}' }
+    - { name: 'poe_fan_temp1', value: '{{ common_rpi_poe_fan_temp1 }}' }
+    - { name: 'poe_fan_temp2', value: '{{ common_rpi_poe_fan_temp2 }}' }
+    - { name: 'poe_fan_temp3', value: '{{ common_rpi_poe_fan_temp3 }}' }
   notify: reboot hosts

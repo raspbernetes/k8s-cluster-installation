@@ -1,0 +1,16 @@
+---
+- name: Converge
+  hosts: all
+  become: true
+  become_user: root
+  tasks:
+    - name: Install git
+      apt:
+        name: git
+        update_cache: yes
+    - name: "Include common"
+      include_role:
+        name: "common"
+  vars:
+    common_reboot_handler_enabled: false
+

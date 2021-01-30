@@ -9,6 +9,9 @@
 *.tfstate
 *.tfstate.*
 
+# Local terraform locks
+**.lock.hcl
+
 # Crash log files
 crash.log
 
@@ -44,3 +47,6 @@ argo
 
 # Ignore Cloudflare certificates
 ansible/roles/cloudflared/files/*
+
+# Ignore edits to example cloudinit to prevent senstive information leaks.
+infrastructure/libvirt/ubuntu/x86-64/cloud_init.cfg

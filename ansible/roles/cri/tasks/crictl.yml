@@ -21,7 +21,7 @@
   command: |
     /usr/local/bin/crictl completion
   changed_when: false
-  register: 'cri_completion'
+  register: cri_completion
   check_mode: false
 
 - name: 'crictl | ensure bash completion directory exists'
