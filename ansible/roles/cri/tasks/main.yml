@@ -11,6 +11,13 @@
   include_tasks: 'uninstall.yml'
   when: uninstall is defined and uninstall
 
+- name: 'ensure required modules load at system startup'
+  ansible.builtin.copy:
+    dest: '/etc/modules-load.d/{{ cri_plugin }}.conf'
+    content: |
+      overlay
+      br_netfilter
+
 # Ensure the br_netfilter module is loaded and iptables can see bridged traffic
 # https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/install-kubeadm/#letting-iptables-see-bridged-traffic
 - name: 'ensure required modules are loaded'
@@ -23,19 +30,12 @@
   tags:
   - notest
 
-- name: 'ensure required modules load at system startup'
-  ansible.builtin.copy:
-    dest: '/etc/modules-load.d/kubernetes-modules.conf'
-    content: |
-      overlay
-      br_netfilter
-
 - name: 'ensure sysctl options are configured for container runtime'
   ansible.posix.sysctl:
     name: '{{ item }}'
     value: '1'
     state: 'present'
-    sysctl_file: '/etc/sysctl.d/99-kubernetes-sysctl.conf'
+    sysctl_file: '/etc/sysctl.d/99-kubernetes-cri.conf'
     reload: false
   loop:
   - net.bridge.bridge-nf-call-iptables
