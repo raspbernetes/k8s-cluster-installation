@@ -1,0 +1,14 @@
+[k8s:children]
+masters
+workers
+
+[masters]
+k8s-master-01 hostname=k8s-master-01 ansible_host=192.168.1.111 ansible_user=rock ansible_ssh_pass=rock
+k8s-master-02 hostname=k8s-master-02 ansible_host=192.168.1.112 ansible_user=rock ansible_ssh_pass=rock
+k8s-master-03 hostname=k8s-master-03 ansible_host=192.168.1.113 ansible_user=rock ansible_ssh_pass=rock
+
+[workers]
+k8s-worker-01 hostname=k8s-worker-01 ansible_host=192.168.1.114 ansible_user=rock ansible_ssh_pass=rock
+
+[docker_cache]
+#registry hostname=registry ansible_host=192.168.1.120 ansible_user=rock

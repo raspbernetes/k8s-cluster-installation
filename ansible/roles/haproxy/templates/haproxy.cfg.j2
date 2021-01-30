@@ -12,12 +12,9 @@ frontend front-api-proxy
 
 backend kube-api
     mode tcp
-    option tcplog
     option tcp-check
     timeout connect 10s
     timeout server 4h
     balance roundrobin
     default-server inter 10s downinter 5s rise 2 fall 2 slowstart 60s maxconn 250 maxqueue 256 weight 100
-{% for host in groups['masters'] %}
-    server {{ hostvars[host]['ansible_hostname'] }} {{ hostvars[host]['ansible_host'] }}:6443 check
-{% endfor %}
+    server rockpi4c 192.168.1.111:6443 check

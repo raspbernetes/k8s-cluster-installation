@@ -55,7 +55,7 @@
       when:
         - crictl.stat.exists
         - containerd_sock.stat.exists
-        - cri_plugin == 'containerd'
+        # - cri_plugin == 'containerd'
       ignore_errors: true
 
     - name: 'uninstall | remove all cri containers'
@@ -68,7 +68,7 @@
       when:
         - crictl.stat.exists
         - containerd_sock.stat.exists
-        - cri_plugin == 'containerd'
+        # - cri_plugin == 'containerd'
       ignore_errors: true
 
     - name: 'uninstall | stop all containerd pods'
@@ -83,7 +83,7 @@
       when:
         - crictl.stat.exists
         - containerd_sock.stat.exists
-        - cri_plugin == 'containerd'
+        # - cri_plugin == 'containerd'
       ignore_errors: true
 
     - name: 'uninstall | remove all containerd pods'
@@ -96,7 +96,7 @@
       when:
         - crictl.stat.exists
         - containerd_sock.stat.exists
-        - cri_plugin == 'containerd'
+        # - cri_plugin == 'containerd'
       ignore_errors: true
 
     # Uninstall ContainerD from Ubuntu/Debian platforms
@@ -122,7 +122,7 @@
             state: 'absent'
       when:
         - ansible_os_family|lower == 'debian'
-        - cri_plugin == 'containerd'
+        # - cri_plugin == 'containerd'
 
     # Archlinux uninstallation of containerd package
     - name: 'uninstall | remove containerd package'
@@ -131,7 +131,7 @@
         state: 'absent'
       when:
         - ansible_os_family|lower == 'archlinux'
-        - cri_plugin == 'containerd'
+        # - cri_plugin == 'containerd'
 
     - name: reset iptables and ipvs
       command: # noqa 301
@@ -144,7 +144,7 @@
         - iptables -t mangle -F
         - iptables -F
         - iptables -X
-        - ipvsadm --clear
+        # - ipvsadm --clear
 
     - name: remove cni net.d folder
       file:

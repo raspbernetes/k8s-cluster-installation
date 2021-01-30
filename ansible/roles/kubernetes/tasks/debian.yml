@@ -62,15 +62,15 @@
   retries: 5
   until: apt_install_helm is success
 
-- name: enable required cgroup features
-  lineinfile:
-    path: '{{ common_rpi_cmd_file }}'
-    state: present
-    backrefs: true
-    regexp: '^(.*fixrtc)$'
-    line: '\1 cgroup_enable=cpuset cgroup_memory=1 cgroup_enable=memory'
-  notify: reboot hosts
-  when: ansible_architecture | regex_search('arm|aarch')
+# - name: enable required cgroup features
+#   lineinfile:
+#     path: '{{ common_rpi_cmd_file }}'
+#     state: present
+#     backrefs: true
+#     regexp: '^(.*fixrtc)$'
+#     line: '\1 cgroup_enable=cpuset cgroup_memory=1 cgroup_enable=memory'
+#   notify: reboot hosts
+#   when: ansible_architecture | regex_search('arm|aarch')
 
 # Set /proc/sys/net/bridge/bridge-nf-call-iptables to 1 by running
 # sysctl net.bridge.bridge-nf-call-iptables=1 to pass bridged IPv4 traffic to iptables’ chains.

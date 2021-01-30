@@ -23,8 +23,13 @@
 ####
 # Role - cri
 ####
-# cri_plugin: containerd
+cri_plugin: containerd
 
+cri_socket_map:
+  crio: 'unix:///var/run/crio/crio.sock'
+  containerd: 'unix:///run/containerd/containerd.sock'
+  docker: 'unix:///var/run/dockershim.sock'
+cri_socket_path: '{{ cri_socket_map[cri_plugin] }}'
 ####
 # Role: Storage
 ####
