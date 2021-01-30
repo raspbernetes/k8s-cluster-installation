@@ -15,3 +15,5 @@ discovery:
 controlPlane:
   certificateKey: {{ kubeadm_certificate_key }}
 {% endif %}
+nodeRegistration:
+  criSocket: {{ cri_socket_path }}

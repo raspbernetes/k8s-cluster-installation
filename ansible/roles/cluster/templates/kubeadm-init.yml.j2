@@ -4,13 +4,15 @@ apiVersion: kubeadm.k8s.io/v1beta2
 kind: InitConfiguration
 bootstrapTokens:
   - token: {{ kubeadm_join_token }}
-    ttl: 1h
+    ttl: 24h
     groups:
       - system:bootstrappers:kubeadm:default-node-token
     usages:
       - signing
       - authentication
 certificateKey: {{ kubeadm_certificate_key }}
+nodeRegistration:
+  criSocket: {{ cri_socket_path }}
 ---
 apiVersion: kubeadm.k8s.io/v1beta2
 kind: ClusterConfiguration
