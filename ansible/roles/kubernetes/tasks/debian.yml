@@ -32,7 +32,7 @@
 
 - name: add apt-mark hold to avoid version skew issues. (4/4)
   dpkg_selections:
-    name: "{{ item }}"
+    name: '{{ item }}'
     selection: hold
   loop:
     - 'kubectl'
@@ -61,15 +61,6 @@
   register: apt_install_helm
   retries: 5
   until: apt_install_helm is success
-
-# Adding required Kubernetes cgroups
-- name: create the nobtcmd.txt file if it does not exist
-  become: true
-  file:
-    path: /boot/firmware/nobtcmd.txt
-    state: touch
-    mode: 0644
-  when: ansible_architecture | regex_search('arm|aarch')
 
 - name: enable required cgroup features
   lineinfile:
