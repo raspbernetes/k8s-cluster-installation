@@ -5,11 +5,6 @@ kind: InitConfiguration
 bootstrapTokens:
   - token: {{ kubeadm_join_token }}
     ttl: 24h
-    groups:
-      - system:bootstrappers:kubeadm:default-node-token
-    usages:
-      - signing
-      - authentication
 certificateKey: {{ kubeadm_certificate_key }}
 nodeRegistration:
   criSocket: {{ cri_socket_path }}
@@ -34,7 +29,7 @@ apiServer:
     authorization-mode: {{ cluster_authorization_mode }}
     enable-admission-plugins: {{ cluster_enable_admission_plugins }}
     bind-address: {{ kube_apiserver_bind_address }}
-    insecure-port: {{ kube_apiserver_insecure_port }}
+    insecure-port: "{{ kube_apiserver_insecure_port }}"
     kubelet-https: "true"
     profiling: "false"
     request-timeout: "1m0s"
