@@ -1,0 +1,74 @@
+---
+
+# Specify the Kubernetes version, current release is v1.20.0
+cluster_kubernetes_version: v1.20.2
+
+cluster_cgroup_driver: 'systemd'
+
+# Profiling; Enable profiling via web interface host:port/debug/pprof/
+cluster_profiling: false
+
+# The below parameters set the internal network for Kubernetes, this configuration
+# provides a maximum of 64 nodes in a cluster and 254 pods per node.
+
+# Kubernetes internal network for services, *must* be an unused block of space.
+cluster_service_subnet: '10.144.0.0/18'
+
+# Kubernetes internal network. IP's for pods will be drawn from this address
+# space. *must* be unused in your network infrastructure.
+cluster_pod_subnet: '10.144.64.0/18'
+
+# This sets the network node allocation size. Each node in the cluster is
+# assigned a subnet of this size.
+cluster_node_network_prefix: 24
+
+# Cluster Authorization Modes for the Kubernetes Cluster
+# Available Options: 'AlwaysAllow','AlwaysDeny','Node' and 'RBAC'
+# Order is relevant
+cluster_authorization_modes: ['Node', 'RBAC']
+
+# Vars for discoverying kubernetes api endpoints
+cluster_primary_control_node: '{{ groups["masters"]|first }}'
+cluster_apiserver_count: '{{ groups["masters"]|length }}'
+
+
+## Old variables
+####
+# Role - keepalived
+####
+keepalived_vip: 192.168.91.240
+keepalived_interface: "{{ ansible_default_ipv4['interface'] }}"
+
+####
+# Role - cluster
+####
+cluster_name: kubernetes
+cluster_extra_sans:
+  - "{{ keepalived_vip }}"
+cluster_control_plane_endpoint: "{{ keepalived_vip }}:8443"
+cluster_enable_admission_plugins: "NodeRestriction"
+cluster_etcd_heartbeat_interval: 100
+cluster_etcd_election_timeout: 1000
+
+####
+# Role - cni
+####
+cni_plugin: calico
+# cni_bgp_peer_address: 192.168.0.1
+# cni_bgp_peer_asn: 64512
+# cni_cilium_helm_version: 1.9.3
+# cni_cilium_image_version: v1.9.3
+# cni_cilium_hubble_enabled: false
+# cni_cilium_enovy_proxy_image_version: v1.16.2
+# cni_cilium_bpf_hostrouting: "true"
+# cni_cilium_bpf_tproxy: "false"
+# cni_cilium_bpf_masquerade: "true"
+# cni_cilium_endpoint_routes: "false"
+
+####
+# Role - cloudflared
+####
+# Cloudflare options for exposing Kubernetes services via HTTPS/SSH
+cloudflared_enabled: false
+# cloudflared_kube_api_server_dns: ''
+# cloudflared_version: 2020.11.11

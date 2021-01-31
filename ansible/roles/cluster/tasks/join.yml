@@ -5,12 +5,18 @@
 
 - name: generate kubeadm join configuration
   template:
-    src: kubeadm-join.yml.j2
-    dest: /etc/kubernetes/kubeadm-join.yml
+    src: kubeadm-join.yaml.j2
+    dest: /etc/kubernetes/kubeadm-join.yaml
     mode: 0644
   when: not cluster_node_configured
 
+- name: 'check/wait for cluster apiserver to be available'
+  ansible.builtin.wait_for:
+    host: '{{ hostvars[groups["masters"]|first]["ansible_default_ipv4"]["address"] }}'
+    port: '{{ cluster_apiserver_bind_port }}'
+    timeout: 180
+
 - name: join node to cluster
   command:
-    cmd: kubeadm join --config /etc/kubernetes/kubeadm-join.yml
+    cmd: kubeadm join --config /etc/kubernetes/kubeadm-join.yaml
     creates: /etc/kubernetes/kubelet.conf

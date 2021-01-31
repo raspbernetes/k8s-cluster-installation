@@ -22,20 +22,20 @@
 
 - name: generate kubeadm configuration
   template:
-    src: kubeadm-init.yml.j2
-    dest: /etc/kubernetes/kubeadm-init.yml
+    src: kubeadm-init.yaml.j2
+    dest: /etc/kubernetes/kubeadm-init.yaml
     mode: 0644
 
 - name: initialize cluster (with kube-proxy)
   command:
-    cmd: kubeadm init --config /etc/kubernetes/kubeadm-init.yml --upload-certs
+    cmd: kubeadm init --config /etc/kubernetes/kubeadm-init.yaml --upload-certs
     creates: /etc/kubernetes/admin.conf
   when:
     - cluster_kube_proxy_enabled
 
 - name: initialize cluster (without kube-proxy)
   command:
-    cmd: kubeadm init --skip-phases=addon/kube-proxy --config /etc/kubernetes/kubeadm-init.yml --upload-certs
+    cmd: kubeadm init --skip-phases=addon/kube-proxy --config /etc/kubernetes/kubeadm-init.yaml --upload-certs
     creates: /etc/kubernetes/admin.conf
   when:
     - cluster_kube_proxy_enabled == false
