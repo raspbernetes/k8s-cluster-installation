@@ -41,7 +41,7 @@
     group: 'root'
 
 - name: 'containerd | generate default configuration file'
-  ansible.builtin.command: |
+  command: |
     containerd config default
   register: containerd_default_config_file
   changed_when: false
