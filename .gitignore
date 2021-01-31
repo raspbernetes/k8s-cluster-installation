@@ -50,3 +50,8 @@ ansible/roles/cloudflared/files/*
 
 # Ignore edits to example cloudinit to prevent senstive information leaks.
 infrastructure/libvirt/ubuntu/x86-64/cloud_init.cfg
+
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
