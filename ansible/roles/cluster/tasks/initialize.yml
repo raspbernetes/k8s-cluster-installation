@@ -65,11 +65,11 @@
     owner: root
     group: root
     mode: 0755
-    remote_src: yes
-    backup: yes
+    remote_src: true
+    backup: true
 
 - name: Copy Kubernetes config locally
   fetch:
     dest: output/k8s-config.yaml
-    flat: yes
+    flat: true
     src: /etc/kubernetes/admin.conf

@@ -2,9 +2,9 @@
 - name: 'restarting container runtime ({{ cri_plugin }})'
   systemd:
     name: '{{ cri_plugin }}'
-    daemon_reload: yes
+    daemon_reload: true
     state: restarted
-    enabled: yes
+    enabled: true
   listen: 'restart cri'
 
 - name: restart systemd-sysctl

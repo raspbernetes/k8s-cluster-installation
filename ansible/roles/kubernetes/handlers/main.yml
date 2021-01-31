@@ -2,5 +2,5 @@
 - name: restart kubelet
   systemd:
     name: kubelet
-    daemon_reload: yes
+    daemon_reload: true
     state: restarted

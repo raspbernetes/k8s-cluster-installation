@@ -1,5 +1,4 @@
 ---
-
 - name: disable swap since kubernetes can't work with swap enabled (1/2)
   command: swapoff -a
   when: ansible_swaptotal_mb > 0
@@ -17,12 +16,12 @@
   service:
     name: systemd-timesyncd
     state: started
-    enabled: yes
+    enabled: true
 
 - name: run timedatectl status
   command: /usr/bin/timedatectl show
-  changed_when: False
-  check_mode: no
+  changed_when: false
+  check_mode: false
   register: timedatectl_result
 
 - name: copy timesyncd config
@@ -41,4 +40,3 @@
 - name: enable ntp
   command: /usr/bin/timedatectl set-ntp true
   when: "'NTP=no' in timedatectl_result.stdout"
-

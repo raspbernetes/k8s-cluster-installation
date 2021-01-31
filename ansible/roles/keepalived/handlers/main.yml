@@ -1,6 +1,7 @@
+---
 - name: restart keepalived
   systemd:
     name: keepalived
-    daemon_reload: yes
-    enabled: yes
+    daemon_reload: true
+    enabled: true
     state: restarted

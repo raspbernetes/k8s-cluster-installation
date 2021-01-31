@@ -5,7 +5,7 @@
   - name: 'ensure necessary packages are installed'
     apt:
       name: '{{ item }}'
-      update_cache: yes
+      update_cache: true
     loop:
     - gpg-agent
     - bash-completion

@@ -33,7 +33,7 @@
   copy:
     content: ""
     dest: "/opt/compose/traefik/log"
-    force: no
+    force: false
 
 - name: flush handlers
   meta: flush_handlers

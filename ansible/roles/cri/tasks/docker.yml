@@ -19,7 +19,7 @@
       - docker-ce-cli
       - containerd.io
     state: present
-    update_cache: yes
+    update_cache: true
   when: ansible_os_family | lower == 'debian'
 
 - name: 'archlinux : install docker and its dependencies'
@@ -28,7 +28,7 @@
       - docker
       - containerd
     state: present
-    update_cache: yes
+    update_cache: true
   when: ansible_os_family | lower == 'archlinux'
 
 - name: ensure docker directory

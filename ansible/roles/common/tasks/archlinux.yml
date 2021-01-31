@@ -1,8 +1,8 @@
 ---
 - name: pacman upgrade
   pacman:
-    upgrade: yes
-    update_cache: yes
+    upgrade: true
+    update_cache: true
   register: pacman_upgrade
   retries: 5
   until: pacman_upgrade is success
@@ -11,7 +11,7 @@
 - name: install packages
   pacman:
     name: '{{ common_packages }}'
-    update_cache: yes
+    update_cache: true
   register: pacman_install_common
   retries: 5
   until: pacman_install_common is success
@@ -50,7 +50,7 @@
     state: directory
     suffix: yay
   register: tempfolder
-  become: no
+  become: false
   when:
     - not yay.stat.exists
 
@@ -60,7 +60,7 @@
     version: master
     dest: "{{ tempfolder.path }}"
     depth: 1
-  become: no
+  become: false
   when:
     - not yay.stat.exists
 
@@ -68,7 +68,7 @@
   command:
     chdir: "{{ tempfolder.path }}"
     cmd: makepkg -si --noconfirm
-  become: no
+  become: false
   when:
     - not yay.stat.exists
 

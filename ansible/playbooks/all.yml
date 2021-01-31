@@ -1,7 +1,7 @@
 ---
 - hosts: 127.0.0.1
   connection: local
-  gather_facts: True
+  gather_facts: true
   tasks:
     - name: ensuring python3
       fail:

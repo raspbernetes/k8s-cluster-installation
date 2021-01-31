@@ -25,7 +25,7 @@
     src: "{{ item }}"
     dest: "/opt/compose/registry/certs/"
     mode: 0644
-  loop: [ cert.crt, private.key ]
+  loop: [cert.crt, private.key]
   when: not cache_traefik_enable and cache_tls_enable
 
 - name: Template registry compose file
