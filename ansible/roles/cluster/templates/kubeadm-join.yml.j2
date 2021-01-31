@@ -9,7 +9,7 @@ discovery:
     token: {{ kubeadm_join_token }}
     unsafeSkipCAVerification: false
     caCertHashes:
-      - sha256:{{ cluster_ca_sha256 }}
+      - sha256: {{ cluster_ca_sha256 }}
   timeout: 5m0s
 {% if inventory_hostname in groups['masters'] %}
 controlPlane:

@@ -1,17 +1,30 @@
 ---
 cluster_name: kubernetes
 cluster_extra_sans:
-  - "{{ keepalived_vip }}"
-cluster_control_plane_endpoint: "" # defaults to '{{ keepalived_vip }}:8443' when left empty
-cluster_enable_admission_plugins: "NodeRestriction"
-cluster_authorization_mode: "Node,RBAC"
-cluster_audit_log_path: "/var/log/kubernetes/audit.log"
-cluster_audit_log_maxage: "30"
-cluster_audit_log_maxbackup: "10"
-cluster_audit_log_maxsize: "100"
-cluster_pod_subnet: ""
+  - '{{ keepalived_vip }}'
+cluster_control_plane_endpoint: '' # defaults to '{{ keepalived_vip }}:8443' when left empty
+cluster_enable_admission_plugins: 'NodeRestriction'
+cluster_authorization_mode: 'Node,RBAC'
+cluster_audit_log_path: '/var/log/kubernetes/audit.log'
+cluster_audit_log_maxage: '30'
+cluster_audit_log_maxbackup: '10'
+cluster_audit_log_maxsize: '100'
+cluster_pod_subnet: ''
 # Default etcd values, change these if you experience "leader changed" issues when running on a SD card
 cluster_etcd_heartbeat_interval: 100
 cluster_etcd_election_timeout: 1000
 # Default will install kube-proxy although some CNI plugins will recommend it be disabled
 cluster_kube_proxy_enabled: true
+
+# By default the external API listens on all interfaces, this can be changed to
+# listen on a specific address/interface.
+cluster_kube_apiserver_bind_address: 0.0.0.0
+cluster_kube_apiserver_port: '6443'
+
+# Set to 0 to disable insecure port - Requires RBAC in authorization_modes and kube_api_anonymous_auth: true
+cluster_kube_apiserver_insecure_port: '0' # (disabled)
+
+# Associated interfaces must be reachable by the rest of the cluster, and by
+# CLI/web clients.
+cluster_kube_controller_manager_bind_address: 0.0.0.0
+cluster_kube_scheduler_bind_address: 0.0.0.0

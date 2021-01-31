@@ -4,7 +4,7 @@ apiVersion: kubeadm.k8s.io/v1beta2
 kind: InitConfiguration
 bootstrapTokens:
   - token: {{ kubeadm_join_token }}
-    ttl: 1h
+    ttl: 24h
     groups:
       - system:bootstrappers:kubeadm:default-node-token
     usages:
@@ -31,7 +31,8 @@ apiServer:
     audit-log-maxsize: "{{ cluster_audit_log_maxsize }}"
     authorization-mode: {{ cluster_authorization_mode }}
     enable-admission-plugins: {{ cluster_enable_admission_plugins }}
-    insecure-port: "0"
+    bind-address: {{ cluster_kube_apiserver_bind_address }}
+    insecure-port: "{{ cluster_kube_apiserver_insecure_port }}"
     kubelet-https: "true"
     profiling: "false"
     request-timeout: "1m0s"
@@ -65,12 +66,12 @@ networking:
   {% endif %}
 controllerManager:
   extraArgs:
-    bind-address: 127.0.0.1
+    bind-address: {{ cluster_kube_controller_manager_bind_address }}
     terminated-pod-gc-threshold: "50"
     profiling: "false"
     use-service-account-credentials: "true"
     feature-gates: "RotateKubeletServerCertificate=true"
 scheduler:
   extraArgs:
-    bind-address: 127.0.0.1
+    bind-address: {{ cluster_kube_scheduler_bind_address }}
     profiling: "false"
