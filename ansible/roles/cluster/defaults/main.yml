@@ -1,16 +1,20 @@
 ---
 # API Server Variables
 
-# API Server bind address, by default listens to all requests
+# API Server bind address, default listen to all requests
 cluster_apiserver_bind_address: '0.0.0.0'
 
-# API Server secure port, by default listens to 6443
+# API Server secure port, default listen to 6443
 cluster_apiserver_bind_port: 6443
+
+# API Server insecure port, by default this port is disabled (0)
+# This configuration item has been marked deprecated and will be removed in future.
+cluster_apiserver_insecure_port: 0
 
 # Enable cluster audit log
 cluster_apiserver_enable_audit: false
 # path to the audit log
-cluster_apiserver_audit_log_path: /var/log/kubernetes/audit.log
+cluster_apiserver_audit_log_path: '/var/log/kubernetes/audit.log'
 # audit log max age in days
 cluster_apiserver_audit_log_maxage: 30
 # number of audit logs to keep as backup
@@ -36,6 +40,19 @@ cluster_scheduler_bind_address: '0.0.0.0'
 # garbage collector starts deleting terminated pods. If <= 0, the terminated
 # pod garbage collector is disabled. Default: 12500
 cluster_controller_manager_terminated_pod_gc_threshold: 12500
+
+# Time in milliseconds; Time should be adjusted for 0.5-1.5x RTT between nodes.
+# If heartbeat is too low, etcd will send unnecessary messages that increase CPU.
+# Defaults: _heartbeat_interval: 100, _election_timeout: 1000
+cluster_etcd_heartbeat_interval: 100
+cluster_etcd_election_timeout: 1000
+
+# Number of committed transactions to trigger a snapshot to disk.
+# Default: 100000
+cluster_etcd_snapshot_count: 100000
+
+# Default will install kube-proxy although some CNI plugins will recommend it be disabled
+cluster_kube_proxy_enabled: true
 
 # Set the TLS Minimum version, Default VersionTLS11
 # Possible values: 'VersionTLS10', 'VersionTLS11', 'VersionTLS12', 'VersionTLS13'
@@ -88,11 +105,8 @@ cluster_name: kubernetes
 cluster_extra_sans:
   - "{{ keepalived_vip }}"
 cluster_control_plane_endpoint: "" # defaults to '{{ keepalived_vip }}:8443' when left empty
-cluster_enable_admission_plugins: "NodeRestriction"
-cluster_authorization_mode: "Node,RBAC"
-cluster_pod_subnet: ""
-# Default etcd values, change these if you experience "leader changed" issues when running on a SD card
-cluster_etcd_heartbeat_interval: 100
-cluster_etcd_election_timeout: 1000
-# Default will install kube-proxy although some CNI plugins will recommend it be disabled
-cluster_kube_proxy_enabled: true
+
+# Old Vars
+cluster_main_master: "{{ groups['masters'][0] }}"
+cluster_etcd_datadir: /var/lib/etcd
+cluster_image_repository: k8s.gcr.io

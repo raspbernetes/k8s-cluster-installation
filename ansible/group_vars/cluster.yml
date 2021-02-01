@@ -1,7 +1,10 @@
 ---
 
 # Specify the Kubernetes version, current release is v1.20.0
-cluster_kubernetes_version: v1.20.2
+cluster_kubernetes_version: 'v1.20.2'
+
+cluster_apiserver_enable_admission_plugins:
+- 'NodeRestriction'
 
 cluster_cgroup_driver: 'systemd'
 
@@ -28,9 +31,20 @@ cluster_node_network_prefix: 24
 cluster_authorization_modes: ['Node', 'RBAC']
 
 # Vars for discoverying kubernetes api endpoints
+# will refactor to eliminate this variable
 cluster_primary_control_node: '{{ groups["masters"]|first }}'
 cluster_apiserver_count: '{{ groups["masters"]|length }}'
 
+# Tuning for arm64 platforms; https://etcd.io/docs/v3.4.0/tuning/
+cluster_etcd_heartbeat_interval: 250
+cluster_etcd_election_timeout: 1250
+cluster_etcd_snapshot_count: 5000
+
+####
+# Role - cri
+####
+cri_plugin: 'containerd'
+cri_containerd_version: '1.4.3'
 
 ## Old variables
 ####
@@ -44,16 +58,13 @@ keepalived_interface: "{{ ansible_default_ipv4['interface'] }}"
 ####
 cluster_name: kubernetes
 cluster_extra_sans:
-  - "{{ keepalived_vip }}"
-cluster_control_plane_endpoint: "{{ keepalived_vip }}:8443"
-cluster_enable_admission_plugins: "NodeRestriction"
-cluster_etcd_heartbeat_interval: 100
-cluster_etcd_election_timeout: 1000
+- '{{ keepalived_vip }}'
+cluster_control_plane_endpoint: '{{ keepalived_vip }}:8443'
 
 ####
 # Role - cni
 ####
-cni_plugin: calico
+cni_plugin: 'calico'
 # cni_bgp_peer_address: 192.168.0.1
 # cni_bgp_peer_asn: 64512
 # cni_cilium_helm_version: 1.9.3

@@ -33,7 +33,7 @@ apiServer:
     authorization-mode: {{ cluster_authorization_modes | join(',') }}
     bind-address: {{ cluster_apiserver_bind_address }}
     apiserver-count: "{{ cluster_apiserver_count }}"
-    insecure-port: "0"
+    insecure-port: "{{ cluster_apiserver_insecure_port }}"
     profiling: "{{ cluster_profiling }}"
     {% if cluster_apiserver_enable_admission_plugins|length > 0 %}
     enable-admission-plugins: {{ cluster_apiserver_enable_admission_plugins | join(',') }}
@@ -75,6 +75,7 @@ etcd:
       peer-auto-tls: "false"
       heartbeat-interval: "{{ cluster_etcd_heartbeat_interval }}"
       election-timeout: "{{ cluster_etcd_election_timeout }}"
+      snapshot-count: "{{ cluster_etcd_snapshot_count }}"
 imageRepository: {{ cluster_image_repository }}
 networking:
   dnsDomain: cluster.local
