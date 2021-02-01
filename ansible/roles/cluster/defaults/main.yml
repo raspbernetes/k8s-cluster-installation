@@ -54,6 +54,18 @@ cluster_etcd_snapshot_count: 100000
 # Default will install kube-proxy although some CNI plugins will recommend it be disabled
 cluster_kube_proxy_enabled: true
 
+cluster_kubeadm_skip_phases_default: ''
+cluster_kubeadm_skip_phases: >-
+  {%- if cluster_kube_proxy_enabled -%}
+  {{ cluster_kubeadm_skip_phases_default }} + ['addon/kube-proxy']
+  {%- else -%}
+  {{ cluster_kubeadm_skip_phases_default }}
+  {% endif -%}
+
+# Set the default token timeout, on cluster bootstrap this timeout is the grace period
+# for allowing new nodes to join the cluster; Default is 24 hours.
+cluster_kubeadm_token_timeout: '10m'
+
 # Set the TLS Minimum version, Default VersionTLS11
 # Possible values: 'VersionTLS10', 'VersionTLS11', 'VersionTLS12', 'VersionTLS13'
 # cluster_tls_min_version: ''
