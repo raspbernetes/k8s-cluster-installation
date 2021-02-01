@@ -2,18 +2,18 @@
 ---
 apiVersion: kubeadm.k8s.io/v1beta2
 kind: InitConfiguration
+{% if kubeadm_join_token is defined %}
 bootstrapTokens:
 - token: {{ kubeadm_join_token }}
-  ttl: 1h
-  groups:
-  - system:bootstrappers:kubeadm:default-node-token
-  usages:
-  - signing
-  - authentication
+  description: "raspbernetes boostrap token"
+  ttl: {{ cluster_kubeadm_token_timeout }}
+{% endif %}
 localAPIEndpoint:
   advertiseAddress: {{ ansible_default_ipv4.address|default(ansible_all_ipv4_addresses[0]) }}
   bindPort: {{ cluster_apiserver_bind_port }}
+{% if kubeadm_certificate_key is defined %}
 certificateKey: {{ kubeadm_certificate_key }}
+{% endif %}
 nodeRegistration:
   {% if inventory_hostname in groups['masters'] and inventory_hostname not in groups['workers'] %}
   taints:
