@@ -1,6 +1,22 @@
 # Terraform Guide: GCP
 
-## Initialize Terraform and provision GKE Cluster
+## Prerequisites
+
+- [terraform](https://learn.hashicorp.com/tutorials/terraform/install-cli)
+- [gcloud](https://cloud.google.com/sdk/docs/install)
+- [kubectl](https://kubernetes.io/docs/tasks/tools/install-kubectl/)
+- kubectx/kubens
+## Initialize Terraform
+
+1. Create a [GCP project](https://console.cloud.google.com/)
+
+2. Execute the install script
+
+```bash
+./install.sh
+```
+
+This will create the TF service account and enable the GCP APIs required to run a Kubernetes cluster.
 
 Replace `variables.tf` values with your `project_id` and `region`. Your `project_id` must match the project you've initialized gcloud with. To change your `gcloud` settings, run `gcloud init`. The region has been defaulted to `australia-southeast1`; you can find a full list of gcloud regions [here](https://cloud.google.com/compute/docs/regions-zones).
 
@@ -17,7 +33,11 @@ Initializing provider plugins...
 Terraform has been successfully initialized!
 ```
 
-Then, provision your GKE cluster by running `terraform apply`.
+## Create K8s Cluster
+
+Provision your GKE cluster by running `terraform apply`.
+
+Note: To see what the terraform configuration will create in your GCP project you may wish to run `terraform plan`
 
 ```bash
 $ terraform apply
@@ -40,6 +60,12 @@ kubernetes_cluster_name = raspbernetes-gke
 region = australia-southeast1
 ```
 
+If you wish to shutdown your Kubernetes cluster simply run the following command:
+
+```bash
+terraform destroy
+```
+
 ## Configure kubectl
 
 Configure kubetcl, by running the following command:
@@ -49,3 +75,9 @@ gcloud container clusters get-credentials raspbernetes-gke --region us-central1
 ```
 
 The [Kubernetes Cluster Name](variables.tf#L16) and [Region](variables.tf#L6) correspond to the resources spun up by Terraform.
+
+## Tutorial
+
+Now that you have access to your kubernetes cluster using the kubectl command line tool, you can begin learning Kubernetes by experimenting with the Guestbook application which can be found here:
+
+https://kubernetes.io/docs/tutorials/stateless-application/guestbook/
