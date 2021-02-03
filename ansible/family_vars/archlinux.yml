@@ -16,6 +16,7 @@ common_packages:
   - vim
   - curl
   - net-tools
+  - ipvsadm
   - sysstat
   - python-pyopenssl # Needed for ansible 'openssl_certificate_info' module
   - python-pip # Needed for ansible openshift module
