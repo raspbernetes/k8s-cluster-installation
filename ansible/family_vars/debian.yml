@@ -9,6 +9,7 @@ common_packages:
   - git
   - vim
   - curl
+  - ipvsadm
   - net-tools
   - python3-openssl # Needed for ansible 'openssl_certificate_info' module
   - python3-pip
