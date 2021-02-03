@@ -40,6 +40,10 @@ cluster_etcd_heartbeat_interval: 250
 cluster_etcd_election_timeout: 1250
 cluster_etcd_snapshot_count: 5000
 
+# Kube Proxy mode either ipvs or iptables; Default iptables
+cluster_kube_proxy_mode: 'ipvs'
+
+
 ####
 # Role - cri
 ####

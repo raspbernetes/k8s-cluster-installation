@@ -110,3 +110,12 @@ scheduler:
 apiVersion: kubelet.config.k8s.io/v1beta1
 kind: KubeletConfiguration
 cgroupDriver: {{ cluster_cgroup_driver }}
+---
+apiVersion: kubeproxy.config.k8s.io/v1alpha1
+kind: KubeProxyConfiguration
+bindAddress: {{ cluster_kube_proxy_bind_address }}
+clusterCIDR: {{ cluster_pod_subnet }}
+mode: {{ cluster_kube_proxy_mode }}
+ipvs:
+  scheduler: {{ cluster_kube_proxy_scheduler }}
+metricsBindAddress: {{ cluster_kube_proxy_metrics_bind_address }}

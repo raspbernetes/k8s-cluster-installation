@@ -3,6 +3,19 @@
   include_tasks: pre_checks.yml
   run_once: true
 
+- name: 'pre-flight | add kubectl bash completion'
+  ansible.builtin.shell: |
+    kubectl completion bash > /etc/bash_completion.d/kubectl.sh
+  ignore_errors: true
+
+- name: 'pre-flight | set kubectl bash completion file permissions'
+  ansible.builtin.file:
+    path: '/etc/bash_completion.d/kubectl.sh'
+    owner: 'root'
+    group: 'root'
+    mode: 0755
+  ignore_errors: true
+
 - name: 'pre-flight | set cluster control plane endpoint'
   ansible.builtin.set_fact:
     cluster_control_plane_endpoint: '{{ keepalived_vip }}:8443'

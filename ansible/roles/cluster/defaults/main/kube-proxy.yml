@@ -1,0 +1,19 @@
+---
+# kube-proxy bind address; Default: 0.0.0.0
+cluster_kube_proxy_bind_address: '0.0.0.0'
+
+# Kube Proxy mode either ipvs or iptables; Default iptables
+cluster_kube_proxy_mode: 'ipvs'
+
+# The ipvs scheduler type when proxy mode is ipvs
+# rr: round-robin
+# lc: least connection
+# dh: destination hashing
+# sh: source hashing
+# sed: shortest expected delay
+# nq: never queue
+cluster_kube_proxy_scheduler: rr
+
+# The IP address and port for the metrics server to serve on
+# (set to 0.0.0.0 for all IPv4 interfaces); Default is disabled.
+cluster_kube_proxy_metrics_bind_address: 127.0.0.1:10249
