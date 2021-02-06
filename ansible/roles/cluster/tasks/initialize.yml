@@ -12,6 +12,13 @@
     --skip-phases='addon/kube-proxy'
     {% endif %}
     --upload-certs
+  register: kubeadm_init
+
+- name: 'initialize | set cluster_initialized fact'
+  ansible.builtin.set_fact:
+    cluster_initialized: true
+  run_once: true
+  when: kubeadm_init.rc == 0
 
 - name: 'initialize | create kubectl config directory'
   ansible.builtin.file:

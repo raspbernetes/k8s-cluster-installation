@@ -1,17 +1,19 @@
 ---
-# - name: 'join | upload certificates to API server'
-#   ansible.builtin.command: |
-#     kubeadm init phase upload-certs --certificate-key {{ kubeadm_certificate_key }} --skip-certificate-key-print --upload-certs
-#   delegate_to: '{{ groups["masters"]|first }}'
-#   run_once: true
+- name: 'join | upload certificates to API server'
+  ansible.builtin.command: |
+    kubeadm init phase upload-certs --certificate-key {{ kubeadm_certificate_key }} --skip-certificate-key-print --upload-certs
+  delegate_to: '{{ groups["masters"]|first }}'
+  run_once: true
+  when: not cluster_initialized | default(false)
 
-# - name: 'join | create join token on API server'
-#   ansible.builtin.command: |
-#     kubeadm token create {{ kubeadm_join_token }}
-#     --certificate-key {{ kubeadm_certificate_key }}
-#     --ttl 10m
-#   delegate_to: '{{ groups["masters"]|first }}'
-#   run_once: true
+- name: 'join | create join token on API server'
+  ansible.builtin.command: |
+    kubeadm token create {{ kubeadm_join_token }}
+    --certificate-key {{ kubeadm_certificate_key }}
+    --ttl 10m
+  delegate_to: '{{ groups["masters"]|first }}'
+  run_once: true
+  when: not cluster_initialized | default(false)
 
 - name: 'join | retrieve cluster ca certificate'
   ansible.builtin.openssl_certificate_info:
