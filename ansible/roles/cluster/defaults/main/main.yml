@@ -1,0 +1,124 @@
+---
+# API Server Variables
+
+# API Server bind address, default listen to all requests
+cluster_apiserver_bind_address: '0.0.0.0'
+
+# API Server secure port, default listen to 6443
+cluster_apiserver_bind_port: 6443
+
+# API Server insecure port, by default this port is disabled (0)
+# This configuration item has been marked deprecated and will be removed in future.
+cluster_apiserver_insecure_port: 0
+
+# Enable cluster audit log
+cluster_apiserver_enable_audit: false
+# path to the audit log
+cluster_apiserver_audit_log_path: '/var/log/kubernetes/audit.log'
+# audit log max age in days
+cluster_apiserver_audit_log_maxage: 30
+# number of audit logs to keep as backup
+cluster_apiserver_audit_log_maxbackup: 1
+# audit log max log size
+cluster_apiserver_audit_log_maxsize: 100
+
+# Admission Plugins to enable within the cluster
+# Default Plugins: NamespaceLifecycle, LimitRanger, ServiceAccount, TaintNodesByCondition, Priority, DefaultTolerationSeconds,
+#                  DefaultStorageClass, StorageObjectInUseProtection, PersistentVolumeClaimResize, RuntimeClass, CertificateApproval,
+#                  CertificateSigning, CertificateSubjectRestriction, DefaultIngressClass, MutatingAdmissionWebhook, ValidatingAdmissionWebhook, ResourceQuota
+cluster_apiserver_enable_admission_plugins: []
+
+# Admission Plugins to disable
+cluster_apiserver_disable_admission_plugins: []
+
+# Enable controller manager and scheduler accessible by cluster
+# necessary for metrics and monitoring; Default is '127.0.0.1'
+cluster_controller_manager_bind_address: '0.0.0.0'
+cluster_scheduler_bind_address: '0.0.0.0'
+
+# Number of terminated pods that can exist before the terminated pod
+# garbage collector starts deleting terminated pods. If <= 0, the terminated
+# pod garbage collector is disabled. Default: 12500
+cluster_controller_manager_terminated_pod_gc_threshold: 12500
+
+# Time in milliseconds; Time should be adjusted for 0.5-1.5x RTT between nodes.
+# If heartbeat is too low, etcd will send unnecessary messages that increase CPU.
+# Defaults: _heartbeat_interval: 100, _election_timeout: 1000
+cluster_etcd_heartbeat_interval: 100
+cluster_etcd_election_timeout: 1000
+
+# Number of committed transactions to trigger a snapshot to disk.
+# Default: 100000
+cluster_etcd_snapshot_count: 100000
+
+# Default will install kube-proxy although some CNI plugins will recommend it be disabled
+cluster_kube_proxy_enabled: true
+
+cluster_kubeadm_skip_phases_default: ''
+cluster_kubeadm_skip_phases: >-
+  {%- if cluster_kube_proxy_enabled -%}
+  {{ cluster_kubeadm_skip_phases_default }} + ['addon/kube-proxy']
+  {%- else -%}
+  {{ cluster_kubeadm_skip_phases_default }}
+  {% endif -%}
+
+# Set the default token timeout, on cluster bootstrap this timeout is the grace period
+# for allowing new nodes to join the cluster; Default is 24 hours.
+cluster_kubeadm_token_timeout: '10m'
+
+# Set the TLS Minimum version, Default VersionTLS11
+# Possible values: 'VersionTLS10', 'VersionTLS11', 'VersionTLS12', 'VersionTLS13'
+# cluster_tls_min_version: ''
+
+# Set the TLS Cipher Suites, Default GO cipher suites are used
+# cluster_tls_cipher_suites:
+# - TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA
+# - TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA256
+# - TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256
+# - TLS_ECDHE_ECDSA_WITH_AES_256_CBC_SHA
+# - TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384
+# - TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305
+# - TLS_ECDHE_ECDSA_WITH_RC4_128_SHA
+# - TLS_ECDHE_RSA_WITH_3DES_EDE_CBC_SHA
+# - TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA
+# - TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256
+# - TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+# - TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA
+# - TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+# - TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305
+# - TLS_ECDHE_RSA_WITH_RC4_128_SHA
+# - TLS_RSA_WITH_3DES_EDE_CBC_SHA
+# - TLS_RSA_WITH_AES_128_CBC_SHA
+# - TLS_RSA_WITH_AES_128_CBC_SHA256
+# - TLS_RSA_WITH_AES_128_GCM_SHA256
+# - TLS_RSA_WITH_AES_256_CBC_SHA
+# - TLS_RSA_WITH_AES_256_GCM_SHA384
+# - TLS_RSA_WITH_RC4_128_SHA
+
+cri_socket_map:
+  crio: 'unix:///var/run/crio/crio.sock'
+  containerd: 'unix:///run/containerd/containerd.sock'
+  docker: 'unix:///var/run/dockershim.sock'
+cri_socket: '{{ cri_socket_map[cri_plugin] }}'
+
+architecture_map:
+  amd64: 'amd64'
+  x86_64: 'amd64'
+  arm6l: 'arm'
+  arm7l: 'arm'
+  aarch64: 'arm64'
+  32-bit: '386'
+  64-bit: 'amd64'
+host_architecture: '{{ architecture_map[ansible_architecture] }}'
+
+
+# Old defaults
+cluster_name: kubernetes
+cluster_extra_sans:
+  - "{{ keepalived_vip }}"
+cluster_control_plane_endpoint: "" # defaults to '{{ keepalived_vip }}:8443' when left empty
+
+# Old Vars
+cluster_main_master: "{{ groups['masters'][0] }}"
+cluster_etcd_datadir: /var/lib/etcd
+cluster_image_repository: k8s.gcr.io

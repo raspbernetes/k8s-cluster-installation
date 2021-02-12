@@ -3,15 +3,76 @@
   include_tasks: pre_checks.yml
   run_once: true
 
-- name: cluster checks
-  include_tasks: cluster_checks.yml
+- name: 'pre-flight | add kubectl bash completion'
+  ansible.builtin.shell: |
+    kubectl completion bash > /etc/bash_completion.d/kubectl.sh
+  ignore_errors: true
 
-- name: include initialize tasks
-  include_tasks: initialize.yml
+- name: 'pre-flight | set kubectl bash completion file permissions'
+  ansible.builtin.file:
+    path: '/etc/bash_completion.d/kubectl.sh'
+    owner: 'root'
+    group: 'root'
+    mode: 0755
+  ignore_errors: true
+
+- name: 'pre-flight | set cluster control plane endpoint'
+  ansible.builtin.set_fact:
+    cluster_control_plane_endpoint: '{{ keepalived_vip }}:8443'
+  run_once: true
+  delegate_to: '{{ groups["masters"]|first }}'
   when:
-    - inventory_hostname == cluster_main_master
-    - not cluster_node_configured
+  - cluster_control_plane_endpoint | length < 1
 
-- name: include join tasks
-  include_tasks: join.yml
-  when: inventory_hostname != cluster_main_master
+# The cluster version and the kubeadm version can be different
+- name: 'pre-flight | determine kubeadm version installed'
+  ansible.builtin.command: |
+    /usr/bin/kubeadm version -o short
+  register: kubeadm_version
+  changed_when: false
+
+- name: 'pre-flight | determine kubeadm capabilities'
+  ansible.builtin.set_fact:
+    kubeadm_certs_command: >-
+      {%- if kubeadm_version.stdout.split(".")[1]|int < 20 -%}
+      kubeadm alpha
+      {%- else -%}
+      kubeadm
+      {%- endif -%}
+
+- name: 'pre-flight | check if kubeadm has already been run'
+  ansible.builtin.stat:
+    path: '/var/lib/kubelet/config.yaml'
+  register: kubelet_config
+
+- name: 'pre-flight | generate certificate-key used to encrypt the certificates'
+  ansible.builtin.command: |
+    {{ kubeadm_certs_command }} certs certificate-key
+  delegate_to: '{{ groups["masters"]|first }}'
+  run_once: true
+  register: generated_certificate_key
+
+- name: 'pre-flight | generate randomized token'
+  ansible.builtin.command: |
+    kubeadm token generate
+  delegate_to: '{{ groups["masters"]|first }}'
+  run_once: true
+  register: generated_token
+
+- name: 'pre-flight | set kubeadm token and certificate-key facts'
+  ansible.builtin.set_fact:
+    kubeadm_certificate_key: '{{ generated_certificate_key.stdout }}'
+    kubeadm_join_token: '{{ generated_token.stdout }}'
+  run_once: true
+
+- name: 'initialize | perform cluster initialization on primary control node'
+  include_tasks: 'initialize.yml'
+  when:
+  - inventory_hostname == groups["masters"]|first
+  - not kubelet_config.stat.exists
+
+- name: 'join | perform cluster join on remaining cluster nodes'
+  include_tasks: 'join.yml'
+  when:
+  - inventory_hostname != groups["masters"]|first
+  - not kubelet_config.stat.exists

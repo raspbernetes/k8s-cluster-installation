@@ -173,6 +173,7 @@
         - iptables -F
         - iptables -X
         - ipvsadm --clear
+      ignore_errors: true
 
     - name: remove cni net.d folder
       file:

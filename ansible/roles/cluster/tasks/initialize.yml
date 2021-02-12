@@ -1,75 +1,45 @@
 ---
-- name: generate kubeadm token
-  kubeadm_generate:
-    kind: token
-  register: token
+- name: 'initialize | create configuration file for kubeadm'
+  ansible.builtin.template:
+    src: 'kubeadm-config.yaml.j2'
+    dest: '/etc/kubernetes/kubeadm-config.yaml'
+    mode: 0640
 
-- name: generate kubeadm certificate key
-  kubeadm_generate:
-    kind: certificate-key
-  register: certificate_key
+- name: 'initialize | execute kubeadm init on first control plane node'
+  ansible.builtin.command: >
+    kubeadm init --config /etc/kubernetes/kubeadm-config.yaml
+    {% if not cluster_kube_proxy_enabled %}
+    --skip-phases='addon/kube-proxy'
+    {% endif %}
+    --upload-certs
+  register: kubeadm_init
 
-- name: set kubeadm token and certificate-key fact
-  set_fact:
-    kubeadm_join_token: "{{ token.generated }}"
-    kubeadm_certificate_key: "{{ certificate_key.generated }}"
-  run_once: true
-
-- name: set cluster initialize fact
-  set_fact:
+- name: 'initialize | set cluster_initialized fact'
+  ansible.builtin.set_fact:
     cluster_initialized: true
   run_once: true
+  when: kubeadm_init.rc == 0
 
-- name: generate kubeadm configuration
-  template:
-    src: kubeadm-init.yml.j2
-    dest: /etc/kubernetes/kubeadm-init.yml
-    mode: 0644
+- name: 'initialize | create kubectl config directory'
+  ansible.builtin.file:
+    path: '/root/.kube/'
+    state: 'directory'
+    owner: 'root'
+    group: 'root'
+    mode: 0750
 
-- name: initialize cluster (with kube-proxy)
-  command:
-    cmd: kubeadm init --config /etc/kubernetes/kubeadm-init.yml --upload-certs
-    creates: /etc/kubernetes/admin.conf
-  when:
-    - cluster_kube_proxy_enabled
-
-- name: initialize cluster (without kube-proxy)
-  command:
-    cmd: kubeadm init --skip-phases=addon/kube-proxy --config /etc/kubernetes/kubeadm-init.yml --upload-certs
-    creates: /etc/kubernetes/admin.conf
-  when:
-    - cluster_kube_proxy_enabled == false
-
-- name: get sha256 of ca certificate
-  openssl_certificate_info:
-    path: /etc/kubernetes/pki/ca.crt
-  register: cluster_ca_cert
-
-- name: set cluster ca cert sha256
-  set_fact:
-    cluster_ca_sha256: "{{ cluster_ca_cert.public_key_fingerprints.sha256 | regex_replace(':') }}"
-  run_once: true
-
-- name: create kubectl config directory
-  file:
-    path: /root/.kube/
-    state: directory
-    owner: root
-    group: root
-    mode: 0755
-
-- name: copy admin.conf to kubectl config directory
-  copy:
-    src: /etc/kubernetes/admin.conf
-    dest: /root/.kube/config
-    owner: root
-    group: root
-    mode: 0755
+- name: 'initialize | copy admin.conf to kubectl config directory'
+  ansible.builtin.copy:
+    src: '/etc/kubernetes/admin.conf'
+    dest: '/root/.kube/config'
+    owner: 'root'
+    group: 'root'
+    mode: 0750
     remote_src: true
     backup: true
 
-- name: Copy Kubernetes config locally
-  fetch:
-    dest: output/k8s-config.yaml
+- name: 'initialize | copy Kubernetes config locally'
+  ansible.builtin.fetch:
+    src: '/etc/kubernetes/admin.conf'
+    dest: 'output/k8s-config.yaml'
     flat: true
-    src: /etc/kubernetes/admin.conf

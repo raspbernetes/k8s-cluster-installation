@@ -1,16 +1,45 @@
 ---
-- name: include token creation tasks
-  include_tasks: token.yml
-  when: not cluster_node_configured
+- name: 'join | upload certificates to API server'
+  ansible.builtin.command: |
+    kubeadm init phase upload-certs --certificate-key {{ kubeadm_certificate_key }} --skip-certificate-key-print --upload-certs
+  delegate_to: '{{ groups["masters"]|first }}'
+  run_once: true
+  when: cluster_initialized is not defined
 
-- name: generate kubeadm join configuration
-  template:
-    src: kubeadm-join.yml.j2
-    dest: /etc/kubernetes/kubeadm-join.yml
-    mode: 0644
-  when: not cluster_node_configured
+- name: 'join | create join token on API server'
+  ansible.builtin.command: |
+    kubeadm token create {{ kubeadm_join_token }}
+    --certificate-key {{ kubeadm_certificate_key }}
+    --ttl 10m
+  delegate_to: '{{ groups["masters"]|first }}'
+  run_once: true
+  when: cluster_initialized is not defined
 
-- name: join node to cluster
-  command:
-    cmd: kubeadm join --config /etc/kubernetes/kubeadm-join.yml
-    creates: /etc/kubernetes/kubelet.conf
+- name: 'join | retrieve cluster ca certificate'
+  ansible.builtin.openssl_certificate_info:
+    path: /etc/kubernetes/pki/ca.crt
+  delegate_to: '{{ groups["masters"]|first }}'
+  register: cluster_ca_cert
+  run_once: true
+
+- name: 'join | set cluster ca cert sa256 fact'
+  ansible.builtin.set_fact:
+    cluster_ca_sha256: '{{ cluster_ca_cert.public_key_fingerprints.sha256 | regex_replace(":") }}'
+  run_once: true
+
+- name: 'join | generate kubeadm join configuration'
+  ansible.builtin.template:
+    src: 'kubeadm-join.yaml.j2'
+    dest: '/etc/kubernetes/kubeadm-join.yaml'
+    mode: 0640
+
+- name: 'join | check/wait for cluster apiserver to be available'
+  ansible.builtin.wait_for:
+    host: '{{ hostvars[groups["masters"]|first]["ansible_default_ipv4"]["address"] }}'
+    port: '{{ cluster_apiserver_bind_port }}'
+    timeout: 180
+
+- name: 'join | add node to cluster'
+  ansible.builtin.command: |
+    kubeadm join --config /etc/kubernetes/kubeadm-join.yaml
+  register: node_joined

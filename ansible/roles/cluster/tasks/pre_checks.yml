@@ -1,6 +1,6 @@
 ---
 - name: 'validate variable : cluster_name'
-  assert:
+  ansible.builtin.assert:
     that:
       - cluster_name | type_debug == 'AnsibleUnicode'
     fail_msg:
@@ -9,7 +9,7 @@
       - "Value is: {{ cluster_name | default('undefined') }}"
 
 - name: 'validate variable : cluster_extra_sans'
-  assert:
+  ansible.builtin.assert:
     that:
       - cluster_extra_sans | type_debug == 'list'
     fail_msg:
@@ -18,7 +18,7 @@
       - "Value is: {{ cluster_extra_sans | default('undefined') }}"
 
 - name: 'validate variable : cluster_control_plane_endpoint'
-  assert:
+  ansible.builtin.assert:
     that:
       - (cluster_control_plane_endpoint | type_debug == 'AnsibleUnicode') or (cluster_control_plane_endpoint | type_debug == 'str')
     fail_msg:
@@ -27,7 +27,7 @@
       - "Value is: {{ cluster_control_plane_endpoint | default('undefined') }}"
 
 - name: 'validate variable : cluster_pod_subnet'
-  assert:
+  ansible.builtin.assert:
     that:
       - cluster_pod_subnet | type_debug == 'AnsibleUnicode'
       - cluster_pod_subnet | ipaddr
@@ -39,7 +39,7 @@
     - cluster_pod_subnet != "" # noqa 602
 
 - name: 'validate variable : cluster_etcd_heartbeat_interval'
-  assert:
+  ansible.builtin.assert:
     that:
       - cluster_etcd_heartbeat_interval | type_debug == 'int'
     fail_msg:
@@ -48,7 +48,7 @@
       - "Value is: {{ cluster_etcd_heartbeat_interval | default('undefined') }}"
 
 - name: 'validate variable : cluster_etcd_election_timeout'
-  assert:
+  ansible.builtin.assert:
     that:
       - cluster_etcd_election_timeout | type_debug == 'int'
     fail_msg:

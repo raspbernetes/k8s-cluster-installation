@@ -1,0 +1,121 @@
+#jinja2:lstrip_blocks: True
+---
+apiVersion: kubeadm.k8s.io/v1beta2
+kind: InitConfiguration
+{% if kubeadm_join_token is defined %}
+bootstrapTokens:
+- token: {{ kubeadm_join_token }}
+  description: "raspbernetes boostrap token"
+  ttl: {{ cluster_kubeadm_token_timeout }}
+{% endif %}
+localAPIEndpoint:
+  advertiseAddress: {{ ansible_default_ipv4.address|default(ansible_all_ipv4_addresses[0]) }}
+  bindPort: {{ cluster_apiserver_bind_port }}
+{% if kubeadm_certificate_key is defined %}
+certificateKey: {{ kubeadm_certificate_key }}
+{% endif %}
+nodeRegistration:
+  {% if inventory_hostname in groups['masters'] and inventory_hostname not in groups['workers'] %}
+  taints:
+  - effect: NoSchedule
+    key: node-role.kubernetes.io/master
+  {% else %}
+  taints: []
+  {% endif %}
+  criSocket: {{ cri_socket }}
+---
+apiVersion: kubeadm.k8s.io/v1beta2
+kind: ClusterConfiguration
+clusterName: {{ cluster_name }}
+certificatesDir: /etc/kubernetes/pki
+apiServer:
+  extraArgs:
+    authorization-mode: {{ cluster_authorization_modes | join(',') }}
+    bind-address: {{ cluster_apiserver_bind_address }}
+    apiserver-count: "{{ cluster_apiserver_count }}"
+    insecure-port: "{{ cluster_apiserver_insecure_port }}"
+    profiling: "{{ cluster_profiling }}"
+    {% if cluster_apiserver_enable_admission_plugins|length > 0 %}
+    enable-admission-plugins: {{ cluster_apiserver_enable_admission_plugins | join(',') }}
+    {% endif %}
+    {% if cluster_apiserver_disable_admission_plugins|length > 0 %}
+    disable-admission-plugins: {{ cluster_apiserver_disable_admission_plugins | join(',') }}
+    {% endif %}
+    {% if cluster_apiserver_enable_audit %}
+    audit-log-path: "{{ cluster_audit_log_path }}"
+    audit-log-maxage: "{{ cluster_audit_log_maxage }}"
+    audit-log-maxbackup: "{{ cluster_audit_log_maxbackup }}"
+    audit-log-maxsize: "{{ cluster_audit_log_maxsize }}"
+    {% endif %}
+    request-timeout: "1m0s"
+    service-account-lookup: "true"
+    {% if cluster_tls_min_version is defined %}
+    tls-min-version: {{ cluster_tls_min_version }}
+    {% endif %}
+    {% if cluster_tls_cipher_suites is defined %}
+    tls-cipher-suites: {{ cluster_tls_cipher_suites | join(',') }}
+    {% endif %}
+  certSANs:
+  {% for san in cluster_extra_sans %}
+  - {{ san }}
+  {% endfor %}
+  timeoutForControlPlane: "4m0s"
+etcd:
+  local:
+    {% if cluster_extra_sans | length > 0 %}
+    serverCertSANs:
+      {% for san in cluster_extra_sans %}
+      - {{ san }}
+      {% endfor %}
+    {% endif %}
+    dataDir: {{ cluster_etcd_datadir }}
+    extraArgs:
+      client-cert-auth: "true"
+      peer-client-cert-auth: "true"
+      peer-auto-tls: "false"
+      heartbeat-interval: "{{ cluster_etcd_heartbeat_interval }}"
+      election-timeout: "{{ cluster_etcd_election_timeout }}"
+      snapshot-count: "{{ cluster_etcd_snapshot_count }}"
+imageRepository: {{ cluster_image_repository }}
+networking:
+  dnsDomain: cluster.local
+  serviceSubnet: {{ cluster_service_subnet }}
+  podSubnet: {{ cluster_pod_subnet }}
+kubernetesVersion: {{ cluster_kubernetes_version }}
+controlPlaneEndpoint: {{ cluster_control_plane_endpoint }}
+controllerManager:
+  extraArgs:
+    bind-address: {{ cluster_controller_manager_bind_address }}
+    terminated-pod-gc-threshold: "{{ cluster_controller_manager_terminated_pod_gc_threshold }}"
+    profiling: "{{ cluster_profiling }}"
+    use-service-account-credentials: "true"
+    feature-gates: "RotateKubeletServerCertificate=true"
+    {% if cluster_tls_min_version is defined %}
+    tls-min-version: {{ cluster_tls_min_version }}
+    {% endif %}
+    {% if cluster_tls_cipher_suites is defined %}
+    tls-cipher-suites: {{ cluster_tls_cipher_suites | join(',') }}
+    {% endif %}
+scheduler:
+  extraArgs:
+    bind-address: {{ cluster_scheduler_bind_address }}
+    profiling: "{{ cluster_profiling }}"
+    {% if cluster_tls_min_version is defined %}
+    tls-min-version: {{ cluster_tls_min_version }}
+    {% endif %}
+    {% if cluster_tls_cipher_suites is defined %}
+    tls-cipher-suites: {{ cluster_tls_cipher_suites | join(',') }}
+    {% endif %}
+---
+apiVersion: kubelet.config.k8s.io/v1beta1
+kind: KubeletConfiguration
+cgroupDriver: {{ cluster_cgroup_driver }}
+---
+apiVersion: kubeproxy.config.k8s.io/v1alpha1
+kind: KubeProxyConfiguration
+bindAddress: {{ cluster_kube_proxy_bind_address }}
+clusterCIDR: {{ cluster_pod_subnet }}
+mode: {{ cluster_kube_proxy_mode }}
+ipvs:
+  scheduler: {{ cluster_kube_proxy_scheduler }}
+metricsBindAddress: {{ cluster_kube_proxy_metrics_bind_address }}
