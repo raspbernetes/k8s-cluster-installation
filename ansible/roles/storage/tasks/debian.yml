@@ -13,13 +13,17 @@
 
 - name: modprobe iscsi modules on reboot
   copy:
-    src: openebs/iscsi-tcp.conf
-    dest: '/etc/modules-load.d/openebs-iscsi.conf'
+    content: '{{ item }}'
+    dest: '/etc/modules-load.d/{{ item }}.conf'
     owner: root
     group: root
     mode: '0644'
+  loop:
+  - iscsi_tcp
 
 - name: load iscsi_tcp
   modprobe:
-    name: iscsi_tcp
+    name: '{{ item }}'
     state: present
+  loop:
+  - iscsi_tcp
