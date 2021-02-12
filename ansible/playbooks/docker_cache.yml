@@ -8,8 +8,11 @@
     - name: "Run cri role before including docker_cache vars"
       import_role:
         name: cri
+      when: docker_cache_enable
     - name: "Add group variables"
       include_vars: "../group_vars/docker_cache.yml"
+      when: docker_cache_enable
     - name: "Run docker_cache role"
       import_role:
         name: docker_cache
+      when: docker_cache_enable
