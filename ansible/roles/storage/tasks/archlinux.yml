@@ -8,7 +8,7 @@
 
 - name: modprobe iscsi modules on reboot
   copy:
-    src: openebs/iscsi_openebs.conf
+    src: openebs/iscsi-openebs.conf
     dest: '/etc/modules-load.d/openebs-iscsi.conf'
     owner: root
     group: root
