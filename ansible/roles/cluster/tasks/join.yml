@@ -2,7 +2,7 @@
 - name: 'join | upload certificates to API server'
   ansible.builtin.command: |
     kubeadm init phase upload-certs --certificate-key {{ kubeadm_certificate_key }} --skip-certificate-key-print --upload-certs
-  delegate_to: '{{ groups["masters"]|first }}'
+  delegate_to: '{{ groups["controlplane"]|first }}'
   run_once: true
   when: cluster_initialized is not defined
 
@@ -11,14 +11,14 @@
     kubeadm token create {{ kubeadm_join_token }}
     --certificate-key {{ kubeadm_certificate_key }}
     --ttl 10m
-  delegate_to: '{{ groups["masters"]|first }}'
+  delegate_to: '{{ groups["controlplane"]|first }}'
   run_once: true
   when: cluster_initialized is not defined
 
 - name: 'join | retrieve cluster ca certificate'
   ansible.builtin.openssl_certificate_info:
     path: /etc/kubernetes/pki/ca.crt
-  delegate_to: '{{ groups["masters"]|first }}'
+  delegate_to: '{{ groups["controlplane"]|first }}'
   register: cluster_ca_cert
   run_once: true
 
@@ -35,7 +35,7 @@
 
 - name: 'join | check/wait for cluster apiserver to be available'
   ansible.builtin.wait_for:
-    host: '{{ hostvars[groups["masters"]|first]["ansible_default_ipv4"]["address"] }}'
+    host: '{{ hostvars[groups["controlplane"]|first]["ansible_default_ipv4"]["address"] }}'
     port: '{{ cluster_apiserver_bind_port }}'
     timeout: 180
 

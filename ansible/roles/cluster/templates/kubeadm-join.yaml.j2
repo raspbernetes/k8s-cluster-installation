@@ -15,7 +15,7 @@ discovery:
     unsafeSkipCAVerification: true
     {% endif %}
   timeout: 5m0s
-{% if inventory_hostname in groups['masters'] %}
+{% if inventory_hostname in groups['controlplane'] %}
 controlPlane:
   localAPIEndpoint:
     advertiseAddress: {{ ansible_default_ipv4.address|default(ansible_all_ipv4_addresses[0]) }}

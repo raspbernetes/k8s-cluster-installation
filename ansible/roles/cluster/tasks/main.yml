@@ -20,7 +20,7 @@
   ansible.builtin.set_fact:
     cluster_control_plane_endpoint: '{{ keepalived_vip }}:8443'
   run_once: true
-  delegate_to: '{{ groups["masters"]|first }}'
+  delegate_to: '{{ groups["controlplane"]|first }}'
   when:
   - cluster_control_plane_endpoint | length < 1
 
@@ -48,14 +48,14 @@
 - name: 'pre-flight | generate certificate-key used to encrypt the certificates'
   ansible.builtin.command: |
     {{ kubeadm_certs_command }} certs certificate-key
-  delegate_to: '{{ groups["masters"]|first }}'
+  delegate_to: '{{ groups["controlplane"]|first }}'
   run_once: true
   register: generated_certificate_key
 
 - name: 'pre-flight | generate randomized token'
   ansible.builtin.command: |
     kubeadm token generate
-  delegate_to: '{{ groups["masters"]|first }}'
+  delegate_to: '{{ groups["controlplane"]|first }}'
   run_once: true
   register: generated_token
 
@@ -68,11 +68,11 @@
 - name: 'initialize | perform cluster initialization on primary control node'
   include_tasks: 'initialize.yml'
   when:
-  - inventory_hostname == groups["masters"]|first
+  - inventory_hostname == groups["controlplane"]|first
   - not kubelet_config.stat.exists
 
 - name: 'join | perform cluster join on remaining cluster nodes'
   include_tasks: 'join.yml'
   when:
-  - inventory_hostname != groups["masters"]|first
+  - inventory_hostname != groups["controlplane"]|first
   - not kubelet_config.stat.exists
