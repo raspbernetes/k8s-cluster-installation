@@ -1,0 +1,40 @@
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: haproxy
+  namespace: kube-system
+  creationTimestamp: null
+  labels:
+    component: haproxy
+    tier: control-plane
+  annotations:
+    haproxy-cfg-checksum: "{{ haproxy_config_stat.stat.checksum }}"
+spec:
+  containers:
+  - image: {{ haproxy_image_repo }}:{{ haproxy_image_tag }}
+    imagePullPolicy: IfNotPresent
+    name: haproxy
+    resources: {}
+    livenessProbe:
+      httpGet:
+        path: /healthz
+        port: {{ apiserver_frontend_port }}
+        scheme: HTTPS
+    readinessProbe:
+      httpGet:
+        path: /healthz
+        port: {{ apiserver_frontend_port }}
+        scheme: HTTPS
+    volumeMounts:
+    - mountPath: /usr/local/etc/haproxy/
+      name: haproxyconf
+      readOnly: true
+  hostNetwork: true
+  dnsPolicy: ClusterFirstWithHostNet
+  priorityClassName: system-node-critical
+  volumes:
+  - hostPath:
+      path: {{ haproxy_config_dir }}
+    name: haproxyconf
+status: {}
