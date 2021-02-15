@@ -1,8 +1,8 @@
 vrrp_instance VI_1 {
-    state {{ 'MASTER' if hostvars[groups['masters'][0]] else 'BACKUP' }}
+    state {{ 'MASTER' if inventory_hostname in groups['controlplane']|first else 'BACKUP' }}
     interface {{ keepalived_interface }}
     virtual_router_id 1
-    priority {{ '150' if hostvars[groups['masters'][0]] else '100' }}
+    priority {{ '150' if inventory_hostname in groups['controlplane']|first else '100' }}
     advert_int 1
     authentication {
         auth_type PASS
