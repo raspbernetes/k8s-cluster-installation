@@ -1,23 +1,23 @@
+---
 # This role implements the Software Load Balancing approach described at this location
 # https://github.com/kubernetes/kubeadm/blob/master/docs/ha-considerations.md#options-for-software-load-balancing
----
-- name: 'haproxy | preflight checks'
+- name: 'preflight checks'
   ansible.builtin.include_tasks: 'pre_checks.yml'
 
-- name: configure necessary keepalived sysctl configuration
+- name: 'configure necessary haproxy sysctl configuration'
   ansible.builtin.sysctl:
     name: 'net.ipv4.ip_nonlocal_bind'
-    value: 1
+    value: '1'
     state: 'present'
     sysctl_file: '/etc/sysctl.d/55-haproxy.conf'
     sysctl_set: true
 
-- name: 'haproxy | configure haproxy on control plane nodes'
+- name: 'packages | configure haproxy on control plane nodes'
   ansible.builtin.include_tasks: 'packages.yml'
   when:
   - haproxy_install_mode == 'package'
 
-- name: 'haproxy | configure haproxy as a static pod within the cluster'
+- name: 'manifests | configure haproxy as a static pod within the cluster'
   ansible.builtin.include_tasks: 'manifests.yml'
   when:
   - haproxy_install_mode == 'manifest'

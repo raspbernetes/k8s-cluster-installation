@@ -9,23 +9,26 @@ metadata:
     component: haproxy
     tier: control-plane
   annotations:
-    haproxy-cfg-checksum: "{{ haproxy_config_stat.stat.checksum }}"
+    haproxy-config-checksum: "{{ haproxy_config_stat.stat.checksum }}"
 spec:
   containers:
   - image: {{ haproxy_image_repo }}:{{ haproxy_image_tag }}
     imagePullPolicy: IfNotPresent
     name: haproxy
-    resources: {}
+    resources:
+      requests:
+        cpu: {{ haproxy_cpu_requests }}
+        memory: {{ haproxy_memory_requests }}
+    {% if haproxy_healthcheck_port is defined -%}
     livenessProbe:
       httpGet:
         path: /healthz
-        port: {{ apiserver_frontend_port }}
-        scheme: HTTPS
+        port: {{ haproxy_healthcheck_port }}
     readinessProbe:
       httpGet:
         path: /healthz
-        port: {{ apiserver_frontend_port }}
-        scheme: HTTPS
+        port: {{ haproxy_healthcheck_port }}
+    {% endif -%}
     volumeMounts:
     - mountPath: /usr/local/etc/haproxy/
       name: haproxyconf

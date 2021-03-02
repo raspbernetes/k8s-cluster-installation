@@ -1,5 +1,5 @@
 ---
-- name: 'haproxy | ensure kubernetes manifests directory "{{ cluster_kubernetes_manifests_path }}" exists'
+- name: 'manifests | ensure kubernetes manifests directory "{{ cluster_kubernetes_manifests_path }}" exists'
   ansible.builtin.file:
     path: '{{ cluster_kubernetes_manifests_path }}'
     state: 'directory'
@@ -7,7 +7,7 @@
     group: 'root'
     mode: 0700
 
-- name: 'haproxy | ensure haproxy config directory "{{ haproxy_config_dir }}" exists'
+- name: 'manifests | ensure haproxy config directory "{{ haproxy_config_dir }}" exists'
   ansible.builtin.file:
     path: '{{ haproxy_config_dir }}'
     state: 'directory'
@@ -15,7 +15,7 @@
     group: 'root'
     mode: 0700
 
-- name: 'haproxy | ensure haproxy configuration file is up to date'
+- name: 'manifests | ensure haproxy configuration file is up to date'
   ansible.builtin.template:
     src: 'haproxy.cfg.j2'
     dest: '{{ haproxy_config_dir }}/haproxy.cfg'
@@ -24,7 +24,7 @@
     mode: 0644
     backup: true
 
-- name: 'haproxy | get current checksum of haproxy config file'
+- name: 'manifests | get current checksum of haproxy config file'
   ansible.builtin.stat:
     path: '{{ haproxy_config_dir }}/haproxy.cfg'
     get_attributes: false
@@ -32,11 +32,10 @@
     get_mime: false
   register: haproxy_config_stat
 
-- name: 'haproxy | write haproxy static pod manifest'
+- name: 'manifests | write haproxy static pod manifest'
   ansible.builtin.template:
     src: 'haproxy.yaml.j2'
     dest: '{{ cluster_kubernetes_manifests_path }}/haproxy.yaml'
     owner: 'root'
     group: 'root'
     mode: 0644
-    backup: true

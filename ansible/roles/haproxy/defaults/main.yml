@@ -6,6 +6,11 @@ haproxy_install_mode: 'manifest'
 haproxy_config_dir: '/etc/haproxy'
 
 haproxy_image_repo: 'haproxy'
-haproxy_image_tag: '2.2.6-apline'
+haproxy_image_tag: '2.3.5-alpine'
 
-apiserver_frontend_port: 6443
+# apiserver loadbalancer
+haproxy_memory_requests: 32M
+haproxy_cpu_requests: 25m
+
+haproxy_keepalive_timeout: 5m
+haproxy_healthcheck_port: 8401
