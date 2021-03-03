@@ -1,0 +1,18 @@
+---
+
+# Component versions supported by this role
+kubeflare_ansible_min_version: '2.9.16'
+
+# Valid cluster states
+kubeflare_states:
+- configured
+- unconfigured
+
+kubeflare_kernel:
+  modules:
+  - br_netfilter
+  - overlay
+  sysctl:
+  - { name: net.bridge.bridge-nf-call-iptables, value: 1 }
+  - { name: net.bridge.bridge-nf-call-ip6tables, value: 1 }
+  - { name: net.ipv4.ip_forward, value: 1 }
