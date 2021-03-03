@@ -1,0 +1,24 @@
+---
+
+- name: 'facts | determine if cluster has been configured'
+  ansible.builtin.stat:
+    path: '/var/lib/kubelet/config.yaml'
+  register: kubelet_config
+
+- name: 'facts | set kubeflare_state fact for cluster state'
+  ansible.builtin.set_fact:
+    kubeflare_state: >-
+      {%- if kubelet_config.stat.exists -%}configured{%- else -%}unconfigured{%- endif -%}
+
+- name: 'facts | set the control plane configuration'
+  ansible.builtin.set_fact:
+    kubeflare_controlplane_list: '{{ groups["controlplane"] }}'
+  run_once: true
+
+- name: 'facts | set cluster control plane endpoint'
+  ansible.builtin.set_fact:
+    cluster_control_plane_endpoint: '{{ keepalived_vip }}:8443'
+  run_once: true
+  delegate_to: '{{ groups["controlplane"]|first }}'
+  when:
+  - cluster_control_plane_endpoint | length < 1
