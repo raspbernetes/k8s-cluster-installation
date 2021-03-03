@@ -1,0 +1,5 @@
+{{ ansible_managed|comment }}
+
+{% for item in kubeflare_kernel.sysctl %}
+{{ item.name }}={{ item.value }}
+{% endfor %}
