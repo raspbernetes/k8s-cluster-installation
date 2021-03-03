@@ -1,4 +1,15 @@
 ---
+
+- name: 'add apt key for openshift kubernetes module (1/2)'
+  ansible.builtin.apt_key:
+    keyserver: keyserver.ubuntu.com
+    id: ADF016E51783213C8A8C831A1348C52605DB2FE6
+
+- name: 'add OBS repo for openshift kubernetes module (2/2)'
+  ansible.builtin.apt_repository:
+    repo: deb http://download.opensuse.org/repositories/home:/anthr76:/kubernetes/Ubuntu_20.04/ /
+    state: present
+
 - name: apt-get upgrade
   apt:
     upgrade: full
@@ -24,21 +35,6 @@
   register: apt_install_common
   retries: 5
   until: apt_install_common is success
-
-- name: 'add apt key for openshift kubernetes module (1/3)'
-  ansible.builtin.apt_key:
-    keyserver: keyserver.ubuntu.com
-    id: ADF016E51783213C8A8C831A1348C52605DB2FE6
-
-- name: 'add OBS repo for openshift kubernetes module (2/3)'
-  ansible.builtin.apt_repository:
-    repo: deb http://download.opensuse.org/repositories/home:/anthr76:/kubernetes/Ubuntu_20.04/ /
-    state: present
-
-- name: 'install openshift kubernetes module (3/3)'
-  apt:
-    name: python-openshift
-    update_cache: yes
 
 - name: install and configure log2ram
   include_tasks: log2ram.yml
