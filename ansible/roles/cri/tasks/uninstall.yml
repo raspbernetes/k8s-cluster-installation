@@ -27,7 +27,7 @@
   ignore_errors: true
 
 - name: 'uninstall | remove all cri containers'
-  ansible.builtin.command: |
+  command: |
     /usr/local/bin/crictl rm -a -f
   register: remove_all_containers
   retries: 5
@@ -54,7 +54,7 @@
   ignore_errors: true
 
 - name: 'uninstall | remove all containerd pods'
-  ansible.builtin.command: |
+  command: |
     /usr/local/bin/crictl rmp -a -f
   register: remove_all_pods
   retries: 5
