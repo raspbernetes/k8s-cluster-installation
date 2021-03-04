@@ -1,17 +1,16 @@
 ---
-
 cluster_name: kubernetes
 cluster_extra_sans:
-- '{{ keepalived_vip }}'
-cluster_control_plane_endpoint: '{{ keepalived_vip }}:8443'
+  - "{{ keepalived_vip }}"
+cluster_control_plane_endpoint: "{{ keepalived_vip }}:8443"
 
-# Specify the Kubernetes version, current release is v1.20.0
-cluster_kubernetes_version: 'v1.20.2'
+# Specify the Kubernetes version, current release is v1.20.4
+cluster_kubernetes_version: "v1.20.4"
 
 cluster_apiserver_enable_admission_plugins:
-- 'NodeRestriction'
+  - "NodeRestriction"
 
-cluster_cgroup_driver: 'systemd'
+cluster_cgroup_driver: "systemd"
 
 # Profiling; Enable profiling via web interface host:port/debug/pprof/
 cluster_profiling: false
@@ -20,11 +19,11 @@ cluster_profiling: false
 # provides a maximum of 64 nodes in a cluster and 254 pods per node.
 
 # Kubernetes internal network for services, *must* be an unused block of space.
-cluster_service_subnet: '10.144.0.0/18'
+cluster_service_subnet: "10.144.0.0/18"
 
 # Kubernetes internal network. IP's for pods will be drawn from this address
 # space. *must* be unused in your network infrastructure.
-cluster_pod_subnet: '10.144.64.0/18'
+cluster_pod_subnet: "10.144.64.0/18"
 
 # This sets the network node allocation size. Each node in the cluster is
 # assigned a subnet of this size.
@@ -33,7 +32,7 @@ cluster_node_network_prefix: 24
 # Cluster Authorization Modes for the Kubernetes Cluster
 # Available Options: 'AlwaysAllow','AlwaysDeny','Node' and 'RBAC'
 # Order is relevant
-cluster_authorization_modes: ['Node', 'RBAC']
+cluster_authorization_modes: ["Node", "RBAC"]
 
 # Vars for discoverying kubernetes api endpoints
 # will refactor to eliminate this variable
@@ -46,4 +45,4 @@ cluster_etcd_election_timeout: 1250
 cluster_etcd_snapshot_count: 5000
 
 # Kube Proxy mode either ipvs or iptables; Default iptables
-cluster_kube_proxy_mode: 'ipvs'
+cluster_kube_proxy_mode: "ipvs"

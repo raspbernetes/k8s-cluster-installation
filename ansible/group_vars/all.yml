@@ -16,9 +16,9 @@
 ####
 # Role - kubernetes
 ####
-# kubernetes_kubectl_version: 1.20.2-00
-# kubernetes_kubelet_version: 1.20.2-00
-# kubernetes_kubeadm_version: 1.20.2-00
+# kubernetes_kubectl_version: 1.20.4-00
+# kubernetes_kubelet_version: 1.20.4-00
+# kubernetes_kubeadm_version: 1.20.4-00
 
 ####
 # Role - keepalived
@@ -29,7 +29,7 @@
 ####
 # Role - cri
 ####
-# cri_plugin: containerd
+cri_plugin: containerd
 # cri_containerd_version: '1.4.3'
 
 ####
@@ -50,7 +50,7 @@
 ####
 # Role: Storage
 ####
-# openebs_enabled: false
+# storage_enabled: true
 
 ####
 # Role: docker_cache
@@ -63,4 +63,4 @@
 # Cloudflare options for exposing Kubernetes services via HTTPS/SSH
 # cloudflared_enabled: false
 # cloudflared_kube_api_server_dns: ''
-# cloudflared_version: 2020.11.11
+# cloudflared_version: 2021.2.5

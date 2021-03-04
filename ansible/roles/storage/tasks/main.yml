@@ -5,4 +5,4 @@
 
 - name: include family specific tasks
   include_tasks: "{{ ansible_os_family | lower }}.yml"
-  when: openebs_enabled
+  when: storage_enabled

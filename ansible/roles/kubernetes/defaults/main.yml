@@ -1,4 +1,4 @@
 ---
-kubernetes_kubelet_version: 1.20.2-00
-kubernetes_kubeadm_version: 1.20.2-00
-kubernetes_kubectl_version: 1.20.2-00
+kubernetes_kubelet_version: 1.20.4-00
+kubernetes_kubeadm_version: 1.20.4-00
+kubernetes_kubectl_version: 1.20.4-00

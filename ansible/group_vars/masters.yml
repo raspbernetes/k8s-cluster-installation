@@ -44,4 +44,4 @@
 ####
 # cloudflared_enabled: false
 # cloudflared_kube_api_server_dns: ''
-# cloudflared_version: 2020.11.11
+# cloudflared_version: 2021.2.5

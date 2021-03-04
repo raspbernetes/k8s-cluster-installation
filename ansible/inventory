@@ -34,4 +34,4 @@ k8s-controlplane-03
 
 [workers]
 k8s-node-01
-k8s-node-01
+k8s-node-02
