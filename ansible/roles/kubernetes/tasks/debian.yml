@@ -32,12 +32,12 @@
 
 - name: add apt-mark hold to avoid version skew issues. (4/4)
   dpkg_selections:
-    name: "{{ item }}"
+    name: '{{ item }}'
     selection: hold
   loop:
-    - "kubectl"
-    - "kubelet"
-    - "kubeadm"
+    - 'kubectl'
+    - 'kubelet'
+    - 'kubeadm'
 
 - name: add apt signing key for helm (1/3)
   apt_key:
@@ -65,10 +65,10 @@
 # TODO: Only execute task when using RPi
 - name: enable required cgroup features
   lineinfile:
-    path: "{{ common_rpi_cmd_file }}"
+    path: '{{ common_rpi_cmd_file }}'
     state: present
     backrefs: true
-    regexp: "^(.*fixrtc)$"
+    regexp: '^(.*fixrtc)$'
     line: '\1 cgroup_enable=cpuset cgroup_memory=1 cgroup_enable=memory'
   notify: reboot hosts
   when: ansible_architecture | regex_search('arm|aarch')
@@ -80,14 +80,14 @@
 - name: Update bridged IPv4 traffic to iptables' chains
   sysctl:
     name: net.bridge.bridge-nf-call-iptables
-    value: "1"
+    value: '1'
     state: present
     sysctl_file: /etc/sysctl.d/99-kubernetes-cri.conf
 
 - name: Update bridged IPv4 traffic to ip6tables' chains
   sysctl:
     name: net.bridge.bridge-nf-call-ip6tables
-    value: "1"
+    value: '1'
     state: present
     sysctl_file: /etc/sysctl.d/99-kubernetes-cri.conf
 
@@ -96,6 +96,6 @@
 - name: Update bridged IPv4 traffic forwarding
   sysctl:
     name: net.ipv4.ip_forward
-    value: "1"
+    value: '1'
     state: present
     sysctl_file: /etc/sysctl.d/99-kubernetes-cri.conf

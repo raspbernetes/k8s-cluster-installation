@@ -5,9 +5,9 @@
   become: true
   gather_facts: true
   vars_prompt:
-    name: "nuke_confirmation"
+    name: 'nuke_confirmation'
     prompt: "Are you sure you want to run this playbook? This will DESTROY your cluster. Answer with 'YES'"
-    default: "NO"
+    default: 'NO'
     private: false
   any_errors_fatal: true
   order: reverse_inventory
@@ -24,58 +24,58 @@
       retries: 5
       until: kubeadm_reset is success
 
-    - name: "ensure cluster services are stopped"
+    - name: 'ensure cluster services are stopped'
       ansible.builtin.service:
-        name: "kubelet"
-        state: "stopped"
+        name: 'kubelet'
+        state: 'stopped'
       failed_when: false
 
-    - name: "remove service dropins"
+    - name: 'remove service dropins'
       ansible.builtin.file:
-        path: "/etc/systemd/system/{{ item }}"
-        state: "absent"
+        path: '/etc/systemd/system/{{ item }}'
+        state: 'absent'
       loop:
         - kubelet.service.d/override.conf
         - kubelet.service.d/12-after-docker.conf
       register: removed_services
 
-    - name: "remove cluster default environtment files"
+    - name: 'remove cluster default environtment files'
       ansible.builtin.file:
-        path: "/etc/default/{{ item }}"
-        state: "absent"
+        path: '/etc/default/{{ item }}'
+        state: 'absent'
       loop:
         - kubelet
       register: removed_defaults
 
-    - name: "reload systemd"
+    - name: 'reload systemd'
       ansible.builtin.systemd:
         daemon_reload: true
       when: removed_services.changed
 
-    - name: "ensure calico link-netns devices have been removed"
+    - name: 'ensure calico link-netns devices have been removed'
       ansible.builtin.shell: |
         set -o pipefail && ip -all netns delete
       args:
-        executable: "/bin/bash"
+        executable: '/bin/bash'
       when:
         - cni_plugin == 'calico'
       ignore_errors: true
 
-    - name: "uninstall | check if crictl is present"
+    - name: 'uninstall | check if crictl is present'
       ansible.builtin.stat:
-        path: "/usr/local/bin/crictl"
+        path: '/usr/local/bin/crictl'
       register: crictl
 
-    - name: "uninstall | check if containerd is running"
+    - name: 'uninstall | check if containerd is running'
       ansible.builtin.stat:
-        path: "/run/containerd/containerd.sock"
+        path: '/run/containerd/containerd.sock'
       register: containerd_sock
 
-    - name: "uninstall | stop all cri containers"
+    - name: 'uninstall | stop all cri containers'
       ansible.builtin.shell: |
         set -o pipefail && /usr/local/bin/crictl ps -q | xargs -r /usr/local/bin/crictl -t 60s stop
       args:
-        executable: "/bin/bash"
+        executable: '/bin/bash'
       register: stop_all_containers
       retries: 5
       until: stop_all_containers.rc == 0
@@ -86,7 +86,7 @@
         - cri_plugin == 'containerd'
       ignore_errors: true
 
-    - name: "uninstall | remove all cri containers"
+    - name: 'uninstall | remove all cri containers'
       ansible.builtin.command: |
         /usr/local/bin/crictl rm -a -f
       register: remove_all_containers
@@ -99,11 +99,11 @@
         - cri_plugin == 'containerd'
       ignore_errors: true
 
-    - name: "uninstall | stop all containerd pods"
+    - name: 'uninstall | stop all containerd pods'
       ansible.builtin.shell: |
         set -o pipefail && /usr/local/bin/crictl pods -q | xargs -r /usr/local/bin/crictl -t 60s stopp
       args:
-        executable: "/bin/bash"
+        executable: '/bin/bash'
       register: stop_all_pods
       retries: 5
       until: stop_all_pods.rc == 0
@@ -114,7 +114,7 @@
         - cri_plugin == 'containerd'
       ignore_errors: true
 
-    - name: "uninstall | remove all containerd pods"
+    - name: 'uninstall | remove all containerd pods'
       ansible.builtin.command: |
         /usr/local/bin/crictl rmp -a -f
       register: remove_all_pods
@@ -128,42 +128,42 @@
       ignore_errors: true
 
     # Uninstall ContainerD from Ubuntu/Debian platforms
-    - name: "uninstall containerd on debian based platforms"
+    - name: 'uninstall containerd on debian based platforms'
       block:
-        - name: "uninstall | stop containerd runtime"
+        - name: 'uninstall | stop containerd runtime'
           ansible.builtin.systemd:
-            name: "containerd"
+            name: 'containerd'
             state: stopped
             enabled: false
           when: containerd_sock.stat.exists
-        - name: "uninstall | uninstall containerd package"
+        - name: 'uninstall | uninstall containerd package'
           ansible.builtin.package:
             name: containerd.io
-            state: "absent"
-        - name: "uninstall | remove containerd apt pin"
+            state: 'absent'
+        - name: 'uninstall | remove containerd apt pin'
           ansible.builtin.file:
-            path: "/etc/apt/preferences.d/containerd"
-            state: "absent"
-        - name: "uninstall | ensure containerd configuration directory has been removed"
+            path: '/etc/apt/preferences.d/containerd'
+            state: 'absent'
+        - name: 'uninstall | ensure containerd configuration directory has been removed'
           ansible.builtin.file:
-            path: "/etc/containerd"
-            state: "absent"
+            path: '/etc/containerd'
+            state: 'absent'
       when:
         - ansible_os_family|lower == 'debian'
         - cri_plugin == 'containerd'
 
     # Archlinux uninstallation of containerd package
-    - name: "uninstall | remove containerd package"
+    - name: 'uninstall | remove containerd package'
       pacman:
-        name: "containerd"
-        state: "absent"
+        name: 'containerd'
+        state: 'absent'
       when:
         - ansible_os_family|lower == 'archlinux'
         - cri_plugin == 'containerd'
 
     - name: reset iptables and ipvs
       command: # noqa 301
-        cmd: "{{ item }}"
+        cmd: '{{ item }}'
       loop:
         - iptables -P INPUT ACCEPT
         - iptables -P FORWARD ACCEPT
@@ -182,12 +182,12 @@
 
     - name: remove apt-mark hold
       dpkg_selections:
-        name: "{{ item }}"
+        name: '{{ item }}'
         selection: purge
       loop:
-        - "kubectl"
-        - "kubelet"
-        - "kubeadm"
+        - 'kubectl'
+        - 'kubelet'
+        - 'kubeadm'
       when: ansible_os_family | lower == 'debian'
 
     # Issue caused when OpenEBS hasn't grafefully performed garbage collection when cluster is nuked.
@@ -198,7 +198,7 @@
         path: /var/openebs
         state: absent
 
-    - name: "reboot hosts"
+    - name: 'reboot hosts'
       reboot:
-        msg: "hosts are being rebooted"
-        reboot_timeout: "{{ reboot_timeout | default(600) }}"
+        msg: 'hosts are being rebooted'
+        reboot_timeout: '{{ reboot_timeout | default(600) }}'
