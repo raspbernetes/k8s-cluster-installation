@@ -4,80 +4,70 @@
 
 - include_tasks: 'validate/pre-flight.yml'
 
-- name: 'pre-flight | check if kubectl bash completion is configured'
-  ansible.builtin.stat:
-    path: '/etc/bash_completion.d/kubectl.sh'
-  register: kubectl_bash_completion
+- include_tasks: 'configure/configure-nodes.yml'
 
-- name: 'pre-flight | add kubectl bash completion'
-  ansible.builtin.shell: |
-    kubectl completion bash > /etc/bash_completion.d/kubectl.sh
-  ignore_errors: true
-  when:
-  - not kubectl_bash_completion.stat.exists
+# The Playbook goes like so
+# - common
+# - container-runtime
+# - kubernetes installation
+# - kubernetes configuration; including keepalived, haproxy
+# - cluster init
+# - cluster join
 
-- name: 'pre-flight | set kubectl bash completion file permissions'
-  ansible.builtin.file:
-    path: '/etc/bash_completion.d/kubectl.sh'
-    owner: 'root'
-    group: 'root'
-    mode: 0755
-  ignore_errors: true
+# # The cluster version and the kubeadm version can be different
+# - name: 'pre-flight | determine kubeadm version installed'
+#   ansible.builtin.command: |
+#     /usr/bin/kubeadm version -o short
+#   register: kubeadm_version
+#   changed_when: false
+#   run_once: true
 
-# The cluster version and the kubeadm version can be different
-- name: 'pre-flight | determine kubeadm version installed'
-  ansible.builtin.command: |
-    /usr/bin/kubeadm version -o short
-  register: kubeadm_version
-  changed_when: false
-  run_once: true
+# - name: 'pre-flight | determine kubeadm capabilities'
+#   ansible.builtin.set_fact:
+#     kubeadm_certs_command: >-
+#       {%- if kubeadm_version.stdout.split(".")[1]|int < 20 -%}
+#       kubeadm alpha
+#       {%- else -%}
+#       kubeadm
+#       {%- endif -%}
+#   run_once: true
+#   when:
+#   - kubeadm_version is defined
 
-- name: 'pre-flight | determine kubeadm capabilities'
-  ansible.builtin.set_fact:
-    kubeadm_certs_command: >-
-      {%- if kubeadm_version.stdout.split(".")[1]|int < 20 -%}
-      kubeadm alpha
-      {%- else -%}
-      kubeadm
-      {%- endif -%}
-  run_once: true
-  when:
-  - kubeadm_version is defined
+# - name: 'pre-flight | generate certificate-key used to encrypt the certificates'
+#   ansible.builtin.command: |
+#     {{ kubeadm_certs_command }} certs certificate-key
+#   delegate_to: '{{ groups["controlplane"]|first }}'
+#   run_once: true
+#   register: generated_certificate_key
+#   when:
+#   - kubeflare_state == 'unconfigured'
 
-- name: 'pre-flight | generate certificate-key used to encrypt the certificates'
-  ansible.builtin.command: |
-    {{ kubeadm_certs_command }} certs certificate-key
-  delegate_to: '{{ groups["controlplane"]|first }}'
-  run_once: true
-  register: generated_certificate_key
-  when:
-  - kubeflare_state == 'unconfigured'
+# - name: 'pre-flight | generate randomized token'
+#   ansible.builtin.command: |
+#     kubeadm token generate
+#   delegate_to: '{{ groups["controlplane"]|first }}'
+#   run_once: true
+#   register: generated_token
+#   when:
+#   - kubeflare_state == 'unconfigured'
 
-- name: 'pre-flight | generate randomized token'
-  ansible.builtin.command: |
-    kubeadm token generate
-  delegate_to: '{{ groups["controlplane"]|first }}'
-  run_once: true
-  register: generated_token
-  when:
-  - kubeflare_state == 'unconfigured'
+# - name: 'pre-flight | set kubeadm token and certificate-key facts'
+#   ansible.builtin.set_fact:
+#     kubeadm_certificate_key: '{{ generated_certificate_key.stdout }}'
+#     kubeadm_join_token: '{{ generated_token.stdout }}'
+#   run_once: true
+#   when:
+#   - kubeflare_state == 'unconfigured'
 
-- name: 'pre-flight | set kubeadm token and certificate-key facts'
-  ansible.builtin.set_fact:
-    kubeadm_certificate_key: '{{ generated_certificate_key.stdout }}'
-    kubeadm_join_token: '{{ generated_token.stdout }}'
-  run_once: true
-  when:
-  - kubeflare_state == 'unconfigured'
+# - name: 'initialize | perform cluster initialization on primary control node'
+#   include_tasks: 'initialize.yml'
+#   when:
+#   - inventory_hostname == groups["controlplane"]|first
+#   - kubeflare_state == 'unconfigured'
 
-- name: 'initialize | perform cluster initialization on primary control node'
-  include_tasks: 'initialize.yml'
-  when:
-  - inventory_hostname == groups["controlplane"]|first
-  - kubeflare_state == 'unconfigured'
-
-- name: 'join | perform cluster join on remaining cluster nodes'
-  include_tasks: 'join.yml'
-  when:
-  - inventory_hostname != groups["controlplane"]|first
-  - kubeflare_state == 'unconfigured'
+# - name: 'join | perform cluster join on remaining cluster nodes'
+#   include_tasks: 'join.yml'
+#   when:
+#   - inventory_hostname != groups["controlplane"]|first
+#   - kubeflare_state == 'unconfigured'

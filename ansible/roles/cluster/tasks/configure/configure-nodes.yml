@@ -6,7 +6,7 @@
     src: 'kernel-sysctl.conf.j2'
     dest: '/etc/sysctl.d/99-kubeflare-sysctl.conf'
     mode: 0644
-  notify: systemd-sysctl configuration changed
+  # notify: systemd-sysctl configuration changed
 
 - name: 'configure-nodes | ensure modules are configured at node startup'
   ansible.builtin.template:
@@ -19,3 +19,6 @@
     name: '{{ item }}'
     state: 'present'
   loop: '{{ kubeflare_kernel.modules }}'
+
+- name: 'container-runtime | install {{ cri_plugin }} as kubernetes container runtime (cri)'
+  include_tasks: 'container-runtime/{{ cri_plugin }}.yml'
