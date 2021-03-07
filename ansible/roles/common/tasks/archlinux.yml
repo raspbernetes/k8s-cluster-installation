@@ -78,3 +78,11 @@
     state: absent
   when:
     - not yay.stat.exists
+
+- name: 'install openshift kubernetes module'
+  aur:
+    name:
+      - python-openshift
+    use: yay
+    state: present
+  become: false

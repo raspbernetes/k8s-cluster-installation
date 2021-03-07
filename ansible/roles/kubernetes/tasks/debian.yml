@@ -62,14 +62,16 @@
   retries: 5
   until: apt_install_helm is success
 
-# TODO: Only execute task when using RPi
-- name: enable required cgroup features
-  lineinfile:
+# Adding required Kubernetes cgroups
+- name: Enable container features
+  ansible.builtin.replace:
     path: '{{ common_rpi_cmd_file }}'
-    state: present
-    backrefs: true
-    regexp: '^(.*fixrtc)$'
-    line: '\1 cgroup_enable=cpuset cgroup_memory=1 cgroup_enable=memory'
+    regexp: '^([\w](?!.*\b{{ item }}\b).*)$'
+    replace: '\1 {{ item }}'
+  with_items:
+    - 'cgroup_enable=cpuset'
+    - 'cgroup_memory=1'
+    - 'cgroup_enable=memory'
   notify: reboot hosts
   when: ansible_architecture | regex_search('arm|aarch')
 
