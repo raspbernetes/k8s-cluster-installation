@@ -35,8 +35,8 @@
         path: '/etc/systemd/system/{{ item }}'
         state: 'absent'
       loop:
-      - kubelet.service.d/override.conf
-      - kubelet.service.d/12-after-docker.conf
+        - kubelet.service.d/override.conf
+        - kubelet.service.d/12-after-docker.conf
       register: removed_services
 
     - name: 'remove cluster default environtment files'
@@ -44,7 +44,7 @@
         path: '/etc/default/{{ item }}'
         state: 'absent'
       loop:
-      - kubelet
+        - kubelet
       register: removed_defaults
 
     - name: 'reload systemd'
@@ -197,3 +197,8 @@
       file:
         path: /var/openebs
         state: absent
+
+    - name: 'reboot hosts'
+      reboot:
+        msg: 'hosts are being rebooted'
+        reboot_timeout: '{{ reboot_timeout | default(600) }}'

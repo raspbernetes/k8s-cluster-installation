@@ -1,2 +1,2 @@
 ---
-openebs_enabled: false
+storage_enabled: true

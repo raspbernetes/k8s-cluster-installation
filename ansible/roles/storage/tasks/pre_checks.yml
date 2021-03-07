@@ -6,11 +6,11 @@
     fail_msg:
       - "os_family '{{ ansible_os_family }}' is not supported at this time"
 
-- name: 'validate variable : openebs_enabled'
+- name: "validate variable : storage_enabled"
   assert:
     that:
-      - openebs_enabled | type_debug == 'bool'
+      - storage_enabled | type_debug == 'bool'
     fail_msg:
-      - "Variable 'openebs_enabled' should be of type 'bool'"
-      - 'Type is: {{ openebs_enabled | type_debug }}'
-      - "Value is: {{ openebs_enabled | default('undefined') }}"
+      - "Variable 'storage_enabled' should be of type 'bool'"
+      - "Type is: {{ storage_enabled | type_debug }}"
+      - "Value is: {{ storage_enabled | default('undefined') }}"

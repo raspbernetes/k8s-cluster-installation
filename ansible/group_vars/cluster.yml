@@ -1,15 +1,14 @@
 ---
-
 cluster_name: kubernetes
 cluster_extra_sans:
-- '{{ keepalived_vip }}'
+  - '{{ keepalived_vip }}'
 cluster_control_plane_endpoint: '{{ keepalived_vip }}:8443'
 
-# Specify the Kubernetes version, current release is v1.20.0
-cluster_kubernetes_version: 'v1.20.2'
+# Specify the Kubernetes version, current release is v1.20.4
+cluster_kubernetes_version: 'v1.20.4'
 
 cluster_apiserver_enable_admission_plugins:
-- 'NodeRestriction'
+  - 'NodeRestriction'
 
 cluster_cgroup_driver: 'systemd'
 
