@@ -51,9 +51,6 @@ cluster_etcd_election_timeout: 1000
 # Default: 100000
 cluster_etcd_snapshot_count: 100000
 
-# Default will install kube-proxy although some CNI plugins will recommend it be disabled
-cluster_kube_proxy_enabled: true
-
 cluster_kubeadm_skip_phases_default: ''
 cluster_kubeadm_skip_phases: >-
   {%- if cluster_kube_proxy_enabled -%}

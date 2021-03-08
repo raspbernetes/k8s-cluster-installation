@@ -1,4 +1,7 @@
 ---
+# Default will install kube-proxy although some CNI plugins will recommend it be disabled
+cluster_kube_proxy_enabled: true
+
 # kube-proxy bind address; Default: 0.0.0.0
 cluster_kube_proxy_bind_address: '0.0.0.0'
 

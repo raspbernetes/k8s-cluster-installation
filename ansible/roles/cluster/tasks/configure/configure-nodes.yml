@@ -22,3 +22,6 @@
 
 - name: 'container-runtime | install {{ cri_plugin }} as kubernetes container runtime (cri)'
   include_tasks: 'container-runtime/{{ cri_plugin }}.yml'
+
+- name: 'configure-nodes | Force all notified handlers to flush'
+  ansible.builtin.meta: 'flush_handlers'

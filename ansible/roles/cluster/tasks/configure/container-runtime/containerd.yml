@@ -53,5 +53,3 @@
     content: '{{ containerd_default_config_file.stdout }}'
   notify: restart cri
   when: cri_containerd_default_config
-
-- include_tasks: 'crictl.yml'

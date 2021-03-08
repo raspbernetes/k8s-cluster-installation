@@ -41,5 +41,5 @@
 
 - name: 'join | add node to cluster'
   ansible.builtin.command: |
-    kubeadm join --config /etc/kubernetes/kubeadm-join.yaml
+    kubeadm join --config /etc/kubernetes/kubeadm-join.yaml --ignore-preflight-errors="DirAvailable--etc-kubernetes-manifests"
   register: node_joined
