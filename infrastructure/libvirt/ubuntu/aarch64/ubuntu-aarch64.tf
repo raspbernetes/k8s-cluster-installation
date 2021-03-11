@@ -3,7 +3,7 @@ terraform {
   required_providers {
     libvirt = {
       source  = "dmacvicar/libvirt"
-      version = "0.6.2"
+      version = "0.6.3"
     }
   }
 }
@@ -44,34 +44,67 @@ variable "hostname_format" {
   default = "node-%02d"
 }
 
+variable "dns_domain" {
+  description = "DNS domain name"
+  default     = "ubuntu.local"
+
+}
+
+variable "network_cidr" {
+  description = "Network CIDR"
+  default     = "192.168.150.0/24"
+}
+
+
 # ---
+
+
+resource "libvirt_network" "ubuntu_network" {
+  name   = "ubuntu-network"
+  mode   = "nat"
+  domain = var.dns_domain
+
+  dns {
+    enabled = true
+  }
+
+  addresses = [var.network_cidr]
+}
 
 resource "libvirt_volume" "ubuntu" {
   name   = "ubuntu-${format(var.hostname_format, count.index + 1)}.qcow2"
   pool   = "default"
-  source = "https://cloud-images.ubuntu.com/releases/focal/release/ubuntu-20.04-server-cloudimg-arm64.img"
+  source = "https://cloud-images.ubuntu.com/releases/groovy/release/ubuntu-20.10-server-cloudimg-arm64.img"
   format = "qcow2"
   count  = var.hosts
 }
 
 #Create Ubuntu Nodes
+# Note you must set export TERRAFORM_LIBVIRT_TEST_DOMAIN_TYPE="qemu" see https://github.com/dmacvicar/terraform-provider-libvirt/issues/738
 resource "libvirt_domain" "node" {
   count   = var.hosts
   name    = format(var.hostname_format, count.index + 1)
-  vcpu    = 2
+  vcpu    = 4
   arch    = "aarch64"
-  machine = "virt-4.2"
-  memory  = 2048
+  machine = "virt"
+  firmware = "/usr/share/edk2/aarch64/QEMU_EFI-pflash.raw"
+  memory  = 4096
 
-  cloudinit = libvirt_cloudinit_disk.commoninit.id
+  # cloudinit = libvirt_cloudinit_disk.commoninit.id
+
+  xml {
+    xslt = file("aarch64_machine.xsl")
+  }
+
+  cpu = {
+    mode = "custom"
+  }
 
   disk {
     volume_id = element(libvirt_volume.ubuntu.*.id, count.index)
+    scsi = "true"
   }
 
-  # IMPORTANT: this is a known bug on cloud images, since they expect a console
-  # we need to pass it
-  # https://bugs.launchpad.net/cloud-images/+bug/1573095
   console {
     type        = "pty"
     target_port = "0"
@@ -90,12 +123,19 @@ resource "libvirt_domain" "node" {
     autoport    = true
   }
 
+  video {
+    type = "virtio"
+  }
 
   network_interface {
-    network_name   = "default"
+    network_name   = "ubuntu-network"
+    hostname       = format(var.hostname_format, count.index + 1)
     mac            = "52:54:00:00:00:a${count.index + 1}"
-    wait_for_lease = true
+    wait_for_lease = false
   }
 
 }
-
+# -[Output]-------------------------------------------------------------
+output "ipv4" {
+  value = libvirt_domain.node.*.network_interface.0.addresses
+}
