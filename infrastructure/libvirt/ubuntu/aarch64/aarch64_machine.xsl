@@ -10,10 +10,10 @@
         </xsl:copy>
     </xsl:template>
 
-    <!-- Change disk bus to SATA -->
-    <xsl:template match="/domain/devices/disk/target/@bus">
+    <!-- Change disk bus to virtio -->
+    <xsl:template match="/domain/devices/disk[@type='file']/target/@bus">
         <xsl:attribute name="bus">
-            <xsl:value-of select="'virtio'"/>
+            <xsl:value-of select="'sata'"/>
         </xsl:attribute>
     </xsl:template>
 
@@ -23,7 +23,7 @@
         <xsl:apply-templates select="node()|@*"/>
         <xsl:element name ="model">
           <xsl:attribute name="fallback">allow</xsl:attribute>
-          <xsl:value-of select="'cortex-a57'"/>
+          <xsl:value-of select="'cortex-a72'"/>
         </xsl:element>
       </xsl:copy>
     </xsl:template>

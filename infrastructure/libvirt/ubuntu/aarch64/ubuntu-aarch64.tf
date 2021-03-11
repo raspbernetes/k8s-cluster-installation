@@ -84,13 +84,13 @@ resource "libvirt_volume" "ubuntu" {
 resource "libvirt_domain" "node" {
   count   = var.hosts
   name    = format(var.hostname_format, count.index + 1)
-  vcpu    = 4
+  vcpu    = 8
   arch    = "aarch64"
   machine = "virt"
   firmware = "/usr/share/edk2/aarch64/QEMU_EFI-pflash.raw"
   memory  = 4096
 
-  # cloudinit = libvirt_cloudinit_disk.commoninit.id
+  cloudinit = libvirt_cloudinit_disk.commoninit.id
 
   xml {
     xslt = file("aarch64_machine.xsl")
@@ -98,7 +98,6 @@ resource "libvirt_domain" "node" {
 
   disk {
     volume_id = element(libvirt_volume.ubuntu.*.id, count.index)
-    scsi = "true"
   }
 
   console {
@@ -120,7 +119,7 @@ resource "libvirt_domain" "node" {
   }
 
   video {
-    type = "virtio"
+    type = "ramfb"
   }
 
   network_interface {
