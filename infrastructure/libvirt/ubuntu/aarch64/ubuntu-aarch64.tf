@@ -96,10 +96,6 @@ resource "libvirt_domain" "node" {
     xslt = file("aarch64_machine.xsl")
   }
 
-  cpu = {
-    mode = "custom"
-  }
-
   disk {
     volume_id = element(libvirt_volume.ubuntu.*.id, count.index)
     scsi = "true"
