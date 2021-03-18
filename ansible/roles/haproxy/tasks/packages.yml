@@ -1,0 +1,5 @@
+---
+- name: 'haproxy | Update apt-cache if it has not been updated in the last 6 hours (21600 seconds)'
+  ansible.builtin.apt:
+    update_cache: yes
+    cache_valid_time: 21600
