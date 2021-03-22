@@ -3,6 +3,7 @@
   file:
     path: "/opt/compose/registry"
     state: directory
+    mode: 0755
 
 - name: Show registry compose file
   debug:
@@ -18,6 +19,7 @@
   file:
     path: "/opt/compose/registry/certs"
     state: directory
+    mode: 0755
   when: not cache_traefik_enable and cache_tls_enable
 
 - name: Copy over TLS cert and key
@@ -32,12 +34,14 @@
   template:
     src: registry-compose.yml.j2
     dest: "/opt/compose/registry/docker-compose.yml"
+    mode: preserve
   notify: registry up
 
 - name: Template registry config file
   template:
     src: registry.yml.j2
     dest: "/opt/compose/registry/config.yml"
+    mode: preserve
   notify: restart registry
 
 - name: flush handlers
