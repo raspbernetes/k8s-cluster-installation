@@ -36,7 +36,7 @@
       - 'Type is: {{ cluster_pod_subnet | type_debug }}'
       - "Value is: {{ cluster_pod_subnet | default('undefined') }}"
   when:
-    - cluster_pod_subnet != "" # noqa 602
+    - cluster_pod_subnet
 
 - name: 'validate variable : cluster_etcd_heartbeat_interval'
   ansible.builtin.assert:
