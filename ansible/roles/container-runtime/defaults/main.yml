@@ -1,8 +1,4 @@
 ---
 cri_plugin: 'containerd'
 
-# Defaults for crictl
-cri_crictl_version: 'v1.20.0'
-cri_crictl_download_url: 'https://github.com/kubernetes-sigs/cri-tools/releases/download/{{ cri_crictl_version }}/crictl-{{ cri_crictl_version }}-linux-{{ cri_architecture }}.tar.gz'
-
 docker_cache_enable: false
