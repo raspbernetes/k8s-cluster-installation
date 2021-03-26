@@ -1,0 +1,7 @@
+---
+
+- name: 'handler | restart containerd service'
+  ansible.builtin.service:
+    name: 'containerd.service'
+    state: 'restarted'
+  listen: containerd configuration changed

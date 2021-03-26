@@ -1,0 +1,66 @@
+root = "{{ containerd_metadata_dir }}"
+state = "{{ containerd_state_dir }}"
+
+# disable the restart plugin - it's not used with kubernetes
+disabled_plugins = ["restart"]
+
+{% if 'debug' in containerd_config %}
+[debug]
+  level = "{{ containerd_config.debug.level }}"
+{% endif %}
+
+{% if 'grpc' in containerd_config %}
+[grpc]
+{% for param, value in containerd_config.grpc.items() %}
+  {{ param }} = {{ value }}
+{% endfor %}
+{% endif %}
+
+[plugins.linux]
+  shim = "{{ containerd_shim_binary }}"
+  runtime = "{{ containerd_runc_binary }}"
+
+[plugins.cri]
+  stream_server_address = "127.0.0.1"
+  max_container_log_line_size = {{ containerd_config.max_container_log_line_size }}
+  sandbox_image = "k8s.gcr.io/pause:3.3"
+  systemd_cgroup = {{ containerd_config.systemd_cgroup|default(false)|lower }}
+
+[plugins.cri.cni]
+  bin_dir = "/opt/cni/bin"
+  conf_dir = "/etc/cni/net.d"
+  conf_template = ""
+
+[plugins.cri.containerd.default_runtime]
+  runtime_type = "{{ containerd_config.default_runtime.type }}"
+  runtime_engine = "{{ containerd_config.default_runtime.engine }}"
+  runtime_root = "{{ containerd_config.default_runtime.root }}"
+  privileged_without_host_devices = {{ containerd_config.default_runtime.privileged_without_host_devices|default(false)|lower }}
+
+{% for runtime in containerd_runtimes %}
+[plugins.cri.containerd.runtimes.{{ runtime.name }}]
+  runtime_type = "{{ runtime.type }}"
+  runtime_engine = "{{ runtime.engine }}"
+  runtime_root = "{{ runtime.root }}"
+  privileged_without_host_devices = {{ runtime.privileged_without_host_devices|default(false)|lower }}
+{% endfor %}
+
+[plugins.cri.containerd.untrusted_workload_runtime]
+  runtime_type = "{{ containerd_config.untrusted_workload_runtime.type }}"
+  runtime_engine = "{{ containerd_config.untrusted_workload_runtime.engine }}"
+  runtime_root = "{{ containerd_config.untrusted_workload_runtime.root }}"
+
+{% if 'registries' in containerd_config %}
+[plugins.cri.registry]
+[plugins.cri.registry.mirrors]
+{% for registry, endpoint in containerd_config.registries.items() %}
+[plugins.cri.registry.mirrors."{{ registry }}"]
+  endpoint = ["{{ ([ endpoint ] | flatten ) | join('","') }}"]
+{% endfor %}
+{% endif %}
+
+{% if 'metrics' in containerd_config %}
+[metrics]
+  address = "{{ containerd_config.metrics.address | default('') }}"
+  grpc_histogram = {{ containerd_config.metrics.grpc_histogram | default(false) | lower }}
+{% endif %}
