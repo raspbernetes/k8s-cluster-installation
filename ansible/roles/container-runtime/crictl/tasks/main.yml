@@ -4,12 +4,16 @@
     url: '{{ crictl_download_url }}'
     dest: '/tmp/crictl.tar.gz'
     mode: 0440
+  register: get_url_result
+  until: '"OK" in get_url_result.msg or "Not Modified" in get_url_result.msg'
+  retries: 4
 
 - name: 'crictl | unarchive crictl binary'
   ansible.builtin.unarchive:
     src: '/tmp/crictl.tar.gz'
     dest: '/usr/local/bin'
     remote_src: true
+  ignore_errors: '{{ ansible_check_mode }}'
 
 - name: 'crictl | ensure crictl config file is up to date'
   ansible.builtin.template:
