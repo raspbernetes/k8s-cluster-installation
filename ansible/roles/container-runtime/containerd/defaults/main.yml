@@ -32,6 +32,13 @@ containerd_config:
     engine: ''
     root: ''
 
+# define additional runtimes if necessary, example
+# containerd_runtimes:
+# - name: ''
+#   type: ''
+#   engine: ''
+#   root: ''
+#   privileged_without_host_devices: false
 containerd_runtimes: []
 
 containerd_shim_binary: '/usr/bin/containerd-shim'
@@ -39,4 +46,4 @@ containerd_runc_binary: '/usr/bin/runc'
 
 # docker-ce apt repo
 containerd_repo_base_url: 'https://download.docker.com/linux/{{ ansible_distribution|lower }}'
-containerd_repo_gpgkey: '{{ cri_containerd_repo_base_url }}/gpg'
+containerd_repo_gpgkey: '{{ containerd_repo_base_url }}/gpg'
