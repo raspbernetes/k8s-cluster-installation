@@ -68,13 +68,13 @@
 
 - name: 'containerd | install crictl binary'
   ansible.builtin.include_role:
-    name: 'containerd-runtime/crictl'
+    name: 'container-runtime/crictl'
 
 - name: 'containerd | flush handlers'
-  meta: flush_handlers
+  ansible.builtin.meta: flush_handlers
 
 - name: 'containerd | ensure containerd is enabled and started'
-  ansible.builtin.server:
+  ansible.builtin.service:
     name: 'containerd.service'
     enabled: true
     state: 'started'
