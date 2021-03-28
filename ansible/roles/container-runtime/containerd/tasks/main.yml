@@ -1,14 +1,14 @@
 ---
-- name: 'install containerd on debian based platforms'
+
+- name: 'containerd | determine which package name to use'
+  ansible.builtin.set_fact:
+    containerd_package: '{%- if containerd_use_docker_repo -%}containerd.io{%- else -%}containerd{%- endif -%}'
+
+- name: 'Configure docker-ce repository for installation of containerd'
   block:
-  - name: 'containerd | ensure docker.io apt repository public key is installed'
-    ansible.builtin.apt_key:
-      url: '{{ containerd_repo_gpgkey }}'
-  - name: 'containerd | ensure docker.io apt repository is enabled'
-    ansible.builtin.apt_repository:
-      repo: 'deb {{ containerd_repo_base_url }} {{ ansible_distribution_release }} stable'
-      state: 'present'
-  # this is to prevent apt upgrade from breaking kubernetes
+  - name: 'containerd | configure docker-ce apt repository'
+    ansible.builtin.include_role:
+      name: 'container-runtime/docker-repo'
   - name: 'containerd | pin package version to prevent os upgrade clubbing'
     ansible.builtin.copy:
       content: |
@@ -18,22 +18,20 @@
       dest: '/etc/apt/preferences.d/containerd'
       owner: 'root'
       mode: 0644
-  - name: 'containerd | install package from apt repository'
-    ansible.builtin.apt:
-      name:
-      - '{{ containerd_package }}={{ containerd_version|string }}-1'
-      state: 'present'
+  when:
+  - containerd_use_docker_repo
+  - ansible_os_family|lower == 'debian'
+
+- name: 'containerd | install {{ containerd_package }} package'
+  ansible.builtin.package:
+    name: '{{ containerd_package }}'
+    state: 'present'
+  module_defaults:
+    apt:
       update_cache: true
       cache_valid_time: 3600
-  when: ansible_os_family|lower == 'debian'
-
-# Archlinux installation of containerd package
-- name: 'containerd | install containerd package'
-  pacman:
-    name: 'containerd'
-    state: 'present'
-    update_cache: true
-  when: ansible_os_family | lower == 'archlinux'
+  when:
+  - not containerd_use_docker_repo
 
 - name: 'containerd | ensure config directory exists and has proper ownerships'
   ansible.builtin.file:
