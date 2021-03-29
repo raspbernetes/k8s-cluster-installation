@@ -30,8 +30,7 @@
     apt:
       update_cache: true
       cache_valid_time: 3600
-  when:
-  - not containerd_use_docker_repo
+  when: not containerd_use_docker_repo
 
 - name: 'containerd | ensure config directory exists and has proper ownerships'
   ansible.builtin.file:
@@ -40,6 +39,11 @@
     mode: 0755
     owner: 'root'
     group: 'root'
+
+- name: 'containerd | show containerd config.toml file'
+  debug:
+    msg: '{{ lookup("template", "config.toml.j2") }}'
+  when: ansible_check_mode
 
 - name: 'containerd | copy containerd config file'
   ansible.builtin.template:
