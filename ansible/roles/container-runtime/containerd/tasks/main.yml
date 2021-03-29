@@ -41,7 +41,7 @@
     group: 'root'
 
 - name: 'containerd | show containerd config.toml file'
-  debug:
+  ansible.builtin.debug:
     msg: '{{ lookup("template", "config.toml.j2") }}'
   when: ansible_check_mode
 
