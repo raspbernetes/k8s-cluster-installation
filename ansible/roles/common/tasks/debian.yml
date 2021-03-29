@@ -35,6 +35,7 @@
   register: apt_install_common
   retries: 5
   until: apt_install_common is success
+  ignore_errors: '{{ ansible_check_mode }}'
 
 - name: install and configure log2ram
   include_tasks: log2ram.yml
