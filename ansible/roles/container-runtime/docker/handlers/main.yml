@@ -1,0 +1,7 @@
+---
+
+- name: 'handler | restart docker service'
+  ansible.builtin.service:
+    name: 'docker.service'
+    state: 'restarted'
+  listen: docker configuration changed
