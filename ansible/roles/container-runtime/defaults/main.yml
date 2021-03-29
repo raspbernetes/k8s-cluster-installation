@@ -1,4 +1,2 @@
 ---
 cri_plugin: 'containerd'
-
-docker_cache_enable: false
