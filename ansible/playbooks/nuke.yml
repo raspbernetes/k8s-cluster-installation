@@ -37,7 +37,8 @@
       loop:
         - kubelet.service.d/override.conf
         - kubelet.service.d/12-after-docker.conf
-      register: removed_services
+      notify:
+        - reload systemd
 
     - name: 'remove cluster default environtment files'
       ansible.builtin.file:
@@ -46,11 +47,6 @@
       loop:
         - kubelet
       register: removed_defaults
-
-    - name: 'reload systemd'
-      ansible.builtin.systemd:
-        daemon_reload: true
-      when: removed_services.changed
 
     - name: 'ensure calico link-netns devices have been removed'
       ansible.builtin.shell: |
@@ -202,3 +198,7 @@
       reboot:
         msg: 'hosts are being rebooted'
         reboot_timeout: '{{ reboot_timeout | default(600) }}'
+  handlers:
+    - name: 'reload systemd'
+      ansible.builtin.systemd:
+        daemon_reload: true
