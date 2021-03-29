@@ -5,3 +5,7 @@ dependencies:
 - role: container-runtime/containerd
   when:
   - cri_plugin == 'containerd'
+
+- role: container-runtime/docker
+  when:
+  - cri_plugin == 'docker'
