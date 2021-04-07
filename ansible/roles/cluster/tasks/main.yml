@@ -22,7 +22,7 @@
   run_once: true
   delegate_to: '{{ groups["controlplane"]|first }}'
   when:
-  - cluster_control_plane_endpoint | length < 1
+    - cluster_control_plane_endpoint | length < 1
 
 # The cluster version and the kubeadm version can be different
 - name: 'pre-flight | determine kubeadm version installed'
@@ -68,11 +68,11 @@
 - name: 'initialize | perform cluster initialization on primary control node'
   include_tasks: 'initialize.yml'
   when:
-  - inventory_hostname == groups["controlplane"]|first
-  - not kubelet_config.stat.exists
+    - inventory_hostname == groups["controlplane"]|first
+    - not kubelet_config.stat.exists
 
 - name: 'join | perform cluster join on remaining cluster nodes'
   include_tasks: 'join.yml'
   when:
-  - inventory_hostname != groups["controlplane"]|first
-  - not kubelet_config.stat.exists
+    - inventory_hostname != groups["controlplane"]|first
+    - not kubelet_config.stat.exists

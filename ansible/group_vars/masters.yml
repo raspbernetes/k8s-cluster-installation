@@ -2,7 +2,7 @@
 ####
 # Role - keepalived
 ####
-# keepalived_vip: ''
+keepalived_vip: '192.168.1.200'
 # keepalived_interface: "{{ ansible_default_ipv4['interface'] }}"
 
 ####
@@ -19,19 +19,21 @@
 # cluster_audit_log_maxbackup: 10
 # cluster_audit_log_maxsize: 100
 # cluster_pod_subnet: ""
-# cluster_kube_proxy_enabled: true
+# cluster_kube_proxy_enabled: false
 # cluster_etcd_heartbeat_interval: 100
 # cluster_etcd_election_timeout: 1000
+
+cri_plugin: containerd
 
 ####
 # Role - cni
 ####
-# cni_plugin: calico
+cni_plugin: calico
 # cni_bgp_peer_address: 192.168.0.1
 # cni_bgp_peer_asn: 64512
 # cni_cilium_helm_version: 1.9.3
 # cni_cilium_image_version: v1.9.3
-# cni_cilium_hubble_enabled: false
+# cni_cilium_hubble_enabled: true
 # cni_cilium_enovy_proxy_image_version: v1.16.2
 # cni_cilium_bpf_hostrouting: "true"
 # cni_cilium_bpf_tproxy: "false"

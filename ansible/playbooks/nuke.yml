@@ -80,10 +80,10 @@
       retries: 5
       until: stop_all_containers.rc == 0
       delay: 5
-      when:
-        - crictl.stat.exists
-        - containerd_sock.stat.exists
-        - cri_plugin == 'containerd'
+      # when:
+      #   - crictl.stat.exists
+      #   - containerd_sock.stat.exists
+      #   - cri_plugin == 'containerd'
       ignore_errors: true
 
     - name: 'uninstall | remove all cri containers'
@@ -93,10 +93,10 @@
       retries: 5
       until: remove_all_containers.rc == 0
       delay: 5
-      when:
-        - crictl.stat.exists
-        - containerd_sock.stat.exists
-        - cri_plugin == 'containerd'
+      # when:
+      #   - crictl.stat.exists
+      #   - containerd_sock.stat.exists
+      #   - cri_plugin == 'containerd'
       ignore_errors: true
 
     - name: 'uninstall | stop all containerd pods'
@@ -108,10 +108,10 @@
       retries: 5
       until: stop_all_pods.rc == 0
       delay: 5
-      when:
-        - crictl.stat.exists
-        - containerd_sock.stat.exists
-        - cri_plugin == 'containerd'
+      # when:
+      #   - crictl.stat.exists
+      #   - containerd_sock.stat.exists
+      #   - cri_plugin == 'containerd'
       ignore_errors: true
 
     - name: 'uninstall | remove all containerd pods'
@@ -121,10 +121,10 @@
       retries: 5
       until: remove_all_pods.rc == 0
       delay: 5
-      when:
-        - crictl.stat.exists
-        - containerd_sock.stat.exists
-        - cri_plugin == 'containerd'
+      # when:
+      #   - crictl.stat.exists
+      #   - containerd_sock.stat.exists
+      #   - cri_plugin == 'containerd'
       ignore_errors: true
 
     # Uninstall ContainerD from Ubuntu/Debian platforms
@@ -135,7 +135,7 @@
             name: 'containerd'
             state: stopped
             enabled: false
-          when: containerd_sock.stat.exists
+          # when: containerd_sock.stat.exists
         - name: 'uninstall | uninstall containerd package'
           ansible.builtin.package:
             name: containerd.io
@@ -150,7 +150,7 @@
             state: 'absent'
       when:
         - ansible_os_family|lower == 'debian'
-        - cri_plugin == 'containerd'
+        # - cri_plugin == 'containerd'
 
     # Archlinux uninstallation of containerd package
     - name: 'uninstall | remove containerd package'
@@ -197,8 +197,7 @@
       file:
         path: /var/openebs
         state: absent
-
-    - name: 'reboot hosts'
-      reboot:
-        msg: 'hosts are being rebooted'
-        reboot_timeout: '{{ reboot_timeout | default(600) }}'
+    # - name: 'reboot hosts'
+    #   reboot:
+    #     msg: 'hosts are being rebooted'
+    #     reboot_timeout: '{{ reboot_timeout | default(600) }}'

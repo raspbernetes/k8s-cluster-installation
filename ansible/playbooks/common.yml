@@ -2,11 +2,11 @@
 - hosts: k8s
   become: true
   pre_tasks:
-    - name: "Add OS variables"
-      include_vars: "../family_vars/{{ ansible_os_family | lower }}.yml"
-    - name: "Add group variables"
-      include_vars: "../group_vars/docker_cache.yml"
+    - name: 'Add OS variables'
+      include_vars: '../family_vars/{{ ansible_os_family | lower }}.yml'
+    - name: 'Add group variables'
+      include_vars: '../group_vars/docker_cache.yml'
   roles:
-    - common
+    # - common
     - cri
     - kubernetes

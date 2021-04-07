@@ -11,7 +11,7 @@
     {% if not cluster_kube_proxy_enabled %}
     --skip-phases='addon/kube-proxy'
     {% endif %}
-    --upload-certs
+    --upload-certs --v=9
   register: kubeadm_init
 
 - name: 'initialize | set cluster_initialized fact'

@@ -34,7 +34,7 @@
     mode: 0644
 
 - name: set timezone
-  command: "/usr/bin/timedatectl set-timezone {{ common_timezone }}"
+  command: '/usr/bin/timedatectl set-timezone {{ common_timezone }}'
   when: common_timezone not in timedatectl_result.stdout_lines[0]
 
 - name: enable ntp
@@ -43,4 +43,4 @@
 
 - name: 'set hostname'
   hostname:
-    name: "{{ inventory_hostname }}"
+    name: '{{ inventory_hostname }}'
