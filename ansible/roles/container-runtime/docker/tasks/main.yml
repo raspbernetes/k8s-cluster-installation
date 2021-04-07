@@ -1,0 +1,53 @@
+# Instructions: https://kubernetes.io/docs/setup/production-environment/container-runtimes/#docker
+---
+
+- name: 'docker | configure docker-ce apt repository'
+  ansible.builtin.include_role:
+    name: 'container-runtime/docker-repo'
+  when: ansible_os_family|lower == 'debian'
+
+- name: 'docker | install docker and dependencies'
+  ansible.builtin.package:
+    name: '{{ item }}'
+    state: 'present'
+  module_defaults:
+    apt:
+      update_cache: true
+  loop:
+  - '{{ docker_package_list[ansible_os_family|lower] }}'
+
+- name: 'docker | ensure config directory exists and has proper ownerships'
+  ansible.builtin.file:
+    path: '{{ docker_config_dir }}'
+    state: 'directory'
+    mode: 0755
+    owner: 'root'
+    group: 'root'
+
+- name: 'docker | show docker daemon config file'
+  ansible.builtin.debug:
+    msg: '{{ lookup("template", "daemon.json.j2") }}'
+  when: ansible_check_mode
+
+- name: 'docker | copy docker daemon config file'
+  ansible.builtin.template:
+    src: 'daemon.json.j2'
+    dest: '{{ docker_config_dir }}/daemon.json'
+    owner: 'root'
+    mode: 0644
+  notify: docker configuration changed
+
+- name: 'docker | ensure systemd docker.d directory'
+  ansible.builtin.file:
+    path: /etc/systemd/system/docker.service.d
+    state: directory
+    mode: 0755
+
+- name: 'docker | systemd docker drop-in'
+  ansible.builtin.copy:
+    content: |
+      [Service]
+      TasksMax=infinity
+    dest: /etc/systemd/system/docker.service.d/override.conf
+    mode: 0755
+  notify: docker configuration changed

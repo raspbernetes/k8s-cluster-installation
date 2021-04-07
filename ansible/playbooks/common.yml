@@ -8,5 +8,5 @@
       include_vars: "../group_vars/docker_cache.yml"
   roles:
     - common
-    - cri
+    - container-runtime
     - kubernetes

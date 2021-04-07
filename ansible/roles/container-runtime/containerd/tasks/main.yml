@@ -1,0 +1,82 @@
+---
+
+- name: 'containerd | determine which package name to use'
+  ansible.builtin.set_fact:
+    containerd_package: '{%- if containerd_use_docker_repo -%}containerd.io{%- else -%}containerd{%- endif -%}'
+
+- name: 'Configure docker-ce repository for installation of containerd'
+  block:
+  - name: 'containerd | configure docker-ce apt repository'
+    ansible.builtin.include_role:
+      name: 'container-runtime/docker-repo'
+  - name: 'containerd | pin package version to prevent os upgrade clubbing'
+    ansible.builtin.copy:
+      content: |
+        Package: {{ containerd_package }}
+        Pin: version {{ containerd_version }}*
+        Pin-Priority: 1001
+      dest: '/etc/apt/preferences.d/containerd'
+      owner: 'root'
+      mode: 0644
+  when:
+  - containerd_use_docker_repo
+  - ansible_os_family|lower == 'debian'
+
+- name: 'containerd | install {{ containerd_package }} package'
+  ansible.builtin.package:
+    name: '{{ containerd_package }}'
+    state: 'present'
+  module_defaults:
+    apt:
+      update_cache: true
+      cache_valid_time: 3600
+  when: not containerd_use_docker_repo
+
+- name: 'containerd | ensure config directory exists and has proper ownerships'
+  ansible.builtin.file:
+    path: '{{ containerd_config_dir }}'
+    state: 'directory'
+    mode: 0755
+    owner: 'root'
+    group: 'root'
+
+- name: 'containerd | show containerd config.toml file'
+  ansible.builtin.debug:
+    msg: '{{ lookup("template", "config.toml.j2") }}'
+  when: ansible_check_mode
+
+- name: 'containerd | copy containerd config file'
+  ansible.builtin.template:
+    src: 'config.toml.j2'
+    dest: '{{ containerd_config_dir }}/config.toml'
+    owner: 'root'
+    mode: 0644
+  notify: containerd configuration changed
+  when: not containerd_default_config
+
+- name: 'containerd | generate default configuration file'
+  ansible.builtin.command: |
+    containerd config default
+  register: containerd_default_config_file
+  changed_when: false
+  when: containerd_default_config
+
+- name: 'containerd | ensure default configuration'
+  ansible.builtin.copy:
+    dest: '{{ cri_containerd_config_dir }}/config.toml'
+    content: '{{ containerd_default_config_file.stdout }}'
+  notify: containerd configuration changed
+  when: containerd_default_config
+
+- name: 'containerd | install crictl binary'
+  ansible.builtin.include_role:
+    name: 'container-runtime/crictl'
+
+- name: 'containerd | flush handlers'
+  ansible.builtin.meta: flush_handlers
+
+- name: 'containerd | ensure containerd is enabled and started'
+  ansible.builtin.service:
+    name: 'containerd.service'
+    enabled: true
+    state: 'started'

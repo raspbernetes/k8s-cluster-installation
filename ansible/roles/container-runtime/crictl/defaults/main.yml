@@ -1,0 +1,5 @@
+---
+
+# Defaults for crictl
+crictl_version: 'v1.20.0'
+crictl_download_url: 'https://github.com/kubernetes-sigs/cri-tools/releases/download/{{ crictl_version }}/crictl-{{ crictl_version }}-linux-{{ cri_architecture }}.tar.gz'
