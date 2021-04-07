@@ -45,4 +45,4 @@ containerd_config:
 containerd_runtimes: []
 
 containerd_shim_binary: '/usr/bin/containerd-shim'
-containerd_runc_binary: '/usr/bin/runc'
+containerd_runc_binary: '/usr/sbin/runc'

@@ -8,6 +8,14 @@
   until: '"OK" in get_url_result.msg or "Not Modified" in get_url_result.msg'
   retries: 4
 
+- name: 'crictl | ensure /usr/local/bin directory exists'
+  ansible.builtin.file:
+    path: '/usr/local/bin'
+    state: 'directory'
+    mode: 0755
+    owner: 'root'
+    group: 'root'
+
 - name: 'crictl | unarchive crictl binary'
   ansible.builtin.unarchive:
     src: '/tmp/crictl.tar.gz'
@@ -20,13 +28,13 @@
     src: 'crictl.yaml.j2'
     dest: '/etc/crictl.yaml'
 
-# Fix-up on later ansible versions https://github.com/ansible/ansible/pull/71824
 - name: 'crictl | set crictl shell completion'
-  command: |
+  ansible.builtin.command: |
     /usr/local/bin/crictl completion
   changed_when: false
   register: cri_completion
   check_mode: false
+  ignore_errors: '{{ ansible_check_mode }}'
 
 - name: 'crictl | ensure bash completion directory exists'
   ansible.builtin.file:
@@ -43,3 +51,4 @@
     mode: 0644
     owner: 'root'
     group: 'root'
+  when: cri_completion.stdout | length > 0
