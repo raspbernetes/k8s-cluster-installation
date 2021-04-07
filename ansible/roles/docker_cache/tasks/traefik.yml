@@ -3,6 +3,7 @@
   file:
     path: "/opt/compose/traefik/{{ item }}"
     state: directory
+    mode: 0755
   loop:
     - "config"
     - "certs"
@@ -21,12 +22,14 @@
   template:
     src: traefik-compose.yml.j2
     dest: "/opt/compose/traefik/docker-compose.yml"
+    mode: preserve
   notify: traefik up
 
 - name: template traefik config file
   template:
     src: traefik.yml.j2
     dest: "/opt/compose/traefik/traefik.yml"
+    mode: preserve
   notify: restart traefik
 
 - name: Ensure log file exists
@@ -34,6 +37,7 @@
     content: ""
     dest: "/opt/compose/traefik/log"
     force: false
+    mode: preserve
 
 - name: flush handlers
   meta: flush_handlers
