@@ -1,0 +1,48 @@
+---
+
+# set containerd default directories
+containerd_config_dir: '/etc/containerd'
+containerd_metadata_dir: '/var/lib/containerd'
+containerd_state_dir: '/run/containerd'
+
+# sse the docker-ce apt repository
+containerd_use_docker_repo: false
+
+# when using the docker-ce repository, multiple versions are available
+# current stable release of containerd is 1.4.4
+containerd_version: '1.4.4'
+
+# use containerd default configuration file
+containerd_default_config: false
+
+# containerd configuration
+containerd_config:
+  debug:
+    level: ''
+  grpc:
+    max_recv_message_size: 16777216
+    max_send_message_size: 16777216
+  max_container_log_line_size: -1
+  registries:
+    'docker.io': 'https://registry-1.docker.io'
+  systemd_cgroup: true
+  default_runtime:
+    type: 'io.containerd.runtime.v1.linux'
+    engine: ''
+    root: ''
+  untrusted_workload_runtime:
+    type: ''
+    engine: ''
+    root: ''
+
+# define additional runtimes if necessary, example
+# containerd_runtimes:
+# - name: ''
+#   type: ''
+#   engine: ''
+#   root: ''
+#   privileged_without_host_devices: false
+containerd_runtimes: []
+
+containerd_shim_binary: '/usr/bin/containerd-shim'
+containerd_runc_binary: '/usr/sbin/runc'

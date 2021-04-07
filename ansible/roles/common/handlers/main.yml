@@ -4,3 +4,8 @@
     msg: "RPi's are being rebooted"
     reboot_timeout: '{{ reboot_timeout | default(600) }}'
   when: common_reboot_handler_enabled
+
+- name: restart systemd-sysctl
+  systemd:
+    name: systemd-sysctl
+    state: restarted

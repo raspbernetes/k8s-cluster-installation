@@ -1,0 +1,10 @@
+---
+
+- name: 'docker-repo | ensure docker.io apt repository public key is installed'
+  ansible.builtin.apt_key:
+    url: '{{ docker_repo_gpgkey }}'
+
+- name: 'docker-repo | ensure docker.io apt repository is enabled'
+  ansible.builtin.apt_repository:
+    repo: 'deb {{ docker_repo_base_url }} {{ ansible_distribution_release }} stable'
+    state: 'present'

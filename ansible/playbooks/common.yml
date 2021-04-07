@@ -7,6 +7,11 @@
     - name: 'Add group variables'
       include_vars: '../group_vars/docker_cache.yml'
   roles:
+<<<<<<< HEAD
     # - common
     - cri
+=======
+    - common
+    - container-runtime
+>>>>>>> 5358dcc931bf9e31fa75496740a6074637b8a78b
     - kubernetes

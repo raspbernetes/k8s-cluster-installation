@@ -10,6 +10,6 @@
     - gpg-agent
     - bash-completion
     - procps
-  - name: 'Include cri'
+  - name: 'Include container-runtime'
     include_role:
-      name: 'cri'
+      name: 'container-runtime'

@@ -7,13 +7,6 @@ cri_supported_plugins:
 - docker
 - containerd
 
-cri_containerd_package_name:
-  'latest': '{{ cri_containerd_package }}'
-  '1.3.7': '{{ cri_containerd_package }}=1.3.7-1'
-  '1.3.9': '{{ cri_containerd_package }}=1.3.9-1'
-  '1.4.3': '{{ cri_containerd_package }}=1.4.3-1'
-  'stable': '{{ cri_containerd_package }}=1.3.9-1'
-
 cri_architecture_map:
   amd64: 'amd64'
   x86_64: 'amd64'

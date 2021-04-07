@@ -1,0 +1,17 @@
+---
+
+# set containerd default directories
+docker_config_dir: '/etc/docker'
+
+docker_cgroup_driver: 'systemd'
+
+docker_cache_enable: false
+
+docker_package_list:
+  debian:
+  - docker-ce
+  - docker-ce-cli
+  - containerd.io
+  archlinux:
+  - docker
+  - containerd

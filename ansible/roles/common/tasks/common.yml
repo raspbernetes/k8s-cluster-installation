@@ -43,4 +43,40 @@
 
 - name: 'set hostname'
   hostname:
+<<<<<<< HEAD
     name: '{{ inventory_hostname }}'
+=======
+    name: "{{ inventory_hostname }}"
+
+- name: 'ensure required modules load at system startup'
+  ansible.builtin.copy:
+    dest: '/etc/modules-load.d/{{ cri_plugin }}.conf'
+    content: |
+      overlay
+      br_netfilter
+
+# Ensure the br_netfilter module is loaded and iptables can see bridged traffic
+# https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/install-kubeadm/#letting-iptables-see-bridged-traffic
+- name: 'ensure required modules are loaded'
+  community.general.modprobe:
+    name: '{{ item }}'
+    state: 'present'
+  loop:
+    - 'overlay'
+    - 'br_netfilter'
+  tags:
+    - notest
+
+- name: 'ensure sysctl options are configured for container runtime'
+  ansible.posix.sysctl:
+    name: '{{ item }}'
+    value: '1'
+    state: 'present'
+    sysctl_file: '/etc/sysctl.d/99-kubernetes-cri.conf'
+    reload: false
+  loop:
+    - net.bridge.bridge-nf-call-iptables
+    - net.bridge.bridge-nf-call-ip6tables
+    - net.ipv4.ip_forward
+  notify: restart systemd-sysctl
+>>>>>>> 5358dcc931bf9e31fa75496740a6074637b8a78b
