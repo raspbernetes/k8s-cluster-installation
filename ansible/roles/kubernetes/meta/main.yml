@@ -1,0 +1,6 @@
+# main.yml - use dependency management to select the proper container runtime
+---
+dependencies:
+  - role: kubernetes/containerd
+    when:
+      - cri_plugin == 'containerd'

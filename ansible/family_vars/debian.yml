@@ -13,3 +13,8 @@ common_packages:
   - net-tools
   - python3-openssl # Needed for ansible 'openssl_certificate_info' module
   - python-openshift
+
+kubernetes_packages:
+  - apt-transport-https
+  - ca-certificates
+  - curl

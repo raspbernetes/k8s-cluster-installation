@@ -4,3 +4,8 @@
     name: kubelet
     daemon_reload: true
     state: restarted
+
+- name: restart systemd-sysctl
+  systemd:
+    name: systemd-sysctl
+    state: restarted
