@@ -2,7 +2,7 @@
 ####
 # Role - keepalived
 ####
-# keepalived_vip: ''
+keepalived_vip: '192.168.1.205'
 # keepalived_interface: "{{ ansible_default_ipv4['interface'] }}"
 
 ####
