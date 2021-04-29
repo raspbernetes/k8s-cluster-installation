@@ -106,30 +106,6 @@
     - 'kubelet'
     - 'kubeadm'
 
-# TODO: Move to correct location; perhaps CNI?
-# - name: add apt signing key for helm (1/3)
-#   apt_key:
-#     url: https://baltocdn.com/helm/signing.asc
-#     state: present
-
-# - name: adding apt repository for helm (2/3)
-#   apt_repository:
-#     repo: deb https://baltocdn.com/helm/stable/debian/ all main
-#     state: present
-#   register: helm_repository
-#   retries: 10
-#   until: helm_repository is success
-
-# - name: install helm package (3/3)
-#   apt:
-#     name: helm
-#     state: present
-#     force: true
-#     update_cache: true
-#   register: apt_install_helm
-#   retries: 5
-#   until: apt_install_helm is success
-
 # TODO: Move to correct location; Perhaps common for RPI?
 # Adding required Kubernetes cgroups for Raspberry Pi
 - name: Enable container features
