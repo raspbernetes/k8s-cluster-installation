@@ -65,6 +65,10 @@
     kubeadm_join_token: '{{ generated_token.stdout }}'
   run_once: true
 
+- name: pull control plane images
+  command: kubeadm config images pull
+  when: inventory_hostname == groups["controlplane"]
+
 - name: 'initialize | perform cluster initialization on primary control node'
   include_tasks: 'initialize.yml'
   when:

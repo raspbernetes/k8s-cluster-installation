@@ -1,11 +1,5 @@
 ---
 ####
-# Role - keepalived
-####
-# keepalived_vip: ''
-# keepalived_interface: "{{ ansible_default_ipv4['interface'] }}"
-
-####
 # Role - cluster
 ####
 # cluster_name: kubernetes

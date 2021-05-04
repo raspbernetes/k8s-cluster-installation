@@ -16,14 +16,14 @@
 ####
 # Role - kubernetes
 ####
-# kubernetes_kubectl_version: 1.20.4-00
-# kubernetes_kubelet_version: 1.20.4-00
-# kubernetes_kubeadm_version: 1.20.4-00
+kubernetes_kubectl_version: 1.21.0-00
+kubernetes_kubelet_version: 1.21.0-00
+kubernetes_kubeadm_version: 1.21.0-00
 
 ####
 # Role - keepalived
 ####
-# keepalived_vip: ""
+# keepalived_vip: ''
 # keepalived_interface: "{{ ansible_default_ipv4['interface'] }}"
 
 ####

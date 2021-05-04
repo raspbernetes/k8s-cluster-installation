@@ -5,7 +5,7 @@ cluster_extra_sans:
 cluster_control_plane_endpoint: '{{ keepalived_vip }}:8443'
 
 # Specify the Kubernetes version, current release is v1.20.4
-cluster_kubernetes_version: 'v1.20.4'
+cluster_kubernetes_version: 'v1.21.0'
 
 cluster_apiserver_enable_admission_plugins:
   - 'NodeRestriction'

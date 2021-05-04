@@ -1,5 +1,0 @@
----
-# Role - common
-common_timezone: Europe/Amsterdam
-common_rpi_overclock: true
-common_rpi_poe_hat: true
