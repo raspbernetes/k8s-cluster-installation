@@ -1,9 +1,9 @@
 [all]
-k8s-controlplane-01 hostname=k8s-controlplane-01 ansible_host=192.168.1.121 ansible_user=pi
-k8s-controlplane-02 hostname=k8s-controlplane-02 ansible_host=192.168.1.122 ansible_user=pi
-k8s-controlplane-03 hostname=k8s-controlplane-03 ansible_host=192.168.1.123 ansible_user=pi
-k8s-node-01 hostname=k8s-node-01 ansible_host=192.168.1.131 ansible_user=pi
-k8s-node-02 hostname=k8s-node-02 ansible_host=192.168.1.132 ansible_user=pi
+k8s-controlplane-01 hostname=k8s-controlplane-01 ansible_host=192.168.1.161 ansible_user=pi
+k8s-controlplane-02 hostname=k8s-controlplane-02 ansible_host=192.168.1.162 ansible_user=pi
+k8s-controlplane-03 hostname=k8s-controlplane-03 ansible_host=192.168.1.163 ansible_user=pi
+k8s-node-01 hostname=k8s-node-01 ansible_host=192.168.1.171 ansible_user=pi
+k8s-node-02 hostname=k8s-node-02 ansible_host=192.168.1.172 ansible_user=pi
 
 [cluster:children]
 controlplane
@@ -19,7 +19,7 @@ k8s-node-01
 k8s-node-02
 
 [docker_cache]
-registry hostname=registry ansible_host=192.168.1.120 ansible_user=pi
+#registry hostname=registry ansible_host=192.168.1.120 ansible_user=pi
 
 ; These entires are here for backward compatibility as we transition away from the old names.
 [k8s:children]

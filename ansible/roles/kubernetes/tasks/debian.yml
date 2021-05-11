@@ -106,6 +106,21 @@
     - 'kubelet'
     - 'kubeadm'
 
+# Swap disabled. You MUST disable swap in order for the kubelet to work properly.
+# https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/install-kubeadm/
+- name: disable swap since kubernetes can't work with swap enabled
+  command: swapoff -a
+  when: ansible_swaptotal_mb > 0
+
+- name: disable swap in /etc/fstab since kubernetes can't work with swap enabled
+  mount:
+    name: '{{ item }}'
+    fstype: swap
+    state: absent
+  loop:
+    - swap
+    - none
+
 # TODO: Move to correct location; Perhaps common for RPI?
 # Adding required Kubernetes cgroups for Raspberry Pi
 - name: Enable container features
@@ -118,6 +133,5 @@
     - 'cgroup_enable=memory'
     - 'cgroup_memory=1'
     - 'swapaccount=1'
-
   notify: reboot hosts
   when: ansible_architecture | regex_search('arm|aarch')

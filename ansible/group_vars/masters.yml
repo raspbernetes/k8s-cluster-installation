@@ -13,14 +13,14 @@
 # cluster_audit_log_maxbackup: 10
 # cluster_audit_log_maxsize: 100
 # cluster_pod_subnet: ""
-# cluster_kube_proxy_enabled: true
+cluster_kube_proxy_enabled: false
 # cluster_etcd_heartbeat_interval: 100
 # cluster_etcd_election_timeout: 1000
 
 ####
 # Role - cni
 ####
-# cni_plugin: calico
+cni_plugin: cilium
 # cni_bgp_peer_address: 192.168.0.1
 # cni_bgp_peer_asn: 64512
 # cni_cilium_helm_version: 1.9.3

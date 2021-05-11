@@ -19,11 +19,11 @@ cluster_profiling: false
 # provides a maximum of 64 nodes in a cluster and 254 pods per node.
 
 # Kubernetes internal network for services, *must* be an unused block of space.
-cluster_service_subnet: '10.144.0.0/18'
+cluster_service_subnet: '10.125.0.0/18'
 
 # Kubernetes internal network. IP's for pods will be drawn from this address
 # space. *must* be unused in your network infrastructure.
-cluster_pod_subnet: '10.144.64.0/18'
+cluster_pod_subnet: '10.125.64.0/18'
 
 # This sets the network node allocation size. Each node in the cluster is
 # assigned a subnet of this size.

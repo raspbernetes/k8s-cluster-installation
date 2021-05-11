@@ -39,6 +39,10 @@
     port: '{{ cluster_apiserver_bind_port }}'
     timeout: 180
 
+# - name: Pause for 2 minutes to wait for apiserver
+#   pause:
+#     minutes: 2
+
 - name: 'join | add node to cluster'
   ansible.builtin.command: |
     kubeadm join --config /etc/kubernetes/kubeadm-join.yaml
