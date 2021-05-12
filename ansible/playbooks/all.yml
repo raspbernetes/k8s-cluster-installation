@@ -9,5 +9,5 @@
       when: ansible_facts['python']['version']['major'] != 3
 # - import_playbook: docker_cache.yml
 - import_playbook: common.yml
-- import_playbook: masters.yml
+- import_playbook: controlplane.yml
 - import_playbook: cluster.yml

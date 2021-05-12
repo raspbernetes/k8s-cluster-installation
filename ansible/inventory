@@ -20,17 +20,3 @@ k8s-node-02
 
 [docker_cache]
 #registry hostname=registry ansible_host=192.168.1.120 ansible_user=pi
-
-; These entires are here for backward compatibility as we transition away from the old names.
-[k8s:children]
-masters
-workers
-
-[masters]
-k8s-controlplane-01
-k8s-controlplane-02
-k8s-controlplane-03
-
-[workers]
-k8s-node-01
-k8s-node-02

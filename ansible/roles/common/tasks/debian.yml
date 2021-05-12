@@ -1,15 +1,4 @@
 ---
-
-- name: 'add apt key for openshift kubernetes module (1/2)'
-  ansible.builtin.apt_key:
-    keyserver: keyserver.ubuntu.com
-    id: ADF016E51783213C8A8C831A1348C52605DB2FE6
-
-- name: 'add OBS repo for openshift kubernetes module (2/2)'
-  ansible.builtin.apt_repository:
-    repo: deb http://download.opensuse.org/repositories/home:/anthr76:/kubernetes/Ubuntu_20.04/ /
-    state: present
-
 - name: apt-get upgrade
   apt:
     upgrade: full

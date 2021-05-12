@@ -36,8 +36,8 @@ cluster_authorization_modes: ['Node', 'RBAC']
 
 # Vars for discoverying kubernetes api endpoints
 # will refactor to eliminate this variable
-cluster_primary_control_node: '{{ groups["masters"]|first }}'
-cluster_apiserver_count: '{{ groups["masters"]|length }}'
+cluster_primary_control_node: '{{ groups["controlplane"]|first }}'
+cluster_apiserver_count: '{{ groups["controlplane"]|length }}'
 
 # Tuning for arm64 platforms; https://etcd.io/docs/v3.4.0/tuning/
 cluster_etcd_heartbeat_interval: 250

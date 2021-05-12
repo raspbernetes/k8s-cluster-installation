@@ -1,5 +1,5 @@
 ---
-- hosts: masters
+- hosts: controlplane
   become: true
   pre_tasks:
     - name: "Add OS variables"
