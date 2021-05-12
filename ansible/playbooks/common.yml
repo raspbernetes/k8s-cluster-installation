@@ -1,5 +1,5 @@
 ---
-- hosts: k8s
+- hosts: cluster
   become: true
   pre_tasks:
     - name: "Add OS variables"
