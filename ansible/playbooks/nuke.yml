@@ -1,7 +1,5 @@
 ---
-- hosts:
-    - controlplane
-    - nodes
+- hosts: all
   become: true
   gather_facts: true
   vars_prompt:

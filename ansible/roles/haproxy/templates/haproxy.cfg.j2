@@ -1,7 +1,3 @@
-####################
-# api-proxy config #
-####################
-
 frontend front-api-proxy
     bind {{ keepalived_vip }}:8443
     mode tcp
@@ -11,12 +7,10 @@ frontend front-api-proxy
 
 backend kube-api
     mode tcp
-    option tcplog
-    option tcp-check
-    timeout connect 10s
-    timeout server 4h
-    balance roundrobin
-    default-server inter 10s downinter 5s rise 2 fall 2 slowstart 60s maxconn 250 maxqueue 256 weight 100
+    balance static-rr
+    default-server inter 15s downinter 15s rise 2 fall 2 slowstart 60s maxconn 1000 maxqueue 256 weight 100
+    option httpchk GET /healthz
+    http-check expect status 200
 {% for host in groups['controlplane'] %}
-    server {{ hostvars[host]['ansible_hostname'] }} {{ hostvars[host]['ansible_host'] }}:6443 check
+    server {{ hostvars[host]['ansible_hostname'] }} {{ hostvars[host]['ansible_host'] }}:6443 check check-ssl verify none
 {% endfor %}
