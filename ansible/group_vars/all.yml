@@ -56,11 +56,3 @@ cri_plugin: containerd
 # Role: docker_cache
 ####
 # docker_cache_enable: false
-
-####
-# Role - cloudflared
-####
-# Cloudflare options for exposing Kubernetes services via HTTPS/SSH
-# cloudflared_enabled: false
-# cloudflared_kube_api_server_dns: ''
-# cloudflared_version: 2021.2.5

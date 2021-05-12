@@ -5,7 +5,7 @@ kind: InitConfiguration
 {% if kubeadm_join_token is defined %}
 bootstrapTokens:
 - token: {{ kubeadm_join_token }}
-  description: "raspbernetes boostrap token"
+  description: "kubeadm bootstrap token"
   ttl: {{ cluster_kubeadm_token_timeout }}
 {% endif %}
 localAPIEndpoint:
@@ -15,6 +15,7 @@ localAPIEndpoint:
 certificateKey: {{ kubeadm_certificate_key }}
 {% endif %}
 nodeRegistration:
+  criSocket: {{ cri_socket }}
   {% if inventory_hostname in groups['controlplane'] and inventory_hostname not in groups['nodes'] %}
   taints:
   - effect: NoSchedule
@@ -22,7 +23,6 @@ nodeRegistration:
   {% else %}
   taints: []
   {% endif %}
-  criSocket: {{ cri_socket }}
 ---
 apiVersion: kubeadm.k8s.io/v1beta2
 kind: ClusterConfiguration
@@ -33,7 +33,6 @@ apiServer:
     authorization-mode: {{ cluster_authorization_modes | join(',') }}
     bind-address: {{ cluster_apiserver_bind_address }}
     apiserver-count: "{{ cluster_apiserver_count }}"
-    insecure-port: "{{ cluster_apiserver_insecure_port }}"
     profiling: "{{ cluster_profiling }}"
     {% if cluster_apiserver_enable_admission_plugins|length > 0 %}
     enable-admission-plugins: {{ cluster_apiserver_enable_admission_plugins | join(',') }}
@@ -47,8 +46,6 @@ apiServer:
     audit-log-maxbackup: "{{ cluster_audit_log_maxbackup }}"
     audit-log-maxsize: "{{ cluster_audit_log_maxsize }}"
     {% endif %}
-    request-timeout: "1m0s"
-    service-account-lookup: "true"
     {% if cluster_tls_min_version is defined %}
     tls-min-version: {{ cluster_tls_min_version }}
     {% endif %}

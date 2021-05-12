@@ -22,7 +22,7 @@
   register: cluster_ca_cert
   run_once: true
 
-- name: 'join | set cluster ca cert sa256 fact'
+- name: 'join | set cluster ca cert sha256 fact'
   ansible.builtin.set_fact:
     cluster_ca_sha256: '{{ cluster_ca_cert.public_key_fingerprints.sha256 | regex_replace(":") }}'
   run_once: true

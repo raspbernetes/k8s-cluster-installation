@@ -64,7 +64,7 @@ cluster_kubeadm_skip_phases: >-
 
 # Set the default token timeout, on cluster bootstrap this timeout is the grace period
 # for allowing new nodes to join the cluster; Default is 24 hours.
-cluster_kubeadm_token_timeout: '10m'
+cluster_kubeadm_token_timeout: '24h'
 
 # Set the TLS Minimum version, Default VersionTLS11
 # Possible values: 'VersionTLS10', 'VersionTLS11', 'VersionTLS12', 'VersionTLS13'

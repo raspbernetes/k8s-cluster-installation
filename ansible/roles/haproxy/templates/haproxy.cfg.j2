@@ -4,7 +4,6 @@
 
 frontend front-api-proxy
     bind {{ keepalived_vip }}:8443
-    bind 127.0.0.1:6443
     mode tcp
     option tcplog
     timeout client 4h

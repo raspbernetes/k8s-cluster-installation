@@ -20,7 +20,7 @@
 ####
 # Role - cni
 ####
-cni_plugin: cilium
+# cni_plugin: calico
 # cni_bgp_peer_address: 192.168.0.1
 # cni_bgp_peer_asn: 64512
 # cni_cilium_helm_version: 1.9.3
