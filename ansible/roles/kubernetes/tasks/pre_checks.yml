@@ -16,3 +16,18 @@
         - ansible_processor_count >= 2
     fail_msg:
       - "At least 2 CPUs on the machine that you use as a control-plane node."
+
+# https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/install-kubeadm/#check-required-ports
+- name: Check whether control-plane port(s) is available
+  wait_for:
+    port: "{{ item }}"
+    state: stopped
+    timeout: 3
+    msg: "Port: {{ item }} is already in use!"
+  with_items:
+    - 6443
+    - 2379
+    - 2380
+    - 10250
+    - 10251
+    - 10252
