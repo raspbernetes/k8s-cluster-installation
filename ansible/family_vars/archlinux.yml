@@ -19,5 +19,7 @@ common_packages:
   - ipvsadm
   - sysstat
   - python-pyopenssl # Needed for ansible 'openssl_certificate_info' module
+  - ethtool
+  - ebtables
 common_rpi_cmd_file: /boot/cmdline.txt
 common_rpi_config_file: /boot/config.txt

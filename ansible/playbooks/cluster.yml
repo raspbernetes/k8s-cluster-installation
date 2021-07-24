@@ -7,4 +7,3 @@
   roles:
     - cluster
     - cni
-    - storage

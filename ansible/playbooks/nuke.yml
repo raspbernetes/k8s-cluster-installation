@@ -1,7 +1,5 @@
 ---
-- hosts:
-    - masters
-    - workers
+- hosts: all
   become: true
   gather_facts: true
   vars_prompt:
@@ -192,6 +190,11 @@
     - name: remove openebs directory
       file:
         path: /var/openebs
+        state: absent
+
+    - name: remove /etc/kubernetes directory
+      file:
+        path: /etc/kubernetes
         state: absent
 
     - name: 'reboot hosts'

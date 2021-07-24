@@ -1,0 +1,33 @@
+---
+# 2 GiB or more of RAM per machine--any less leaves little room for your apps.
+# https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/create-cluster-kubeadm/#before-you-begin
+- name: 'validate control-plane memory requirement'
+  ansible.builtin.assert:
+    that:
+        - ansible_memtotal_mb >= 2000
+    fail_msg:
+      - "2 GiB or more of RAM per machine required for control-planes nodes"
+
+# At least 2 CPUs on the machine that you use as a control-plane node.
+# # https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/create-cluster-kubeadm/#before-you-begin
+- name: 'validate control-plane CPU requirement'
+  ansible.builtin.assert:
+    that:
+        - ansible_processor_count >= 2
+    fail_msg:
+      - "At least 2 CPUs on the machine that you use as a control-plane node."
+
+# https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/install-kubeadm/#check-required-ports
+- name: Check whether control-plane port(s) is available
+  ansible.builtin.wait_for:
+    port: "{{ item }}"
+    state: stopped
+    timeout: 3
+    msg: "Port: {{ item }} is already in use!"
+  with_items:
+    - 6443
+    - 2379
+    - 2380
+    - 10250
+    - 10251
+    - 10252

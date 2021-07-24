@@ -1,5 +1,5 @@
 ---
-- hosts: k8s
+- hosts: cluster
   become: true
   pre_tasks:
     - name: "Add OS variables"
@@ -8,5 +8,6 @@
       include_vars: "../group_vars/docker_cache.yml"
   roles:
     - common
+    - storage
     - container-runtime
     - kubernetes

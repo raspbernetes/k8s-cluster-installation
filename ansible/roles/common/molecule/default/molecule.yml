@@ -16,7 +16,7 @@ platforms:
       - SYS_ADMIN
     pre_build_image: true
     groups:
-      - masters
+      - controlplane
   - name: worker-01
     image: geerlingguy/docker-ubuntu2004-ansible
     tmpfs:
@@ -29,7 +29,7 @@ platforms:
       - SYS_ADMIN
     pre_build_image: true
     groups:
-      - workers
+      - nodes
 provisioner:
   name: ansible
   inventory:

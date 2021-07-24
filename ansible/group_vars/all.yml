@@ -23,7 +23,7 @@ kubernetes_kubeadm_version: 1.21.0-00
 ####
 # Role - keepalived
 ####
-keepalived_vip: '192.168.1.202'
+keepalived_vip: ''
 # keepalived_interface: "{{ ansible_default_ipv4['interface'] }}"
 
 ####
@@ -35,17 +35,7 @@ cri_plugin: containerd
 ####
 # Role - cni
 ####
-cni_plugin: 'cilium'
-# cni_bgp_peer_address: 192.168.0.1
-# cni_bgp_peer_asn: 64512
-# cni_cilium_helm_version: 1.9.3
-# cni_cilium_image_version: v1.9.3
-# cni_cilium_hubble_enabled: false
-# cni_cilium_enovy_proxy_image_version: v1.16.2
-# cni_cilium_bpf_hostrouting: "true"
-# cni_cilium_bpf_tproxy: "false"
-# cni_cilium_bpf_masquerade: "true"
-# cni_cilium_endpoint_routes: "false"
+# cni_plugin: 'calico'
 
 ####
 # Role: Storage
@@ -56,11 +46,3 @@ cni_plugin: 'cilium'
 # Role: docker_cache
 ####
 # docker_cache_enable: false
-
-####
-# Role - cloudflared
-####
-# Cloudflare options for exposing Kubernetes services via HTTPS/SSH
-# cloudflared_enabled: false
-# cloudflared_kube_api_server_dns: ''
-# cloudflared_version: 2021.2.5

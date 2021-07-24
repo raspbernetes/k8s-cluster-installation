@@ -67,7 +67,7 @@
 
 - name: pull control plane images
   command: kubeadm config images pull
-  # when: inventory_hostname == groups["controlplane"]
+  when: ansible_hostname in groups["controlplane"]
 
 - name: 'initialize | perform cluster initialization on primary control node'
   include_tasks: 'initialize.yml'

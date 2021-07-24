@@ -19,11 +19,11 @@ cluster_profiling: false
 # provides a maximum of 64 nodes in a cluster and 254 pods per node.
 
 # Kubernetes internal network for services, *must* be an unused block of space.
-cluster_service_subnet: '10.125.0.0/18'
+cluster_service_subnet: '10.96.0.0/16'
 
 # Kubernetes internal network. IP's for pods will be drawn from this address
 # space. *must* be unused in your network infrastructure.
-cluster_pod_subnet: '10.125.64.0/18'
+cluster_pod_subnet: '10.244.0.0/16'
 
 # This sets the network node allocation size. Each node in the cluster is
 # assigned a subnet of this size.
@@ -36,8 +36,8 @@ cluster_authorization_modes: ['Node', 'RBAC']
 
 # Vars for discoverying kubernetes api endpoints
 # will refactor to eliminate this variable
-cluster_primary_control_node: '{{ groups["masters"]|first }}'
-cluster_apiserver_count: '{{ groups["masters"]|length }}'
+cluster_primary_control_node: '{{ groups["controlplane"]|first }}'
+cluster_apiserver_count: '{{ groups["controlplane"]|length }}'
 
 # Tuning for arm64 platforms; https://etcd.io/docs/v3.4.0/tuning/
 cluster_etcd_heartbeat_interval: 250

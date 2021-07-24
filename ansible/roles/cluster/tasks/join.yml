@@ -22,7 +22,7 @@
   register: cluster_ca_cert
   run_once: true
 
-- name: 'join | set cluster ca cert sa256 fact'
+- name: 'join | set cluster ca cert sha256 fact'
   ansible.builtin.set_fact:
     cluster_ca_sha256: '{{ cluster_ca_cert.public_key_fingerprints.sha256 | regex_replace(":") }}'
   run_once: true
@@ -39,11 +39,7 @@
     port: '{{ cluster_apiserver_bind_port }}'
     timeout: 180
 
-# - name: Pause for 2 minutes to wait for apiserver
-#   pause:
-#     minutes: 2
-
-- name: 'join | add node to cluster'
+- name: 'join | add node(s) to cluster'
   ansible.builtin.command: |
-    kubeadm join --config /etc/kubernetes/kubeadm-join.yaml
+    kubeadm join --config /etc/kubernetes/kubeadm-join.yaml -v=5
   register: node_joined
