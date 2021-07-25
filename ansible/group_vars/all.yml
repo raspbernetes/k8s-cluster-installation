@@ -4,7 +4,7 @@
 ####
 # common_upgrade_packages: true
 # common_reboot_handler_enabled: true
-# common_timezone: UTC
+common_timezone: Australia/Melbourne
 # common_usb_ssd_enabled: false
 # common_usb_ssd_device_id: ""
 # common_rpi_overclock: false
@@ -16,9 +16,9 @@
 ####
 # Role - kubernetes
 ####
-kubernetes_kubectl_version: 1.21.0-00
-kubernetes_kubelet_version: 1.21.0-00
-kubernetes_kubeadm_version: 1.21.0-00
+kubernetes_kubectl_version: 1.21.3-00
+kubernetes_kubelet_version: 1.21.3-00
+kubernetes_kubeadm_version: 1.21.3-00
 
 ####
 # Role - keepalived
@@ -35,7 +35,7 @@ cri_plugin: containerd
 ####
 # Role - cni
 ####
-# cni_plugin: 'calico'
+cni_plugin: 'cilium'
 
 ####
 # Role: Storage

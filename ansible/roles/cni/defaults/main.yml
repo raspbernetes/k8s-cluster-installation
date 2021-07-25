@@ -7,3 +7,4 @@ kube_router_image: docker.io/cloudnativelabs/kube-router
 cluster_pod_subnet: 10.0.0.0/8
 k8s_native_cluster_cidr: "{{ (ansible_default_ipv4.network + '/' + ansible_default_ipv4.netmask) | ipaddr('network/prefix') }}"
 cni_kube_router_enabled: false
+cluster_main_master: "{{ groups['controlplane'][0] }}"

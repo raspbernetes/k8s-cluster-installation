@@ -12,7 +12,8 @@ common_packages:
   - ipvsadm
   - net-tools
   - python3-openssl # Needed for ansible 'openssl_certificate_info' module
-  - python-openshift
+  - gnupg
+  - lsb-release
 
 kubernetes_packages:
   - apt-transport-https

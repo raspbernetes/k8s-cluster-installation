@@ -13,14 +13,15 @@
 # cluster_audit_log_maxbackup: 10
 # cluster_audit_log_maxsize: 100
 # cluster_pod_subnet: ""
-# cluster_kube_proxy_enabled: true
-# cluster_etcd_heartbeat_interval: 100
-# cluster_etcd_election_timeout: 1000
+cluster_kube_proxy_enabled: false
+cluster_etcd_heartbeat_interval: 250
+cluster_etcd_election_timeout: 1250
+cluster_etcd_snapshot_count: 5000
 
 ####
 # Role - cni
 ####
-# cni_plugin: calico
+cni_plugin: cilium
 
 ####
 # Role - cloudflared
