@@ -98,4 +98,3 @@ resource "libvirt_domain" "node" {
   }
 
 }
-
